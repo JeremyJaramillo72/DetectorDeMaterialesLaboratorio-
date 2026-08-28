@@ -1,0 +1,966 @@
+{
+  "laboratorio": "Laboratorio de Bromatología",
+  "universidad": "Universidad Técnica Estatal de Quevedo (UTEQ)",
+  "facultad": "Facultad de Ciencias Pecuarias y Biológicas",
+  "version": "2.0.0",
+  "equipos": [
+    {
+      "id": "destilador_kjeldahl",
+      "clase_yolo": "destilador_kjeldahl",
+      "nombre_comun": "Unidad de Destilación Kjeldahl",
+      "nombre_oficial": "Unidad Automática de Destilación Pro-Nitro A",
+      "fabricante": "J.P. SELECTA S.A.",
+      "modelo": "Pro-Nitro A (Cat. 4002430)",
+      "ubicacion": "Mesa analítica de digestión y destilación Kjeldahl",
+      "funcion_principal": "Destilación por arrastre de vapor de muestras orgánicas previamente digeridas con ácido sulfúrico concentrado para la determinación cuantitativa de nitrógeno total y cálculo de proteína bruta (N x 6.25) en alimentos balanceados, harinas, granos y productos cárnicos.",
+      "principio_funcionamiento": "La muestra digerida que contiene sulfato de amonio se alcaliniza automáticamente con NaOH al 40% para liberar amoníaco (NH3). El generador de vapor arrastra el amoníaco hacia un refrigerante donde condensa y se recolecta en un matraz receptor con ácido bórico al 4% e indicador mixto, listo para titulación con HCl 0.1 N.",
+      "componentes_principales": [
+        "Generador de vapor de acero inoxidable con sensor de nivel",
+        "Bomba dosificadora de reactivo NaOH al 40%",
+        "Tubo de reacción para macro-tubos de digestión Kjeldahl",
+        "Refrigerante de condensación de borosilicato",
+        "Pantalla LCD con control de tiempo de destilación y dosificación",
+        "Bandeja de goteo extraíble y puerta de seguridad transparente"
+      ],
+      "guias_practica_uteq": [
+        "Práctica N° 03: Determinación de Proteína Cruda en Materias Primas para Nutrición Animal (AOAC 984.13)",
+        "Práctica N° 06: Control de Calidad de Harinas de Pescado y Soya según Norma NTE INEN 0516"
+      ],
+      "procedimiento_operativo_estandar": [
+        "1. Verificar el suministro de agua para refrigeración y el nivel del depósito de NaOH 40%.",
+        "2. Encender el equipo con el interruptor frontal y esperar 5 minutos de precalentamiento del generador de vapor.",
+        "3. Colocar el matraz Erlenmeyer receptor con 25 mL de solución de Ácido Bórico al 4% con indicador Tashiro en la salida del condensador.",
+        "4. Insertar el tubo de digestión con la muestra mineralizada y cerrar la puerta de seguridad.",
+        "5. Programar el volumen de NaOH (ej. 50 mL) y el tiempo de destilación (4 a 5 minutos).",
+        "6. Iniciar el ciclo y verificar el cambio de color en el matraz colector de violeta a verde esmeralda.",
+        "7. Finalizado el ciclo, retirar el Erlenmeyer y proceder a la titulación con HCl 0.1 N estandarizado."
+      ],
+      "epp_requerido": [
+        "Mandil de laboratorio antifluidos de manga larga",
+        "Gafas de seguridad química con protección lateral",
+        "Guantes de nitrilo resistentes a químicos corrosivos",
+        "Zapato cerrado de seguridad con suela antideslizante"
+      ],
+      "riesgos_asociados": [
+        "Quemaduras térmicas por vapor de agua y condensador a alta temperatura",
+        "Quemaduras químicas graves por contacto con Hidróxido de Sodio (NaOH) al 40%",
+        "Proyección de líquidos alcalinos calientes por mal acople del tubo",
+        "Inhalación de vapores amoniacales si la campana o extractor no está activo"
+      ],
+      "normas_seguridad": [
+        "Nunca operar el equipo con la puerta de protección abierta o puenteada.",
+        "Mantener siempre el flujo de agua fría de condensación abierto antes de iniciar el calentamiento.",
+        "En caso de salpicadura de álcali, lavar inmediatamente con abundante agua durante 15 minutos y avisar al docente o laboratorista."
+      ],
+      "fuentes_referencias": [
+        "Manual de Instrucciones J.P. Selecta Pro-Nitro A, Código 80164 Rev. D",
+        "AOAC Official Method 984.13: Protein (Crude) in Animal Feed",
+        "NTE INEN 0516: Harina de pescado. Determinación del contenido de proteína bruta"
+      ]
+    },
+    {
+      "id": "analizador_fibra",
+      "clase_yolo": "analizador_fibra",
+      "nombre_comun": "Analizador de Fibra Dosi-Fiber",
+      "nombre_oficial": "Extractor / Analizador de Fibra Dosi-Fiber",
+      "fabricante": "J.P. SELECTA S.A.",
+      "modelo": "DOSI-FIBER (Cat. 4000623)",
+      "ubicacion": "Mesa de análisis proximal",
+      "funcion_principal": "Digestión secuencial ácida y alcalina, y extracción cuantitativa de Fibra Cruda (Método Weende) y fracciones de fibra Van Soest (FND, FAD y Lignina) en forrajes, concentrados y alimentos para animales.",
+      "principio_funcionamiento": "Somete la muestra dentro de crisoles filtrantes de vidrio sinterizado a ebullición controlada sucesiva con reactivo ácido (H2SO4 0.255 N) y reactivo básico (KOH 0.313 N o NaOH), aplicando vacío regulado para filtración y lavado de residuos.",
+      "componentes_principales": [
+        "Bloque calefactor eléctrico de 6 posiciones con reguladores individuales",
+        "Columnas de condensación y reflujo de vidrio",
+        "Colector múltiple de filtración al vacío",
+        "Crisoles filtrantes de borosilicato porosidad P2",
+        "Válvulas de control y purga de reactivos"
+      ],
+      "guias_practica_uteq": [
+        "Práctica N° 04: Determinación de Fibra Cruda por el Método de Weende en Pastos y Forrajes (AOAC 962.09)",
+        "Práctica N° 05: Fraccionamiento de Fibra Detergente Neutro (FND) y Fibra Detergente Ácido (FAD) según Van Soest (ISO 6865)"
+      ],
+      "procedimiento_operativo_estandar": [
+        "1. Pesar 1.0 g de muestra seca y desengrasada en el crisol filtrante previamente tarado.",
+        "2. Colocar los crisoles en las posiciones del DOSI-FIBER y asegurar el sellado hermético.",
+        "3. Adicionar 150 mL de solución de H2SO4 0.255 N precalentada y 3 a 5 gotas de antiespumante (octanol).",
+        "4. Encender los calefactores a reflujo durante exactamente 30 minutos.",
+        "5. Conectar la bomba de vacío para drenar el reactivo y lavar 3 veces con agua destilada hirviendo.",
+        "6. Repetir la digestión adicionando 150 mL de NaOH o KOH 0.313 N por 30 minutos más.",
+        "7. Filtrar, lavar con agua caliente y posteriormente con acetona.",
+        "8. Llevar los crisoles a la estufa a 105°C por 4 horas, enfriar en desecador, pesar y luego calcinar a 550°C en mufla."
+      ],
+      "epp_requerido": [
+        "Mandil antifluidos y mandil de goma para ácidos",
+        "Gafas de seguridad química o pantalla facial",
+        "Guantes de nitrilo de puño largo",
+        "Mascarilla con filtro para vapores ácidos y orgánicos"
+      ],
+      "riesgos_asociados": [
+        "Quemaduras graves por ebullición de reactivos ácidos y alcalinos concentrados",
+        "Ruptura térmica de crisoles de vidrio por choque térmico",
+        "Inhalación de vapores tóxicos de éter o solventes de desengrase",
+        "Pérdida de muestra por desbordamiento de espuma"
+      ],
+      "normas_seguridad": [
+        "Utilizar siempre antiespumante adecuado antes de iniciar la ebullición.",
+        "Verificar que la circulación de agua de los condensadores esté funcionando antes de encender las placas calefactoras.",
+        "No aplicar vacío excesivo de golpe para evitar roturas en los crisoles."
+      ],
+      "fuentes_referencias": [
+        "Manual de Operación J.P. Selecta DOSI-FIBER",
+        "AOAC Official Method 962.09: Fiber (Crude) in Animal Feed",
+        "ISO 6865: Animal feeding stuffs - Determination of crude fibre content"
+      ]
+    },
+    {
+      "id": "placa_calefactora_heidolph",
+      "clase_yolo": "placa_calefactora_heidolph",
+      "nombre_comun": "Placa Calefactora con Agitador Magnético",
+      "nombre_oficial": "Agitador Magnético Calefactor Heidolph MR Hei-Standard",
+      "fabricante": "Heidolph Instruments GmbH",
+      "modelo": "MR Hei-Standard (Cat. 505-20000-00)",
+      "ubicacion": "Mesón central de preparación de reactivos y digestión",
+      "funcion_principal": "Calentamiento y agitación simultánea o independiente de medios de cultivo, digestiones ácidas, reactivos de titulación y soluciones estándar.",
+      "principio_funcionamiento": "Un motor acciona un potente imán giratorio debajo de la placa de aleación de aluminio tratada térmicamente (Kera-Disk), transmitiendo torque a una barra magnética ('teflón') colocada dentro del recipiente, mientras resistencias eléctricas calientan hasta 300°C.",
+      "componentes_principales": [
+        "Placa superior con recubrimiento cerámico Kera-Disk resistente a químicos",
+        "Dial analógico de control de temperatura (20°C a 300°C)",
+        "Dial de velocidad de agitación (100 a 1400 rpm)",
+        "Interruptor luminoso independiente de calefacción",
+        "Conexión posterior para sensor externo Pt1000"
+      ],
+      "guias_practica_uteq": [
+        "Práctica N° 01: Preparación y Estandarización de Soluciones Volumétricas (NaOH, HCl, H2SO4)",
+        "Práctica N° 07: Solubilización y Digestión Ácida de Muestras Agropecuarias"
+      ],
+      "procedimiento_operativo_estandar": [
+        "1. Colocar el equipo sobre una superficie plana y limpia, conectándolo a 110/220V aterrizado.",
+        "2. Colocar el vaso de precipitado o matraz con la solución en el centro de la placa e introducir la barra agitadora teflonada.",
+        "3. Girar la perilla de rpm suavemente hasta alcanzar la velocidad de mezclado sin generar vórtice turbulento con salpicaduras.",
+        "4. Si se requiere calor, encender el botón de calentamiento y seleccionar la temperatura deseada.",
+        "5. Al terminar, apagar la calefacción, reducir la agitación a cero y esperar a que la placa se enfríe antes de manipular."
+      ],
+      "epp_requerido": [
+        "Mandil de laboratorio de algodón",
+        "Gafas de seguridad contra salpicaduras",
+        "Guantes térmicos para retiro de material caliente",
+        "Guantes de nitrilo para manipulación de químicos"
+      ],
+      "riesgos_asociados": [
+        "Quemaduras por contacto con la placa caliente residual (indicador de calor residual)",
+        "Salpicadura de reactivos calientes por inicio brusco de agitación",
+        "Ruptura de matraces de fondo plano de baja calidad por choque térmico"
+      ],
+      "normas_seguridad": [
+        "Nunca calentar recipientes cerrados herméticamente.",
+        "Utilizar exclusivamente cristalería de borosilicato 3.3 (tipo Pyrex o Duran).",
+        "No dejar desatendida la placa cuando se calienten solventes orgánicos inflamables."
+      ],
+      "fuentes_referencias": [
+        "Heidolph Magnetic Stirrer MR Series User Manual",
+        "Manual de Bioseguridad en Laboratorios Universitarios - UTEQ"
+      ]
+    },
+    {
+      "id": "phmetro_ohaus",
+      "clase_yolo": "phmetro_ohaus",
+      "nombre_comun": "pH-metro Digital de Mesa",
+      "nombre_oficial": "Potenciómetro / Medidor de pH de Mesa Starter 3100",
+      "fabricante": "OHAUS Corporation",
+      "modelo": "STARTER 3100",
+      "ubicacion": "Mesa de análisis físico-químico",
+      "funcion_principal": "Medición potenciométrica de alta precisión de pH, potencial eléctrico en milivoltios (mV / Redox) y compensación automática de temperatura (ATC) en muestras alimentarias y soluciones reguladoras.",
+      "principio_funcionamiento": "Mide la diferencia de potencial electroquímico entre un electrodo de vidrio sensible a iones hidrógeno (H+) y un electrodo de referencia inmersos en la solución, calculando el pH mediante la ecuación de Nernst.",
+      "componentes_principales": [
+        "Unidad lectora con pantalla LCD retroiluminada",
+        "Brazo articulado independiente porta-electrodos",
+        "Electrodo combinado de vidrio y sensor de temperatura ST310",
+        "Teclado de membrana (Botones: Cal/Slope, pH/mV, Read/Auto, Store/Recall, Exit)",
+        "Soluciones buffer de calibración pH 4.01, 7.00 y 10.01"
+      ],
+      "guias_practica_uteq": [
+        "Práctica N° 02: Determinación de pH y Acidez Titulable en Leche, Quesos y Derivados Lácteos (NTE INEN 0013)",
+        "Práctica N° 08: Control de pH y Madurez en Frutas, Jugos y Conservas Cárnicas"
+      ],
+      "procedimiento_operativo_estandar": [
+        "1. Retirar el capuchón protector del electrodo y enjuagar la membrana con agua destilada abundante.",
+        "2. Calibrar en 2 o 3 puntos usando soluciones buffer trazables (pH 7.00 y pH 4.01 o 10.01). Presionar botón 'Cal'.",
+        "3. Secar el electrodo cuidadosamente con papel suave absorbente sin frotar la esfera de vidrio.",
+        "4. Sumergir el electrodo en el vaso de muestra asegurando que la unión cerámica quede totalmente cubierta.",
+        "5. Presionar 'Read/Enter' y esperar a que el indicador de estabilidad se fije para anotar el valor final.",
+        "6. Lavar con agua destilada y guardar el electrodo siempre sumergido en solución de almacenamiento KCl 3M."
+      ],
+      "epp_requerido": [
+        "Mandil de laboratorio",
+        "Gafas de seguridad",
+        "Guantes de nitrilo descartables"
+      ],
+      "riesgos_asociados": [
+        "Ruptura de la fina ampolla de vidrio del electrodo por golpe con el vaso o agitador",
+        "Contaminación cruzada por enjuague deficiente entre muestras",
+        "Lecturas erróneas por electrodo deshidratado o descalibrado"
+      ],
+      "normas_seguridad": [
+        "Nunca almacenar el electrodo en agua destilada pura ni dejarlo secar al aire.",
+        "No frotar la punta del electrodo para evitar cargas electrostáticas.",
+        "Comprobar la pendiente de calibración (Slope: 95% - 105%)."
+      ],
+      "fuentes_referencias": [
+        "OHAUS Starter 3100 Bench pH Meter Instruction Manual",
+        "NTE INEN 0013: Leche. Determinación del pH y de la acidez titulable",
+        "AOAC 981.12: pH of Acidified Foods"
+      ]
+    },
+    {
+      "id": "molino_ciclonico_foss",
+      "clase_yolo": "molino_ciclonico_foss",
+      "nombre_comun": "Molino Ciclónico FOSS",
+      "nombre_oficial": "Molino Ciclónico de Muestras Cyclotec 1093",
+      "fabricante": "FOSS Analytical A/S",
+      "modelo": "Cyclotec 1093 Sample Mill",
+      "ubicacion": "Área de acondicionamiento y molienda de muestras",
+      "funcion_principal": "Molienda rápida de granos, semillas, harinas y forrajes secos garantizando un tamaño de partícula homogéneo (0.5 mm o 1.0 mm) sin desnaturalización térmica ni pérdida de humedad para análisis NIR, Kjeldahl y Soxhlet.",
+      "principio_funcionamiento": "Un impulsor de alta velocidad gira a 10,000 rpm haciendo pasar la muestra contra una superficie moledora dentada; el flujo de aire ciclónico transporta las partículas finas a través de una criba hacia un frasco colector.",
+      "componentes_principales": [
+        "Tolva de alimentación con compuerta de dosificación",
+        "Cámara de molienda con impulsor y anillo dentado",
+        "Cribas intercambiables de acero inoxidable (0.5 mm y 1.0 mm)",
+        "Separador ciclónico y frasco colector de muestra roscado",
+        "Interruptor de seguridad y microswitch de bloqueo de tapa"
+      ],
+      "guias_practica_uteq": [
+        "Práctica N° 01: Muestreo, Homogenización y Preparación de Alimentos para Análisis Proximal (AOAC 930.15)",
+        "Práctica N° 09: Acondicionamiento de Granos de Maíz, Arroz y Harinas para Calidad Nutricional"
+      ],
+      "procedimiento_operativo_estandar": [
+        "1. Instalar la criba adecuada (1.0 mm para fibra/proteína) y asegurar el frasco colector.",
+        "2. Cerrar la tapa frontal y fijar la palanca de bloqueo de seguridad.",
+        "3. Encender el interruptor del motor y esperar a que alcance la velocidad máxima.",
+        "4. Alimentar la muestra seca poco a poco por la tolva superior, regulando el caudal.",
+        "5. Dejar funcionar 15 segundos después de que caiga el último grano para limpiar la cámara.",
+        "6. Apagar, desenroscar el frasco, tapar herméticamente y limpiar residuos con brocha y aspirador."
+      ],
+      "epp_requerido": [
+        "Protector auditivo tipo copa o tapones (ruido > 85 dB)",
+        "Mascarilla para polvo N95 o con filtro P100",
+        "Gafas de seguridad contra impacto",
+        "Mandil de laboratorio ajustado en puños"
+      ],
+      "riesgos_asociados": [
+        "Exposición a altos niveles de ruido acústico durante la operación",
+        "Inhalación de polvos finos vegetales y alérgenos",
+        "Atrapamiento mecánico si se introduce la mano en la tolva de alimentación",
+        "Bloqueo y recalentamiento del motor por muestras con humedad > 15% o grasas > 20%"
+      ],
+      "normas_seguridad": [
+        "Nunca moler muestras húmedas (deben estar previamente secas < 12% de humedad).",
+        "Nunca introducir dedos, cucharas ni objetos metálicos por la tolva con el motor encendido.",
+        "Utilizar siempre protección auditiva y mascarilla durante la molienda."
+      ],
+      "fuentes_referencias": [
+        "FOSS Cyclotec 1093 Sample Mill Operation Manual",
+        "AOAC Official Method 930.15: Preparation of Feed Samples"
+      ]
+    },
+    {
+      "id": "estufa_secado_memmert",
+      "clase_yolo": "estufa_secado_memmert",
+      "nombre_comun": "Estufa de Secado Memmert",
+      "nombre_oficial": "Horno / Estufa Universal de Convección Memmert UN55/UN110",
+      "fabricante": "Memmert GmbH + Co. KG",
+      "modelo": "Universal Oven UN Series (SingleDISPLAY)",
+      "ubicacion": "Área de termogravimetría y secado",
+      "funcion_principal": "Deshidratación térmica precisa de alimentos a 105°C ± 2°C para la cuantificación gravimétrica de humedad y materia seca (MS) total.",
+      "principio_funcionamiento": "Calefacción omnidireccional distribuida por las 4 paredes internas con convección natural o forzada y control digital PID con sensor Pt100 clase A.",
+      "componentes_principales": [
+        "Cámara interna en acero inoxidable antimicrobiano con bandejas perforadas",
+        "Controlador digital táctil ControlCOCKPIT",
+        "Válvula de aireación y compuerta de ventilación regulable",
+        "Puerta exterior de acero con doble cierre y aislamiento de alta densidad",
+        "Limitador electrónico de temperatura de sobrecalentamiento"
+      ],
+      "guias_practica_uteq": [
+        "Práctica N° 02: Determinación Gravimétrica de Humedad y Materia Seca en Alimentos (AOAC 930.15)",
+        "Práctica N° 10: Determinación de Cenizas y Sólidos Totales según NTE INEN 0518"
+      ],
+      "procedimiento_operativo_estandar": [
+        "1. Programar la temperatura de consigna a 105°C en la pantalla ControlCOCKPIT.",
+        "2. Tarar previamente los pesafiltros o cápsulas de porcelana limpios y secos.",
+        "3. Pesar con precisión analítica (± 0.0001 g) 2.0 a 5.0 g de muestra homogeneizada.",
+        "4. Introducir las cápsulas en la estufa destapadas, colocando las tapas a un lado.",
+        "5. Mantener a 105°C durante 4 horas continuas (o hasta peso constante).",
+        "6. Con guantes térmicos y pinzas, tapar las cápsulas y transferirlas al desecador con silica gel por 30 minutos antes de pesar."
+      ],
+      "epp_requerido": [
+        "Guantes térmicos de kevlar o cuero resistentes a > 150°C",
+        "Pinzas de crisol de acero inoxidable",
+        "Mandil de laboratorio y gafas de seguridad"
+      ],
+      "riesgos_asociados": [
+        "Quemaduras por contacto directo con paredes, rejillas y cápsulas calientes",
+        "Desprendimiento de humos o combustión de muestras con alto contenido lipídico o azúcares a temperaturas > 105°C"
+      ],
+      "normas_seguridad": [
+        "Nunca abrir la puerta bruscamente para evitar golpes de aire caliente a la cara.",
+        "Utilizar siempre pinzas para introducir y extraer muestras calientes.",
+        "No colocar sustancias inflamables o volátiles explosivas dentro de la estufa."
+      ],
+      "fuentes_referencias": [
+        "Memmert Heating Oven UN/UF Operating Manual, D39454",
+        "NTE INEN 0518: Alimentos para animales. Determinación de la humedad y materia seca"
+      ]
+    },
+    {
+      "id": "refractometro_atago",
+      "clase_yolo": "refractometro_atago",
+      "nombre_comun": "Refractómetro Digital ATAGO",
+      "nombre_oficial": "Refractómetro Abbe Digital ATAGO DR-A1",
+      "fabricante": "ATAGO CO., LTD.",
+      "modelo": "DR-A1 (Cat. 1310)",
+      "ubicacion": "Mesón de análisis óptico y físico-químico",
+      "funcion_principal": "Medición rápida y digital del Índice de Refracción (nD: 1.3000 a 1.7100) y de Sólidos Solubles (°Brix: 0.0 a 95.0%) con lectura digital y compensación de temperatura.",
+      "principio_funcionamiento": "Mide el ángulo límite de refracción de un haz luminoso transmitido a través del prisma óptico de vidrio de alto índice y la interfase de la muestra líquida o pastosa.",
+      "componentes_principales": [
+        "Prisma principal de medición de alta dureza",
+        "Prisma secundario de iluminación con bisagra",
+        "Perilla de compensación de dispersión óptica",
+        "Pantalla digital LCD con selector de nD, % Brix y Temperatura",
+        "Conexión para baño termostático de circulación"
+      ],
+      "guias_practica_uteq": [
+        "Práctica N° 07: Determinación de Sólidos Solubles (°Brix) en Jugos, Frutas, Mieles y Néctares (AOAC 932.12)",
+        "Práctica N° 11: Control de Pureza e Índice de Refracción en Grasas y Aceites Vegetales (NTE INEN 0380)"
+      ],
+      "procedimiento_operativo_estandar": [
+        "1. Limpiar cuidadosamente la superficie del prisma con etanol al 70% y papel especial para óptica.",
+        "2. Calibrar con una gota de agua destilada a 20°C (debe leer exactamente 0.0 °Brix / nD 1.3330).",
+        "3. Secar con suavidad sin rayar el prisma.",
+        "4. Colocar 1 o 2 gotas de la muestra homogénea y cerrar suavemente el prisma superior.",
+        "5. Ajustar la línea de contraste en el visor y presionar 'Read' para visualizar el valor en el display digital.",
+        "6. Limpiar inmediatamente el prisma con agua tibia y alcohol, dejándolo impecable."
+      ],
+      "epp_requerido": [
+        "Mandil de laboratorio",
+        "Gafas de seguridad",
+        "Guantes de nitrilo"
+      ],
+      "riesgos_asociados": [
+        "Rayado irreversible de la superficie óptica del prisma por uso de papel abrasivo o pipetas de vidrio",
+        "Corrosión de sellos por dejar restos de muestras ácidas (ej. jugos cítricos) sin limpiar"
+      ],
+      "normas_seguridad": [
+        "Usar exclusivamente papel óptico suave para secar los prismas.",
+        "Nunca tocar el prisma con espátulas metálicas ni pipetas de vidrio.",
+        "Limpiar de inmediato cualquier residuo pegajoso de azúcares o grasas."
+      ],
+      "fuentes_referencias": [
+        "ATAGO DR-A1 Digital Abbe Refractometer Instruction Manual",
+        "AOAC Official Method 932.12: Solids (Soluble) in Fruits and Fruit Products",
+        "NTE INEN 0380: Aceites y grasas vegetales y animales. Determinación del índice de refracción"
+      ]
+    },
+    {
+      "id": "calorimetro_bomba",
+      "clase_yolo": "calorimetro_bomba",
+      "nombre_comun": "Bomba Calorimétrica Parr",
+      "nombre_oficial": "Calorímetro Isoperibólico de Bomba de Oxígeno Parr 1341",
+      "fabricante": "Parr Instrument Company",
+      "modelo": "1341 Plain Jacket Calorimeter con Termómetro Digital 6775",
+      "ubicacion": "Área de termodinámica y bioenergética nutricional",
+      "funcion_principal": "Medición precisa del calor de combustión y contenido de Energía Bruta (EB en Mcal/kg o kcal/g) en alimentos balanceados, granos y biomasa.",
+      "principio_funcionamiento": "Una muestra comprimida en pastilla se incinera por ignición eléctrica en una atmósfera presurizada con 30 atm (450 psi) de oxígeno puro dentro de un reactor de acero aleado sumergido en un volumen calibrado de agua (2000 g), registrando el incremento adiabático de temperatura.",
+      "componentes_principales": [
+        "Vaso de presión (bomba) de acero aleado Parr 1108",
+        "Chaqueta calorimétrica aislante con cubeta interior para 2000 g de agua",
+        "Agitador mecánico de velocidad constante con polea",
+        "Termómetro digital de alta precisión Parr 6775 (resolución ± 0.0001°C)",
+        "Unidad de ignición eléctrica y alambre de encendido de níquel-cromo (Fuse Wire)"
+      ],
+      "guias_practica_uteq": [
+        "Práctica N° 08: Determinación de Energía Bruta en Dietas y Materias Primas para Rumiantes y No Rumiantes (ISO 9831)",
+        "Práctica N° 12: Balance Bioenergético de Alimentos Balanceados (ASTM D5865)"
+      ],
+      "procedimiento_operativo_estandar": [
+        "1. Prensar 0.8 a 1.0 g de muestra seca en forma de pastilla y pesar con 4 cifras decimales.",
+        "2. Colocar la pastilla en la cápsula de combustión y fijar 10 cm de alambre de ignición tocando la muestra.",
+        "3. Añadir 1.0 mL de agua destilada al fondo de la bomba para absorber los óxidos de nitrógeno y azufre.",
+        "4. Enroscar la tapa de la bomba con la mano e introducir oxígeno medicinal puro hasta 30 atm (450 psi).",
+        "5. Colocar la bomba en la cubeta con exactamente 2000 g de agua destilada a 23°C.",
+        "6. Conectar los electrodos de ignición, cerrar la tapa exterior y encender el agitador por 5 minutos.",
+        "7. Disparar la ignición eléctrica y registrar las lecturas de temperatura cada 30 segundos hasta alcanzar el pico máximo.",
+        "8. Despresurizar lentamente la bomba, abrirla, medir el alambre no consumido y realizar los cálculos térmicos con el factor de capacidad calórica (W)."
+      ],
+      "epp_requerido": [
+        "Gafas de seguridad balística de alto impacto",
+        "Mandil de laboratorio con protección frontal",
+        "Guantes de nitrilo y protección auditiva"
+      ],
+      "riesgos_asociados": [
+        "Riesgo de explosión por sobrepresión de oxígeno (> 35 atm)",
+        "Presencia de hidrocarburos o grasas en las roscas de la válvula de oxígeno (riesgo de deflagración espontánea)",
+        "Ruptura de alambre por exceso de carga eléctrica"
+      ],
+      "normas_seguridad": [
+        "PROHIBIDO el uso de aceites, grasas o lubricantes en cualquier válvula o conexión de oxígeno.",
+        "Nunca cargar la bomba con más de 1.1 g de muestra seca ni superar 30 atm de presión de O2.",
+        "Mantenerse apartado de la línea vertical superior de la bomba durante el momento de la ignición."
+      ],
+      "fuentes_referencias": [
+        "Parr 1341 Plain Jacket Calorimeter Operating Instructions, No. 204M",
+        "ISO 9831: Animal feeding stuffs, animal products - Determination of gross calorific value - Bomb calorimeter method",
+        "ASTM D5865: Standard Test Method for Gross Calorific Value of Coal and Coke"
+      ]
+    },
+    {
+      "id": "campana_extraccion_gases",
+      "clase_yolo": "campana_extraccion_gases",
+      "nombre_comun": "Campana de Extracción de Gases",
+      "nombre_oficial": "Cabina / Campana de Extracción de Gases Tóxicos Protector Premier",
+      "fabricante": "Labconco Corporation",
+      "modelo": "Protector Premier Fume Hood",
+      "ubicacion": "Área de digestión ácida y extracción con solventes",
+      "funcion_principal": "Extracción y evacuación continua de humos corrosivos (SO2, SO3, vapores de H2SO4 caliente, éter etílico, acetona y amoníaco) garantizando la protección respiratoria del operador.",
+      "principio_funcionamiento": "Un extractor centrífugo en el ducto superior genera presión negativa en la cámara frontal, capturando y expulsando al exterior los gases tóxicos a una velocidad frontal de 0.5 m/s (100 fpm).",
+      "componentes_principales": [
+        "Guillotina frontal de vidrio templado de elevación vertical con contrapeso",
+        "Luz interior hermética a prueba de vapores y explosión",
+        "Superficie de trabajo de resina epóxica resistente a ácidos y álcalis",
+        "Tomas internas de gas, agua, vacío y desagüe químico",
+        "Panel frontal de control de iluminación y extractor de tiro forzado"
+      ],
+      "guias_practica_uteq": [
+        "Práctica N° 03: Digestión Ácida de Muestras Orgánicas con Catalizador de Cobre (Método Kjeldahl)",
+        "Práctica N° 05: Extracción de Grasa Cruda con Éter de Petróleo (Método Soxhlet - AOAC 920.39)"
+      ],
+      "procedimiento_operativo_estandar": [
+        "1. Encender el extractor de la campana y la luz interna al menos 2 minutos antes de comenzar cualquier trabajo.",
+        "2. Comprobar el tiro de aire colocando una tira de papel en el borde de la guillotina.",
+        "3. Regular la apertura de la guillotina a una altura máxima de 25-30 cm para máxima velocidad de captura.",
+        "4. Realizar todas las manipulaciones de ácidos y reactivos al menos 15 cm dentro del plano de la guillotina.",
+        "5. Al terminar, limpiar inmediatamente cualquier salpicadura en la base y dejar el extractor encendido 5 minutos adicionales."
+      ],
+      "epp_requerido": [
+        "Mandil antifluidos y gafas de protección química herméticas",
+        "Guantes de nitrilo o butilo para ácidos concentrados",
+        "Mascarilla con filtros VO/GA (Vapores Orgánicos / Gases Ácidos) para emergencias"
+      ],
+      "riesgos_asociados": [
+        "Inhalación de gases letales de óxidos de azufre o amoníaco si el extractor se apaga",
+        "Incendio o explosión por evaporación de solventes inflamables (éter, hexano) cerca de fuentes de calor",
+        "Corrosión de componentes mecánicos por acumulación de condensados ácidos"
+      ],
+      "normas_seguridad": [
+        "Nunca meter la cabeza dentro de la campana mientras se producen vapores tóxicos.",
+        "No utilizar la campana como almacén permanente de botellas de reactivos.",
+        "Mantener la guillotina lo más baja posible mientras se desarrolla la digestión."
+      ],
+      "fuentes_referencias": [
+        "Labconco Protector Premier Laboratory Fume Hoods User Guide",
+        "NFPA 45: Standard on Fire Protection for Laboratories Using Chemicals",
+        "Manual de Bioseguridad y Gestión de Residuos Químicos - UTEQ"
+      ]
+    },
+    {
+      "id": "cabina_flujo_laminar_uvp",
+      "clase_yolo": "cabina_flujo_laminar_uvp",
+      "nombre_comun": "Cabina de Flujo Laminar UVP",
+      "nombre_oficial": "Cabina de Flujo Laminar y Estación de Trabajo UV PCR",
+      "fabricante": "Analytik Jena US LLC (UVP)",
+      "modelo": "UV PCR Workstation",
+      "ubicacion": "Área de inoculación microbiológica y análisis aséptico",
+      "funcion_principal": "Generación de un ambiente aséptico estéril clase 100 mediante flujo de aire filtrado HEPA y lámparas de luz ultravioleta germicida de onda corta (254 nm) para preparación de medios y análisis microbiológico de alimentos.",
+      "principio_funcionamiento": "El sistema succiona aire del laboratorio, lo pasa por un filtro HEPA con eficiencia del 99.99% a 0.3 µm en flujo horizontal y lo expulsa hacia el frente, impidiendo el ingreso de esporas o bacterias a la zona de trabajo.",
+      "componentes_principales": [
+        "Lámpara germicida UV de 254 nm con temporizador digital automático",
+        "Lámpara de luz blanca para iluminación de trabajo",
+        "Filtro HEPA de alta retención de partículas",
+        "Panel frontal de acrílico con protección de bloqueo UV y sensor de apertura",
+        "Superficie de trabajo en acero inoxidable 304 desinfectable"
+      ],
+      "guias_practica_uteq": [
+        "Práctica N° 10: Control Microbiológico de Alimentos: Recuento de Mohos, Levaduras y Coliformes (NTE INEN 1529)",
+        "Práctica N° 13: Preparación Aséptica de Medios de Cultivo y Siembra de Microorganismos"
+      ],
+      "procedimiento_operativo_estandar": [
+        "1. Desinfectar la superficie de acero con alcohol al 70%.",
+        "2. Cerrar completamente el panel acrílico frontal y encender la luz UV durante 20 a 30 minutos para esterilización.",
+        "3. Apagar la luz UV y encender el ventilador de flujo laminar HEPA y la luz blanca 5 minutos antes de abrir.",
+        "4. Levantar el panel acrílico a la altura de trabajo e introducir los materiales estériles.",
+        "5. Trabajar en el tercio central de la mesa sin bloquear las ranuras de ventilación traseras.",
+        "6. Al finalizar, retirar todos los materiales y desinfectar nuevamente la mesa con alcohol al 70%."
+      ],
+      "epp_requerido": [
+        "Mandil de laboratorio limpio y estéril",
+        "Gafas de policarbonato con protección anti-UV",
+        "Guantes de nitrilo desinfectados con alcohol al 70%",
+        "Mascarilla quirúrgica o cofia"
+      ],
+      "riesgos_asociados": [
+        "Daño ocular grave (fotoqueratitis) y eritema cutáneo por exposición directa a radiación UV de 254 nm",
+        "Contaminación biológica de muestras por turbulencia o mala técnica aséptica"
+      ],
+      "normas_seguridad": [
+        "NUNCA encender la lámpara UV con personas frente a la cabina con la puerta abierta.",
+        "El microswitch de seguridad debe apagar la luz UV automáticamente si la puerta se abre.",
+        "No almacenar reactivos químicos inflamables dentro de la cabina."
+      ],
+      "fuentes_referencias": [
+        "Analytik Jena UVP UV PCR Workstation User Manual",
+        "NTE INEN 1529-1: Control microbiológico de los alimentos. Preparación de muestras"
+      ]
+    },
+    {
+      "id": "sistema_tratamiento_agua",
+      "clase_yolo": "sistema_tratamiento_agua",
+      "nombre_comun": "Sistema de Tratamiento de Agua",
+      "nombre_oficial": "Batería de Desionización y Purificación de Agua Analítica",
+      "fabricante": "Especialidades de Tratamiento de Agua / UTEQ",
+      "modelo": "Batería de Columnas Desionizadoras Dobles con Prefiltro",
+      "ubicacion": "Zona de purificación de fluidos analíticos",
+      "funcion_principal": "Producción de agua desmineralizada de Grado Reactivo Tipo II (baja conductividad < 5 µS/cm) para preparación de soluciones, lavado final de cristalería y alimentación de autoclaves.",
+      "principio_funcionamiento": "El agua de red pasa por un filtro de sedimentos de 5 µm, luego por una columna de carbón activo y finalmente a través de dos columnas de lecho mixto de resinas de intercambio iónico (catiónicas ácidas y aniónicas básicas) reteniendo sales minerales disueltas.",
+      "componentes_principales": [
+        "Dos columnas presurizadas de fibra de vidrio con resina de intercambio iónico",
+        "Carcasa transparente con cartucho de filtro de sedimentos de polipropileno",
+        "Red de válvulas selectoras de paso, retrolavado y purga",
+        "Tanque pulmón acumulador de acero inoxidable",
+        "Conductímetro en línea de control de pureza"
+      ],
+      "guias_practica_uteq": [
+        "Práctica N° 01: Aseguramiento de la Calidad del Agua Reactivo en Análisis Bromatológicos (ASTM D1193)",
+        "Mantenimiento General del Laboratorio de Bromatología"
+      ],
+      "procedimiento_operativo_estandar": [
+        "1. Abrir la válvula principal de alimentación de agua de red.",
+        "2. Comprobar que la presión no exceda 40 psi en los manómetros de entrada.",
+        "3. Purgar los primeros 2 litros abriendo la válvula de descarte hasta que el agua salga clara.",
+        "4. Colectar el agua desionizada directamente en bidones PEAD limpios y cerrados.",
+        "5. Monitorear la conductividad periódicamente con conductímetro portátil."
+      ],
+      "epp_requerido": [
+        "Mandil de laboratorio",
+        "Gafas de seguridad contra salpicaduras",
+        "Calzado antideslizante con suela de goma impermeable"
+      ],
+      "riesgos_asociados": [
+        "Fugas de agua a alta presión que pueden inundar el piso del laboratorio generando riesgo de resbalamiento y electrocución",
+        "Crecimiento bacteriano si el agua se almacena por más de 7 días sin recircular"
+      ],
+      "normas_seguridad": [
+        "Cerrar la llave de paso general al terminar la jornada laboral.",
+        "Reportar de inmediato cualquier fuga en las uniones de PVC o mangueras de presión."
+      ],
+      "fuentes_referencias": [
+        "ASTM D1193: Standard Specification for Reagent Water",
+        "Guía de Mantenimiento de Equipos de Purificación - UTEQ"
+      ]
+    },
+    {
+      "id": "destilador_agua",
+      "clase_yolo": "destilador_agua",
+      "nombre_comun": "Destilador de Agua Metálico",
+      "nombre_oficial": "Destilador Continuo de Agua en Acero Inoxidable",
+      "fabricante": "Instrumentación Científica / Genérico Industrial",
+      "modelo": "Destilador Mural 10 L/h",
+      "ubicacion": "Pared este del laboratorio de Bromatología",
+      "funcion_principal": "Generación continua de agua destilada de alta pureza química y microbiológica mediante evaporación y condensación térmica, libre de sales, pirógenos y metales pesados.",
+      "principio_funcionamiento": "Resistencias eléctricas sumergibles de alta potencia llevan el agua a ebullición continua a 100°C; el vapor generado asciende y condensa en un serpentín refrigerado por agua de contracorriente.",
+      "componentes_principales": [
+        "Caldera de ebullición en acero inoxidable AISI 304",
+        "Condensador superior refrigerado por serpentín",
+        "Resistencias blindadas de inmersión de 4.5 kW",
+        "Dispositivo de nivel constante y rebosadero de purga",
+        "Manguera de drenaje y salida de agua destilada fría"
+      ],
+      "guias_practica_uteq": [
+        "Abastecimiento de Agua Destilada para todos los ensayos analíticos de Bromatología y Nutrición Animal"
+      ],
+      "procedimiento_operativo_estandar": [
+        "1. Abrir la válvula de agua de alimentación y verificar que la caldera se llene hasta el nivel del rebose.",
+        "2. Comprobar que el agua fluya constantemente por la salida de refrigeración hacia el desagüe.",
+        "3. Conectar el interruptor de energía eléctrica para activar las resistencias.",
+        "4. Tras 15 minutos comenzará a salir el agua destilada; recolectar en el recipiente colector.",
+        "5. Para apagar: desconectar primero la energía eléctrica y dejar correr el agua de refrigeración 10 minutos más para enfriar la resistencia."
+      ],
+      "epp_requerido": [
+        "Mandil de laboratorio",
+        "Gafas de seguridad",
+        "Guantes térmicos de protección"
+      ],
+      "riesgos_asociados": [
+        "Quemaduras severas por vapor y agua hirviendo si la caldera se abre en operación",
+        "Quemado de resistencias eléctricas por falta de suministro de agua (ebullición en seco)",
+        "Riesgo eléctrico por salpicaduras hacia las conexiones trifásicas"
+      ],
+      "normas_seguridad": [
+        "NUNCA encender el equipo sin verificar primero que la caldera tenga agua fluyendo.",
+        "No tocar el cuerpo metálico del destilador mientras esté en marcha (alcanza 100°C).",
+        "Realizar desincrustación periódica de sales calcáreas con ácido cítrico o vinagre."
+      ],
+      "fuentes_referencias": [
+        "Manual de Operación de Destiladores de Agua de Acero Inoxidable",
+        "Normas Generales de Seguridad en Laboratorios Químicos - UTEQ"
+      ]
+    },
+    {
+      "id": "bomba_vacio_recirculacion",
+      "clase_yolo": "bomba_vacio_recirculacion",
+      "nombre_comun": "Bomba de Vacío por Recirculación",
+      "nombre_oficial": "Bomba de Vacío por Recirculación de Agua Selecta",
+      "fabricante": "J.P. SELECTA S.A.",
+      "modelo": "Bomba de Vacío Cat. 4001611",
+      "ubicacion": "Mesa auxiliar junto al DOSI-FIBER y rotavapores",
+      "funcion_principal": "Generación de vacío constante y silencioso (hasta 20 mbar) para filtraciones al vacío, secado en desecadores y absorción de vapores ácidos sin contaminar el aire.",
+      "principio_funcionamiento": "Una bomba sumergible impulsa agua a alta velocidad a través de dos trompas de vacío tipo Venturi, creando una fuerte succión por arrastre hidrodinámico en las boquillas de aspiración.",
+      "componentes_principales": [
+        "Tanque de recirculación de agua en polipropileno anticorrosivo",
+        "Bomba centrífuga sumergida de alta durabilidad",
+        "Dos tomas de vacío independientes con válvulas antirretorno",
+        "Manómetro central de indicación de presión negativa",
+        "Grifo de vaciado y renovación de agua del depósito"
+      ],
+      "guias_practica_uteq": [
+        "Práctica N° 04: Filtración al Vacío en Determinación de Fibra Cruda y FND/FAD",
+        "Práctica N° 14: Evaporación y Concentración de Extractos Bromatológicos"
+      ],
+      "procedimiento_operativo_estandar": [
+        "1. Llenar el tanque con agua limpia y fría hasta la marca máxima de nivel.",
+        "2. Conectar las mangueras de vacío desde la trampa del sistema al puerto de la bomba.",
+        "3. Encender el interruptor verde frontal.",
+        "4. Verificar en el manómetro que la aguja baje indicando el nivel de vacío requerido.",
+        "5. Al terminar la filtración, liberar primero el vacío abriendo la válvula antes de apagar el motor.",
+        "6. Cambiar el agua periódicamente si se han aspirado trazas de solventes o ácidos."
+      ],
+      "epp_requerido": [
+        "Mandil de laboratorio",
+        "Gafas de seguridad",
+        "Guantes de nitrilo"
+      ],
+      "riesgos_asociados": [
+        "Succión inversa de agua hacia la muestra si se apaga la bomba sin romper el vacío",
+        "Calentamiento del agua de recirculación tras uso prolongado (> 1 hora) reduciendo la eficiencia del vacío"
+      ],
+      "normas_seguridad": [
+        "Utilizar siempre un matraz trampa Kitasato interpuesto entre el equipo y la bomba.",
+        "Cambiar el agua si se calienta por encima de 30°C o presenta turbidez."
+      ],
+      "fuentes_referencias": [
+        "Manual de Instrucciones J.P. Selecta 4001611",
+        "Técnicas Básicas de Filtración al Vacío en el Laboratorio Químico"
+      ]
+    },
+    {
+      "id": "bomba_vacio_membrana",
+      "clase_yolo": "bomba_vacio_membrana",
+      "nombre_comun": "Bomba de Vacío de Membrana",
+      "nombre_oficial": "Bomba de Vacío y Presión de Diafragma Portátil",
+      "fabricante": "KNF Neuberger / Gast Manufacturing",
+      "modelo": "Diaphragm Vacuum Pump Dual Gauge",
+      "ubicacion": "Mesa analítica móvil",
+      "funcion_principal": "Generación de vacío en seco (libre de aceite y sin agua) y presión de aire comprimido regulada para filtración por membrana microporosa (0.45 µm) y desgasificación de fases móviles.",
+      "principio_funcionamiento": "Un pistón oscilante acciona un diafragma elastomérico de PTFE/FKM resistente a químicos que expande y comprime el volumen de la cámara de bombeo, abriendo y cerrando válvulas de lámina.",
+      "componentes_principales": [
+        "Cabezal de compresión de membrana resistente a químicos corrosivos",
+        "Doble manómetro: manómetro de vacío (inHg/bar) y manómetro de presión positiva (psi)",
+        "Válvulas reguladoras de flujo micrométricas",
+        "Asa superior ergonómica para transporte y patas antivibratorias de goma",
+        "Filtro silenciador de escape de aire"
+      ],
+      "guias_practica_uteq": [
+        "Práctica N° 09: Filtración de Muestras Clarificadas y Medios para HPLC",
+        "Práctica N° 15: Desecación Acelerada de Muestras Termosensibles al Vacío"
+      ],
+      "procedimiento_operativo_estandar": [
+        "1. Colocar la bomba sobre el mesón en superficie estable.",
+        "2. Conectar la manguera de vacío reforzada a la espiga de entrada ('Vacuum In').",
+        "3. Encender el interruptor de encendido del motor.",
+        "4. Ajustar la perilla reguladora hasta obtener el nivel de vacío deseado observado en el manómetro.",
+        "5. Finalizado el proceso, despresurizar el circuito y apagar."
+      ],
+      "epp_requerido": [
+        "Mandil de laboratorio",
+        "Gafas de seguridad",
+        "Guantes de nitrilo"
+      ],
+      "riesgos_asociados": [
+        "Implosión de matraces de filtración de vidrio con fisuras o rayaduras",
+        "Aspiración accidental de líquidos corrosivos directo a la cámara de la membrana si no se usa trampa"
+      ],
+      "normas_seguridad": [
+        "Instalar SIEMPRE una trampa para evitar que líquidos entren a la cámara de la bomba.",
+        "Inspeccionar el matraz Kitasato en busca de microfisuras antes de hacer vacío."
+      ],
+      "fuentes_referencias": [
+        "KNF Neuberger Diaphragm Vacuum Pump Technical Manual",
+        "Guía de Operación de Bombas de Vacío de Laboratorio - UTEQ"
+      ]
+    },
+    {
+      "id": "agitador_vortex",
+      "clase_yolo": "agitador_vortex",
+      "nombre_comun": "Agitador Vortex de Tubos",
+      "nombre_oficial": "Mezclador / Agitador Orbital Tipo Vortex",
+      "fabricante": "Boeco / Bioevopeak",
+      "modelo": "V-1 Plus Vortex Mixer",
+      "ubicacion": "Mesa analítica de mezclas y reactivos",
+      "funcion_principal": "Mezclado orbital ultra rápido de reactivos, resuspensión de precipitados, homogeneización de tubos de ensayo, microtubos Eppendorf y preparación de diluciones seriadas.",
+      "principio_funcionamiento": "Un eje motorizado excéntrico imparte una rotación orbital de alta velocidad (hasta 3000 rpm) a un cabezal cónico de goma, creando un vórtice turbulento dentro del tubo al presionarlo.",
+      "componentes_principales": [
+        "Cabezal cónico de copa de elastómero para tubos de ensayo",
+        "Selector de modo: Continuo ('On') / Automático por presión ('Touch')",
+        "Perilla reguladora de velocidad (0 a 3000 rpm)",
+        "Cuerpo con base pesada de fundición para absorción de vibraciones",
+        "Patas con ventosas de sujeción antivibratoria"
+      ],
+      "guias_practica_uteq": [
+        "Práctica N° 01: Homogeneización de Extractos y Reacciones Colorimétricas",
+        "Práctica N° 10: Diluciones Seriadas en Análisis Microbiológico de Alimentos"
+      ],
+      "procedimiento_operativo_estandar": [
+        "1. Seleccionar el modo de operación en 'Touch' para agitación por contacto.",
+        "2. Regular la velocidad con la perilla giratoria (ej. posición media).",
+        "3. Sujetar el tubo firmemente y presionar su base ligeramente contra la copa de goma.",
+        "4. Mantener la presión durante 5 a 10 segundos hasta observar la formación del remolino completo.",
+        "5. Retirar el tubo y apagar el equipo al finalizar la sesión."
+      ],
+      "epp_requerido": [
+        "Mandil de laboratorio",
+        "Gafas de seguridad",
+        "Guantes de nitrilo"
+      ],
+      "riesgos_asociados": [
+        "Salpicaduras o derrame de líquidos si el tubo no está tapado o se agita con exceso de fuerza",
+        "Ruptura de tubos de vidrio frágiles si se aplica presión excesiva"
+      ],
+      "normas_seguridad": [
+        "Tapar siempre los tubos herméticamente antes de agitarlos.",
+        "No llenar los tubos a más de 2/3 de su capacidad para evitar desbordes."
+      ],
+      "fuentes_referencias": [
+        "Boeco Vortex Mixer Operating Manual",
+        "Manual de Procedimientos Básicos en el Laboratorio Bromatológico"
+      ]
+    },
+    {
+      "id": "gradilla_tubos_kjeldahl",
+      "clase_yolo": "gradilla_tubos_kjeldahl",
+      "nombre_comun": "Tubos y Balones de Digestión Kjeldahl",
+      "nombre_oficial": "Gradilla con Tubos Macro Kjeldahl y Matraces Balón de Fondo Redondo",
+      "fabricante": "Cristalería Analítica / Borosilicato 3.3",
+      "modelo": "Tubos Macro Kjeldahl 250/300 mL y Balones de Destilación",
+      "ubicacion": "Mesa de enfriamiento y preparación Kjeldahl",
+      "funcion_principal": "Soporte ordenado de reactores tubulares y matraces balón utilizados en la mineralización ácida a 420°C y posterior destilación de nitrógeno proteico.",
+      "principio_funcionamiento": "Estructura de madera barnizada o acero inoxidable diseñada para sostener verticalmente cristalería de cuello largo resistente al choque térmico de digestión.",
+      "componentes_principales": [
+        "Gradilla de madera con rieles separadores",
+        "Tubos de digestión cilíndricos de borosilicato 3.3 de 250 mL y 300 mL",
+        "Matraces balón de fondo plano y esférico para digestión",
+        "Paño térmico aislante para manipulación segura de tubos calientes"
+      ],
+      "guias_practica_uteq": [
+        "Práctica N° 03: Determinación de Proteína Cruda (AOAC 984.13)",
+        "Práctica N° 06: Control de Calidad de Harinas y Forrajes"
+      ],
+      "procedimiento_operativo_estandar": [
+        "1. Inspeccionar visualmente que los tubos no presenten fisuras ni estrellas antes de usarlos.",
+        "2. Pesar la muestra e introducirla hasta el fondo del tubo con pastilla catalizadora y ácido sulfúrico concentrado.",
+        "3. Transportar los tubos en la gradilla hacia el digestor en la campana de extracción.",
+        "4. Tras la digestión, dejar enfriar los tubos en la gradilla hasta temperatura ambiente antes de acoplarlos al destilador."
+      ],
+      "epp_requerido": [
+        "Mandil antifluidos",
+        "Gafas de seguridad química herméticas",
+        "Guantes de nitrilo y guantes térmicos",
+        "Zapato cerrado de seguridad"
+      ],
+      "riesgos_asociados": [
+        "Quemaduras químicas severas por rotura de tubos con ácido sulfúrico caliente a 400°C",
+        "Cortes por cristalería astillada"
+      ],
+      "normas_seguridad": [
+        "NUNCA añadir agua fría dentro de un tubo caliente (riesgo de explosión térmica violenta).",
+        "Desechar cualquier tubo que presente microfisuras o rayones profundos."
+      ],
+      "fuentes_referencias": [
+        "AOAC Official Method 984.13: Protein (Crude) in Animal Feed",
+        "Catálogo de Cristalería Científica Borosilicato 3.3"
+      ]
+    },
+    {
+      "id": "gradilla_pipetas",
+      "clase_yolo": "gradilla_pipetas",
+      "nombre_comun": "Soporte Giratorio para Pipetas de Vidrio",
+      "nombre_oficial": "Gradilla Circular Rotatoria para Pipetas Graduadas y Volumétricas",
+      "fabricante": "Material de Laboratorio / Plástico PP",
+      "modelo": "Soporte Giratorio 94 Posiciones",
+      "ubicacion": "Mesa analítica de titulación y dosificación",
+      "funcion_principal": "Almacenamiento vertical seguro, organización por volumen y escurrido de pipetas graduadas y aforadas de vidrio.",
+      "principio_funcionamiento": "Estructura rotatoria de polipropileno con base estable y discos perforados concéntricos que sostienen las pipetas verticalmente sin que sus puntas calibradas sufran impactos.",
+      "componentes_principales": [
+        "Base circular pesada con reborde colector de goteo",
+        "Eje central vertical con discos perforados superior e intermedio",
+        "Pipetas serológicas graduadas (1 mL, 2 mL, 5 mL, 10 mL y 25 mL)",
+        "Pipetas aforadas o volumétricas de clase A"
+      ],
+      "guias_practica_uteq": [
+        "Práctica N° 01: Manejo y Calibración de Material Volumétrico en Bromatología",
+        "Práctica N° 02: Dosificación de Alícuotas en Análisis Cuantitativo"
+      ],
+      "procedimiento_operativo_estandar": [
+        "1. Seleccionar la pipeta del volumen deseado tomándola por el tercio superior.",
+        "2. Enjuagar con una pequeña porción de la solución antes de tomar la alícuota final.",
+        "3. Usar siempre propipeta o pipeteador de cremallera (nunca pipetear con la boca).",
+        "4. Al terminar el ensayo, lavar con detergente neutro y agua destilada y colocarla en el soporte con la punta hacia arriba o abajo según el secado."
+      ],
+      "epp_requerido": [
+        "Mandil de laboratorio",
+        "Gafas de seguridad",
+        "Guantes de nitrilo"
+      ],
+      "riesgos_asociados": [
+        "Cortes graves por fractura de pipetas al insertar propipetas a la fuerza",
+        "Ingestión accidental de tóxicos por pipeteo bucal (terminantemente prohibido)"
+      ],
+      "normas_seguridad": [
+        "PROHIBIDO TERMINANTEMENTE pipetear reactivos con la boca.",
+        "Verificar que las puntas de las pipetas no estén quebradas."
+      ],
+      "fuentes_referencias": [
+        "ISO 648: Laboratory glassware - Single-volume pipettes",
+        "Manual de Buenas Prácticas de Laboratorio - UTEQ"
+      ]
+    },
+    {
+      "id": "piseta_reactivo",
+      "clase_yolo": "piseta_reactivo",
+      "nombre_comun": "Piseta con Reactivo NaOH 0.1 N",
+      "nombre_oficial": "Frasco Lavador / Dosificador de Reactivo Químico",
+      "fabricante": "Plásticos de Laboratorio / LDPE",
+      "modelo": "Piseta de Seguridad 500 mL con Etiqueta NaOH 0.1N",
+      "ubicacion": "Mesones analíticos de titulación",
+      "funcion_principal": "Dosificación y dispensado controlado de solución valorada de Hidróxido de Sodio 0.1 N para titulaciones ácido-base y lavados cuantitativos de matraces.",
+      "principio_funcionamiento": "Al presionar el cuerpo flexible de polietileno de baja densidad (LDPE), el aire comprimido interno empuja el líquido a través del tubo sifón hacia la boquilla curvada fina.",
+      "componentes_principales": [
+        "Cuerpo cilíndrico flexible de LDPE de 500 mL",
+        "Tapa roscada con tubo de inmersión sifón",
+        "Boquilla de dispensado fino regulable",
+        "Etiqueta de seguridad química 'SOLUCION DE HIDROXIDO DE SODIO 0.1 N (NaOH 0.1 N)'"
+      ],
+      "guias_practica_uteq": [
+        "Práctica N° 02: Determinación de Acidez Titulable en Leches y Zumos (expresada en % ácido láctico o cítrico)",
+        "Práctica N° 03: Neutralización y Titulación de Destilados Kjeldahl"
+      ],
+      "procedimiento_operativo_estandar": [
+        "1. Verificar que el líquido corresponda a la etiqueta (NaOH 0.1 N).",
+        "2. Presionar suavemente los laterales de la botella para dirigir el chorro fino hacia las paredes del matraz.",
+        "3. Cerrar bien la tapa y mantener siempre almacenada en posición vertical."
+      ],
+      "epp_requerido": [
+        "Mandil de laboratorio",
+        "Gafas de seguridad",
+        "Guantes de nitrilo"
+      ],
+      "riesgos_asociados": [
+        "Salpicadura accidental a los ojos por presionar con demasiada fuerza",
+        "Confusión de reactivos si la etiqueta está desgastada"
+      ],
+      "normas_seguridad": [
+        "Mantener siempre las pisetas correctamente rotuladas con nombre del reactivo, concentración y fecha de preparación.",
+        "No utilizar pisetas para almacenar solventes volátiles que aumenten la presión interna."
+      ],
+      "fuentes_referencias": [
+        "Sistema Globalmente Armonizado (SGA / GHS) de Clasificación y Etiquetado de Productos Químicos",
+        "NTE INEN 2266: Transporte, almacenamiento y manejo de materiales peligrosos"
+      ]
+    },
+    {
+      "id": "cilindro_gas",
+      "clase_yolo": "cilindro_gas",
+      "nombre_comun": "Cilindro de Gas a Presión y Manómetro",
+      "nombre_oficial": "Cilindro de Oxígeno Comprimido a Alta Presión con Regulador Doble",
+      "fabricante": "AGA / Linde Gases / Infra",
+      "modelo": "Cilindro de Acero Tipo T / K (200 bar / 3000 psi)",
+      "ubicacion": "Pared lateral junto a la bomba calorimétrica Parr",
+      "funcion_principal": "Almacenamiento y suministro seguro de Oxígeno puro (pureza 99.5%) a alta presión para la presurización de la bomba calorimétrica en ensayos bioenergéticos.",
+      "principio_funcionamiento": "Gas comprimido a 200 bar contenido en una botella de acero forjado sin costura. Un manorreductor de dos etapas reduce la presión del cilindro a una presión de trabajo regulable (0 a 35 bar).",
+      "componentes_principales": [
+        "Cilindro de acero de alta resistencia con collarín y capuchón protector",
+        "Válvula principal de apertura de alta presión (tipo rueda)",
+        "Manorreductor doble (manómetro de presión del cilindro y manómetro de salida)",
+        "Tubo flexible de carga capilar con conector para bomba Parr",
+        "Sujeción de seguridad a pared con cadena metálica"
+      ],
+      "guias_practica_uteq": [
+        "Práctica N° 08: Determinación de Energía Bruta mediante Calorimetría de Combustión",
+        "Prácticas de Cromatografía de Gases y Espectrometría"
+      ],
+      "procedimiento_operativo_estandar": [
+        "1. Comprobar que el cilindro esté firmemente amarrado a la pared con la cadena de seguridad.",
+        "2. Verificar que la perilla del regulador esté completamente floja (cerrada) antes de abrir el cilindro.",
+        "3. Abrir la válvula del cilindro lentamente dando 1 o 2 vueltas; verificar la presión en el primer manómetro.",
+        "4. Ajustar la perilla de salida gradualmente hasta que el segundo manómetro indique 30 atm (450 psi).",
+        "5. Al terminar, cerrar la válvula del cilindro, purgar el gas de la manguera y aflojar el regulador."
+      ],
+      "epp_requerido": [
+        "Gafas de seguridad de alto impacto",
+        "Mandil de laboratorio",
+        "Guantes de protección mecánica"
+      ],
+      "riesgos_asociados": [
+        "Caída del cilindro con desprendimiento de válvula (efecto proyectil a alta velocidad)",
+        "Fuego o explosión violenta por contacto de oxígeno a alta presión con aceites, grasas o solventes orgánicos",
+        "Fugas de gas comprimido"
+      ],
+      "normas_seguridad": [
+        "El cilindro debe estar SIEMPRE encadenado a la pared o en carro porta-cilindros.",
+        "PROHIBIDO el uso de grasa, aceite o vaselina en las roscas del regulador de oxígeno.",
+        "Colocar siempre el capuchón roscado protector cuando el cilindro sea trasladado."
+      ],
+      "fuentes_referencias": [
+        "CGA Pamphlet G-4: Oxygen (Compressed Gas Association)",
+        "Reglamento de Seguridad y Manejo de Cilindros de Gas Comprimido - UTEQ"
+      ]
+    },
+    {
+      "id": "bidon_agua_destilada",
+      "clase_yolo": "bidon_agua_destilada",
+      "nombre_comun": "Bidón Dosificador de Agua Destilada",
+      "nombre_oficial": "Bidón / Galón Acumulador con Embudo de Trasvase Rápido",
+      "fabricante": "Plásticos Industriales / Baterías Ecuador",
+      "modelo": "Galón PEAD 3.8 L con Embudo Integrado",
+      "ubicacion": "Mesones analíticos de titulación y lavado",
+      "funcion_principal": "Almacenamiento temporal y suministro manual de agua destilada fresca para enjuague final de cristalería volumétrica y llenado rápido de pisetas.",
+      "principio_funcionamiento": "Contenedor de polietileno de alta densidad (HDPE) químicamente inerte con asa de transporte ergonómica y embudo plástico para vertido sin goteo.",
+      "componentes_principales": [
+        "Cuerpo rígido de HDPE blanco opaco de 1 galón (3.785 L)",
+        "Asa integrada para fácil trasvase",
+        "Embudo de polipropileno para llenado rápido sin derrames",
+        "Rotulación frontal 'Agua Destilada'"
+      ],
+      "guias_practica_uteq": [
+        "Uso general en todas las prácticas del Laboratorio de Bromatología"
+      ],
+      "procedimiento_operativo_estandar": [
+        "1. Llenar el bidón directamente desde la salida del destilador o batería desionizadora.",
+        "2. Mantener tapado para evitar que el agua absorba dióxido de carbono ambiental (CO2) que altere el pH.",
+        "3. Trasvasar a las pisetas usando el embudo limpio.",
+        "4. Renovar el agua del bidón cada 48 a 72 horas."
+      ],
+      "epp_requerido": [
+        "Mandil de laboratorio",
+        "Gafas de seguridad"
+      ],
+      "riesgos_asociados": [
+        "Derrame accidental en el piso generando superficie resbaladiza",
+        "Contaminación biológica por dejar el embudo expuesto al polvo del ambiente"
+      ],
+      "normas_seguridad": [
+        "Mantener siempre el bidón tapado cuando no esté en uso.",
+        "No utilizar este envase para almacenar reactivos tóxicos o solventes."
+      ],
+      "fuentes_referencias": [
+        "Manual de Buenas Prácticas de Laboratorio y Manejo de Cristalería - UTEQ"
+      ]
+    }
+  ]
+}

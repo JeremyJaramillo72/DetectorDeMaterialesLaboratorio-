@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Asistente Bromatología UTEQ</string>
+    <string name="camera_permission_required">Se requiere permiso de cámara para la detección en tiempo real de los equipos.</string>
+    <string name="detecting_equipments">Escaneando laboratorio…</string>
+    <string name="technical_sheet">Ficha Técnica y Bioseguridad</string>
+    <string name="consult_rag">Consultar Asistente RAG</string>
+    <string name="function_title">Función en Bromatología</string>
+    <string name="ppe_title">EPP Obligatorio</string>
+    <string name="practices_title">Guías de Práctica UTEQ</string>
+    <string name="risks_title">Riesgos y Bioseguridad</string>
+    <string name="sources_title">Fuentes y Normas Oficiales</string>
+    <string name="chat_hint">Pregunta sobre procedimiento, EPP, riesgos o normas…</string>
+</resources>

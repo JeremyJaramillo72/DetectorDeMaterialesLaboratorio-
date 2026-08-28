@@ -1,0 +1,15 @@
+*.iml
+.gradle
+/local.properties
+/.idea
+.DS_Store
+/build
+app/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+*.zip
+Laboratorio de Bromatología -1-001/
+.kotlin/
+scratch/

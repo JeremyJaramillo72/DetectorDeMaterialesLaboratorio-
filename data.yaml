@@ -1,0 +1,29 @@
+# Configuración de Dataset para YOLOv8 / YOLOv11 - Laboratorio de Bromatología UTEQ
+path: ./dataset
+train: images/train
+val: images/val
+test: images/test
+
+# 20 Clases Detectables de Equipos y Materiales de Bromatología
+nc: 20
+names:
+  0: destilador_kjeldahl
+  1: analizador_fibra
+  2: placa_calefactora_heidolph
+  3: phmetro_ohaus
+  4: molino_ciclonico_foss
+  5: estufa_secado_memmert
+  6: refractometro_atago
+  7: calorimetro_bomba
+  8: campana_extraccion_gases
+  9: cabina_flujo_laminar_uvp
+  10: sistema_tratamiento_agua
+  11: destilador_agua
+  12: bomba_vacio_recirculacion
+  13: bomba_vacio_membrana
+  14: agitador_vortex
+  15: gradilla_tubos_kjeldahl
+  16: gradilla_pipetas
+  17: piseta_reactivo
+  18: cilindro_gas
+  19: bidon_agua_destilada

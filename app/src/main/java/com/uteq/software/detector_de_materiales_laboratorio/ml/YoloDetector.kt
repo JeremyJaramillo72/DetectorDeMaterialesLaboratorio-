@@ -1,0 +1,258 @@
+package com.uteq.software.detector_de_materiales_laboratorio.ml
+
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.RectF
+import com.uteq.software.detector_de_materiales_laboratorio.model.DetectionResult
+import org.tensorflow.lite.Interpreter
+import java.io.FileInputStream
+import java.io.InputStreamReader
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
+import java.nio.channels.FileChannel
+import java.util.PriorityQueue
+import kotlin.math.max
+import kotlin.math.min
+
+class YoloDetector(
+    private val context: Context,
+    private val modelFileName: String = "yolo11_bromatologia.tflite",
+    private val fallbackModelName: String = "yolov8_bromatologia.tflite",
+    private val labelFileName: String = "labels.txt",
+    private val confidenceThreshold: Float = 0.40f,
+    private val iouThreshold: Float = 0.45f
+) {
+
+    private var interpreter: Interpreter? = null
+    private val labels = ArrayList<String>()
+    private val numClasses: Int
+        get() = if (labels.isNotEmpty()) labels.size else 20
+
+    val inputSize = 640
+
+    init {
+        loadLabels()
+        initInterpreter()
+    }
+
+    private fun loadLabels() {
+        try {
+            context.assets.open(labelFileName).use { inputStream ->
+                val reader = InputStreamReader(inputStream)
+                reader.readLines().forEach { line ->
+                    val cleanLine = line.trim()
+                    if (cleanLine.isNotEmpty()) {
+                        labels.add(cleanLine)
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            // Fallback con las 20 clases detectables
+            labels.addAll(
+                listOf(
+                    "destilador_kjeldahl", "analizador_fibra", "placa_calefactora_heidolph",
+                    "phmetro_ohaus", "molino_ciclonico_foss", "estufa_secado_memmert",
+                    "refractometro_atago", "calorimetro_bomba", "campana_extraccion_gases",
+                    "cabina_flujo_laminar_uvp", "sistema_tratamiento_agua", "destilador_agua",
+                    "bomba_vacio_recirculacion", "bomba_vacio_membrana", "agitador_vortex",
+                    "gradilla_tubos_kjeldahl", "gradilla_pipetas", "piseta_reactivo",
+                    "cilindro_gas", "bidon_agua_destilada"
+                )
+            )
+        }
+    }
+
+    private fun initInterpreter() {
+        val candidates = listOf(modelFileName, fallbackModelName)
+        for (candidate in candidates) {
+            try {
+                val assetFileDescriptor = context.assets.openFd(candidate)
+                val fileInputStream = FileInputStream(assetFileDescriptor.fileDescriptor)
+                val fileChannel = fileInputStream.channel
+                val startOffset = assetFileDescriptor.startOffset
+                val declaredLength = assetFileDescriptor.declaredLength
+                val modelBuffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength)
+
+                val options = Interpreter.Options().apply {
+                    setNumThreads(4)
+                }
+                interpreter = Interpreter(modelBuffer, options)
+                println("✅ Modelo cargado exitosamente: $candidate")
+                return
+            } catch (e: Exception) {
+                // Intenta con el siguiente candidato
+            }
+        }
+        println("⚠️ Modelo no encontrado en assets. Se utilizará modo demostración interactiva.")
+        interpreter = null
+    }
+
+    fun isModelLoaded(): Boolean = interpreter != null
+
+    fun detect(bitmap: Bitmap): List<DetectionResult> {
+        val interp = interpreter ?: return generateDemoDetections(bitmap.width, bitmap.height)
+
+        val resizedBitmap = Bitmap.createScaledBitmap(bitmap, inputSize, inputSize, true)
+        val inputBuffer = ByteBuffer.allocateDirect(1 * inputSize * inputSize * 3 * 4)
+        inputBuffer.order(ByteOrder.nativeOrder())
+
+        val intValues = IntArray(inputSize * inputSize)
+        resizedBitmap.getPixels(intValues, 0, inputSize, 0, 0, inputSize, inputSize)
+
+        for (pixel in intValues) {
+            val r = ((pixel shr 16) and 0xFF) / 255.0f
+            val g = ((pixel shr 8) and 0xFF) / 255.0f
+            val b = (pixel and 0xFF) / 255.0f
+            inputBuffer.putFloat(r)
+            inputBuffer.putFloat(g)
+            inputBuffer.putFloat(b)
+        }
+
+        // Output shape para YOLOv8: [1, 4 + numClasses, 8400]
+        val outputRows = 4 + numClasses
+        val outputCols = 8400
+        val outputArray = Array(1) { Array(outputRows) { FloatArray(outputCols) } }
+
+        try {
+            interp.run(inputBuffer, outputArray)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return emptyList()
+        }
+
+        val rawDetections = ArrayList<DetectionResult>()
+        val output = outputArray[0]
+
+        val imgWidth = bitmap.width.toFloat()
+        val imgHeight = bitmap.height.toFloat()
+
+        for (col in 0 until outputCols) {
+            var maxConfidence = 0.0f
+            var classIdx = -1
+
+            for (c in 0 until numClasses) {
+                val conf = output[4 + c][col]
+                if (conf > maxConfidence) {
+                    maxConfidence = conf
+                    classIdx = c
+                }
+            }
+
+            if (maxConfidence >= confidenceThreshold && classIdx in 0 until labels.size) {
+                val cx = output[0][col] * imgWidth / inputSize
+                val cy = output[1][col] * imgHeight / inputSize
+                val w = output[2][col] * imgWidth / inputSize
+                val h = output[3][col] * imgHeight / inputSize
+
+                val left = max(0.0f, cx - w / 2.0f)
+                val top = max(0.0f, cy - h / 2.0f)
+                val right = min(imgWidth, cx + w / 2.0f)
+                val bottom = min(imgHeight, cy + h / 2.0f)
+
+                val label = labels[classIdx]
+                val displayName = formatDisplayName(label)
+
+                rawDetections.add(
+                    DetectionResult(
+                        boundingBox = RectF(left, top, right, bottom),
+                        label = label,
+                        displayName = displayName,
+                        confidence = maxConfidence,
+                        classIndex = classIdx
+                    )
+                )
+            }
+        }
+
+        return applyNMS(rawDetections)
+    }
+
+    private fun applyNMS(detections: List<DetectionResult>): List<DetectionResult> {
+        val result = ArrayList<DetectionResult>()
+        val groupedByClass = detections.groupBy { it.classIndex }
+
+        for ((_, classDetections) in groupedByClass) {
+            val pq = PriorityQueue<DetectionResult>(classDetections.size) { a, b ->
+                b.confidence.compareTo(a.confidence)
+            }
+            pq.addAll(classDetections)
+
+            while (pq.isNotEmpty()) {
+                val best = pq.poll() ?: break
+                result.add(best)
+
+                val it = pq.iterator()
+                while (it.hasNext()) {
+                    val next = it.next()
+                    if (calculateIoU(best.boundingBox, next.boundingBox) >= iouThreshold) {
+                        it.remove()
+                    }
+                }
+            }
+        }
+        return result
+    }
+
+    private fun calculateIoU(a: RectF, b: RectF): Float {
+        val intersectionLeft = max(a.left, b.left)
+        val intersectionTop = max(a.top, b.top)
+        val intersectionRight = min(a.right, b.right)
+        val intersectionBottom = min(a.bottom, b.bottom)
+
+        val intersectionArea = max(0f, intersectionRight - intersectionLeft) *
+                max(0f, intersectionBottom - intersectionTop)
+
+        val areaA = (a.right - a.left) * (a.bottom - a.top)
+        val areaB = (b.right - b.left) * (b.bottom - b.top)
+        val unionArea = areaA + areaB - intersectionArea
+
+        return if (unionArea > 0) intersectionArea / unionArea else 0f
+    }
+
+    private fun formatDisplayName(rawLabel: String): String {
+        return when (rawLabel) {
+            "destilador_kjeldahl" -> "Unidad Kjeldahl Selecta"
+            "analizador_fibra" -> "Analizador de Fibra Dosi-Fiber"
+            "placa_calefactora_heidolph" -> "Placa Agitadora Heidolph"
+            "phmetro_ohaus" -> "pH-metro OHAUS Starter 3100"
+            "molino_ciclonico_foss" -> "Molino Ciclónico FOSS 1093"
+            "estufa_secado_memmert" -> "Estufa de Secado Memmert"
+            "refractometro_atago" -> "Refractómetro Digital ATAGO"
+            "calorimetro_bomba" -> "Bomba Calorimétrica Parr"
+            "campana_extraccion_gases" -> "Campana de Gases Labconco"
+            "cabina_flujo_laminar_uvp" -> "Cabina Flujo Laminar UVP"
+            "sistema_tratamiento_agua" -> "Sistema Tratamiento de Agua"
+            "destilador_agua" -> "Destilador de Agua Metálico"
+            "bomba_vacio_recirculacion" -> "Bomba Vacío Recirculación"
+            "bomba_vacio_membrana" -> "Bomba Vacío de Membrana"
+            "agitador_vortex" -> "Agitador de Tubos Vortex"
+            "gradilla_tubos_kjeldahl" -> "Tubos Digestión Kjeldahl"
+            "gradilla_pipetas" -> "Soporte Giratorio Pipetas"
+            "piseta_reactivo" -> "Piseta Reactivo NaOH 0.1N"
+            "cilindro_gas" -> "Cilindro de Gas y Manómetro"
+            "bidon_agua_destilada" -> "Bidón de Agua Destilada"
+            else -> rawLabel.replace("_", " ").replaceFirstChar { it.uppercase() }
+        }
+    }
+
+    private fun generateDemoDetections(width: Int, height: Int): List<DetectionResult> {
+        val w = width.toFloat()
+        val h = height.toFloat()
+        val box = RectF(w * 0.15f, h * 0.20f, w * 0.85f, h * 0.75f)
+        return listOf(
+            DetectionResult(
+                boundingBox = box,
+                label = "destilador_kjeldahl",
+                displayName = "Unidad Kjeldahl Selecta",
+                confidence = 0.954f,
+                classIndex = 0
+            )
+        )
+    }
+
+    fun close() {
+        interpreter?.close()
+        interpreter = null
+    }
+}
