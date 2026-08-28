@@ -85,6 +85,17 @@ class OverlayView @JvmOverloads constructor(
         results = detectionResults
         imageWidth = imgWidth
         imageHeight = imgHeight
+        invalidate()
+    }
+
+    fun clear() {
+        results = emptyList()
+        selectedDetection = null
+        invalidate()
+    }
+
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
 
         val viewWidth = width.toFloat()
         val viewHeight = height.toFloat()
@@ -97,18 +108,6 @@ class OverlayView @JvmOverloads constructor(
             postScaleWidthOffset = (viewWidth - (imageWidth * scaleFactor)) / 2.0f
             postScaleHeightOffset = (viewHeight - (imageHeight * scaleFactor)) / 2.0f
         }
-
-        invalidate()
-    }
-
-    fun clear() {
-        results = emptyList()
-        selectedDetection = null
-        invalidate()
-    }
-
-    override fun onDraw(canvas: Canvas) {
-        super.onDraw(canvas)
 
         for (detection in results) {
             val rawBox = detection.boundingBox
@@ -149,22 +148,26 @@ class OverlayView @JvmOverloads constructor(
             val tagHeight = 70f
             val padding = 20f
 
-            val tagLeft = mappedBox.left
-            val tagTop = max(0f, mappedBox.top - tagHeight - 10f)
-            val tagRight = tagLeft + textWidth + confWidth + (padding * 3)
+            val tagTop = max(10f, mappedBox.top - tagHeight - 12f)
             val tagBottom = tagTop + tagHeight
+            val tagLeft = mappedBox.left
+            val tagRight = tagLeft + textWidth + confWidth + (padding * 3)
 
             val tagRect = RectF(tagLeft, tagTop, tagRight, tagBottom)
             canvas.drawRoundRect(tagRect, 12f, 12f, textBackgroundPaint)
 
-            // Texto de Nombre
-            canvas.drawText(labelText, tagLeft + padding, tagBottom - 22f, textPaint)
+            val textY = tagTop + (tagHeight / 2f) - ((textPaint.descent() + textPaint.ascent()) / 2f)
+            canvas.drawText(labelText, tagLeft + padding, textY, textPaint)
 
             // Badge de Confianza
             val badgeLeft = tagLeft + textWidth + (padding * 1.5f)
-            val badgeRect = RectF(badgeLeft, tagTop + 10f, tagRight - 10f, tagBottom - 10f)
+            val badgeRight = tagRight - padding / 2f
+            val badgeRect = RectF(badgeLeft, tagTop + 10f, badgeRight, tagBottom - 10f)
             canvas.drawRoundRect(badgeRect, 8f, 8f, confidenceBadgePaint)
-            canvas.drawText(confidenceText, badgeLeft + 12f, tagBottom - 24f, confidenceTextPaint)
+
+            val confY = badgeRect.centerY() - ((confidenceTextPaint.descent() + confidenceTextPaint.ascent()) / 2f)
+            val confX = badgeRect.left + (badgeRect.width() - confWidth) / 2f
+            canvas.drawText(confidenceText, confX, confY, confidenceTextPaint)
         }
     }
 

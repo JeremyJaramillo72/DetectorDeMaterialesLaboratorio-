@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -25,6 +26,7 @@ import java.util.concurrent.Executors
 
 class MainActivity : AppCompatActivity() {
 
+    private val TAG = "MainActivity"
     private lateinit var binding: ActivityMainBinding
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var yoloDetector: YoloDetector
@@ -32,16 +34,22 @@ class MainActivity : AppCompatActivity() {
 
     private var latestDetections: List<DetectionResult> = emptyList()
 
-    private val cameraPermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-            if (isGranted) {
-                startCamera()
-            } else {
+    private val activityResultLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            var permissionGranted = true
+            permissions.entries.forEach {
+                if (it.key in REQUIRED_PERMISSIONS && !it.value) {
+                    permissionGranted = false
+                }
+            }
+            if (!permissionGranted) {
                 Toast.makeText(
                     this,
-                    R.string.camera_permission_required,
+                    "Permiso de cámara requerido para escanear equipos del laboratorio.",
                     Toast.LENGTH_LONG
                 ).show()
+            } else {
+                startCamera()
             }
         }
 
@@ -54,46 +62,38 @@ class MainActivity : AppCompatActivity() {
         yoloDetector = YoloDetector(this)
         kbRepository = KnowledgeBaseRepository.getInstance(this)
 
-        setupListeners()
+        setupUI()
 
         if (allPermissionsGranted()) {
             startCamera()
         } else {
-            cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+            requestPermissions()
         }
     }
 
-    private fun setupListeners() {
+    private fun setupUI() {
         binding.overlayView.onDetectionSelectedListener = { detection ->
             showEquipmentDetails(detection.label)
         }
 
-        binding.btnQuickDetails.setOnClickListener {
-            val firstDetection = latestDetections.firstOrNull()
-            if (firstDetection != null) {
-                showEquipmentDetails(firstDetection.label)
-            } else {
-                // Si no hay equipo en foco, mostrar el primero del catálogo
-                val firstEquipment = kbRepository.getAllEquipments().firstOrNull()
-                if (firstEquipment != null) {
-                    val dialog = EquipmentBottomSheetDialog.newInstance(firstEquipment)
-                    dialog.show(supportFragmentManager, "EquipmentDetail")
-                } else {
-                    Toast.makeText(this, "Apunta la cámara a un equipo del laboratorio", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-
         binding.btnOpenChat.setOnClickListener {
-            val firstDetection = latestDetections.firstOrNull()
+            val topDetection = latestDetections.maxByOrNull { it.confidence }
             val intent = Intent(this, ChatActivity::class.java).apply {
-                if (firstDetection != null) {
-                    val eq = kbRepository.getEquipmentByClass(firstDetection.label)
-                    putExtra(ChatActivity.EXTRA_EQUIPMENT_ID, eq?.id ?: firstDetection.label)
-                    putExtra(ChatActivity.EXTRA_EQUIPMENT_NAME, firstDetection.displayName)
+                if (topDetection != null) {
+                    putExtra("EQUIPMENT_ID", topDetection.label)
+                    putExtra("EQUIPMENT_NAME", topDetection.displayName)
                 }
             }
             startActivity(intent)
+        }
+
+        binding.btnQuickDetails.setOnClickListener {
+            val topDetection = latestDetections.maxByOrNull { it.confidence }
+            if (topDetection != null) {
+                showEquipmentDetails(topDetection.label)
+            } else {
+                Toast.makeText(this, "Apunta la cámara a un equipo para ver su ficha técnica.", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -111,6 +111,10 @@ class MainActivity : AppCompatActivity() {
         baseContext, Manifest.permission.CAMERA
     ) == PackageManager.PERMISSION_GRANTED
 
+    private fun requestPermissions() {
+        activityResultLauncher.launch(REQUIRED_PERMISSIONS)
+    }
+
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
 
@@ -125,7 +129,6 @@ class MainActivity : AppCompatActivity() {
 
             val imageAnalyzer = ImageAnalysis.Builder()
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
                 .build()
                 .also {
                     it.setAnalyzer(cameraExecutor) { imageProxy ->
@@ -141,30 +144,34 @@ class MainActivity : AppCompatActivity() {
                     this, cameraSelector, preview, imageAnalyzer
                 )
             } catch (exc: Exception) {
-                exc.printStackTrace()
+                Log.e(TAG, "Fallo al vincular la cámara con el ciclo de vida", exc)
             }
 
         }, ContextCompat.getMainExecutor(this))
     }
 
     private fun processImageProxy(imageProxy: ImageProxy) {
-        val bitmap = imageProxyToBitmap(imageProxy)
-        imageProxy.close()
+        try {
+            val bitmap = imageProxyToBitmap(imageProxy)
+            if (bitmap != null) {
+                val detections = yoloDetector.detect(bitmap)
+                latestDetections = detections
 
-        if (bitmap != null) {
-            val detections = yoloDetector.detect(bitmap)
-            latestDetections = detections
-
-            runOnUiThread {
-                binding.overlayView.setResults(detections, bitmap.width, bitmap.height)
-                updateHUD(detections)
+                runOnUiThread {
+                    binding.overlayView.setResults(detections, bitmap.width, bitmap.height)
+                    updateHUD(detections)
+                }
             }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error en processImageProxy: ${e.message}", e)
+        } finally {
+            imageProxy.close()
         }
     }
 
     private fun updateHUD(detections: List<DetectionResult>) {
         if (detections.isEmpty()) {
-            binding.tvStatus.text = "Escaneando laboratorio en tiempo real…"
+            binding.tvStatus.text = "Apunta la cámara a un equipo o toca el recuadro para ver detalles"
         } else {
             val names = detections.joinToString(", ") { "${it.displayName} (${(it.confidence * 100).toInt()}%)" }
             binding.tvStatus.text = "🎯 Detectado: $names"
@@ -172,14 +179,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun imageProxyToBitmap(imageProxy: ImageProxy): Bitmap? {
-        val bitmap = imageProxy.toBitmap()
-        val rotationDegrees = imageProxy.imageInfo.rotationDegrees
+        return try {
+            val bitmap = imageProxy.toBitmap()
+            val rotationDegrees = imageProxy.imageInfo.rotationDegrees
 
-        return if (rotationDegrees != 0) {
-            val matrix = Matrix().apply { postRotate(rotationDegrees.toFloat()) }
-            Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-        } else {
-            bitmap
+            if (rotationDegrees != 0) {
+                val matrix = Matrix().apply { postRotate(rotationDegrees.toFloat()) }
+                Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+            } else {
+                bitmap
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error convirtiendo ImageProxy a Bitmap: ${e.message}", e)
+            null
         }
     }
 
@@ -187,5 +199,9 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
         cameraExecutor.shutdown()
         yoloDetector.close()
+    }
+
+    companion object {
+        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
     }
 }
