@@ -20,7 +20,7 @@ class YoloDetector(
     private val modelFileName: String = "yolo11_bromatologia.tflite",
     private val fallbackModelName: String = "yolov8_bromatologia.tflite",
     private val labelFileName: String = "labels.txt",
-    private val confidenceThreshold: Float = 0.25f,
+    private val confidenceThreshold: Float = 0.20f,
     private val iouThreshold: Float = 0.45f
 ) {
 
@@ -84,7 +84,7 @@ class YoloDetector(
 
                 val inTensor = interp.getInputTensor(0)
                 val outTensor = interp.getOutputTensor(0)
-                Log.d(TAG, "✅ Modelo cargado: $candidate | Input Shape: ${inTensor.shape().contentToString()} | Output Shape: ${outTensor.shape().contentToString()}")
+                Log.d(TAG, "✅ Modelo cargado: $candidate | InShape: ${inTensor.shape().contentToString()} | OutShape: ${outTensor.shape().contentToString()}")
                 return
             } catch (e: Exception) {
                 Log.w(TAG, "No se pudo cargar $candidate: ${e.message}")
@@ -99,20 +99,35 @@ class YoloDetector(
     fun detect(bitmap: Bitmap): List<DetectionResult> {
         val interp = interpreter ?: return generateDemoDetections(bitmap.width, bitmap.height)
 
+        val inTensor = interp.getInputTensor(0)
+        val inShape = inTensor.shape()
+        val isNCHW = (inShape.size == 4 && inShape[1] == 3)
+
         val resizedBitmap = Bitmap.createScaledBitmap(bitmap, inputSize, inputSize, true)
-        val inputBuffer = ByteBuffer.allocateDirect(1 * inputSize * inputSize * 3 * 4)
+        val inputBuffer = ByteBuffer.allocateDirect(1 * 3 * inputSize * inputSize * 4)
         inputBuffer.order(ByteOrder.nativeOrder())
 
         val intValues = IntArray(inputSize * inputSize)
         resizedBitmap.getPixels(intValues, 0, inputSize, 0, 0, inputSize, inputSize)
 
-        for (pixel in intValues) {
-            val r = ((pixel shr 16) and 0xFF) / 255.0f
-            val g = ((pixel shr 8) and 0xFF) / 255.0f
-            val b = (pixel and 0xFF) / 255.0f
-            inputBuffer.putFloat(r)
-            inputBuffer.putFloat(g)
-            inputBuffer.putFloat(b)
+        if (isNCHW) {
+            // LiteRT PyTorch NCHW Format: RRR... GGG... BBB...
+            for (pixel in intValues) {
+                inputBuffer.putFloat(((pixel shr 16) and 0xFF) / 255.0f)
+            }
+            for (pixel in intValues) {
+                inputBuffer.putFloat(((pixel shr 8) and 0xFF) / 255.0f)
+            }
+            for (pixel in intValues) {
+                inputBuffer.putFloat((pixel and 0xFF) / 255.0f)
+            }
+        } else {
+            // Standard NHWC Format: RGB RGB RGB...
+            for (pixel in intValues) {
+                inputBuffer.putFloat(((pixel shr 16) and 0xFF) / 255.0f)
+                inputBuffer.putFloat(((pixel shr 8) and 0xFF) / 255.0f)
+                inputBuffer.putFloat((pixel and 0xFF) / 255.0f)
+            }
         }
 
         val outTensor = interp.getOutputTensor(0)
@@ -127,12 +142,13 @@ class YoloDetector(
             val dim2 = shape[2]
 
             if (dim1 <= dim2) {
-                // Formato transverso [1, C, 8400] donde C = 4 + numClasses
+                // Formato [1, 24, 8400]
                 val outputArray = Array(1) { Array(dim1) { FloatArray(dim2) } }
                 try {
+                    inputBuffer.rewind()
                     interp.run(inputBuffer, outputArray)
                 } catch (e: Exception) {
-                    Log.e(TAG, "Error ejecutando inferencia TFLite [1, C, N]: ${e.message}")
+                    Log.e(TAG, "Error en inferencia [1, C, N]: ${e.message}")
                     return emptyList()
                 }
 
@@ -185,12 +201,13 @@ class YoloDetector(
                     }
                 }
             } else {
-                // Formato estándar [1, 8400, C] donde dim1 = 8400, dim2 = C
+                // Formato [1, 8400, 24]
                 val outputArray = Array(1) { Array(dim1) { FloatArray(dim2) } }
                 try {
+                    inputBuffer.rewind()
                     interp.run(inputBuffer, outputArray)
                 } catch (e: Exception) {
-                    Log.e(TAG, "Error ejecutando inferencia TFLite [1, N, C]: ${e.message}")
+                    Log.e(TAG, "Error en inferencia [1, N, C]: ${e.message}")
                     return emptyList()
                 }
 
@@ -245,11 +262,7 @@ class YoloDetector(
             }
         }
 
-        val filtered = applyNMS(rawDetections)
-        if (filtered.isNotEmpty()) {
-            Log.d(TAG, "Detecciones encontradas: ${filtered.size} -> ${filtered.map { "${it.displayName}: ${(it.confidence*100).toInt()}%" }}")
-        }
-        return filtered
+        return applyNMS(rawDetections)
     }
 
     private fun applyNMS(detections: List<DetectionResult>): List<DetectionResult> {
