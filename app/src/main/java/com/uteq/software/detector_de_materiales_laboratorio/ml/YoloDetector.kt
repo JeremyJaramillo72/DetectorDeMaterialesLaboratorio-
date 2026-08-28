@@ -3,6 +3,7 @@ package com.uteq.software.detector_de_materiales_laboratorio.ml
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.RectF
+import android.util.Log
 import com.uteq.software.detector_de_materiales_laboratorio.model.DetectionResult
 import org.tensorflow.lite.Interpreter
 import java.io.FileInputStream
@@ -19,10 +20,11 @@ class YoloDetector(
     private val modelFileName: String = "yolo11_bromatologia.tflite",
     private val fallbackModelName: String = "yolov8_bromatologia.tflite",
     private val labelFileName: String = "labels.txt",
-    private val confidenceThreshold: Float = 0.40f,
+    private val confidenceThreshold: Float = 0.25f,
     private val iouThreshold: Float = 0.45f
 ) {
 
+    private val TAG = "YoloDetector"
     private var interpreter: Interpreter? = null
     private val labels = ArrayList<String>()
     private val numClasses: Int
@@ -46,9 +48,9 @@ class YoloDetector(
                     }
                 }
             }
+            Log.d(TAG, "Labels cargados (${labels.size}): $labels")
         } catch (e: Exception) {
             e.printStackTrace()
-            // Fallback con las 20 clases detectables
             labels.addAll(
                 listOf(
                     "destilador_kjeldahl", "analizador_fibra", "placa_calefactora_heidolph",
@@ -77,14 +79,18 @@ class YoloDetector(
                 val options = Interpreter.Options().apply {
                     setNumThreads(4)
                 }
-                interpreter = Interpreter(modelBuffer, options)
-                println("✅ Modelo cargado exitosamente: $candidate")
+                val interp = Interpreter(modelBuffer, options)
+                interpreter = interp
+
+                val inTensor = interp.getInputTensor(0)
+                val outTensor = interp.getOutputTensor(0)
+                Log.d(TAG, "✅ Modelo cargado: $candidate | Input Shape: ${inTensor.shape().contentToString()} | Output Shape: ${outTensor.shape().contentToString()}")
                 return
             } catch (e: Exception) {
-                // Intenta con el siguiente candidato
+                Log.w(TAG, "No se pudo cargar $candidate: ${e.message}")
             }
         }
-        println("⚠️ Modelo no encontrado en assets. Se utilizará modo demostración interactiva.")
+        Log.w(TAG, "⚠️ Ningún archivo de modelo encontrado en assets. Se utilizará modo demostración interactiva.")
         interpreter = null
     }
 
@@ -109,63 +115,141 @@ class YoloDetector(
             inputBuffer.putFloat(b)
         }
 
-        // Output shape para YOLOv8: [1, 4 + numClasses, 8400]
-        val outputRows = 4 + numClasses
-        val outputCols = 8400
-        val outputArray = Array(1) { Array(outputRows) { FloatArray(outputCols) } }
-
-        try {
-            interp.run(inputBuffer, outputArray)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return emptyList()
-        }
+        val outTensor = interp.getOutputTensor(0)
+        val shape = outTensor.shape() // Ej: [1, 24, 8400] o [1, 8400, 24]
 
         val rawDetections = ArrayList<DetectionResult>()
-        val output = outputArray[0]
-
         val imgWidth = bitmap.width.toFloat()
         val imgHeight = bitmap.height.toFloat()
 
-        for (col in 0 until outputCols) {
-            var maxConfidence = 0.0f
-            var classIdx = -1
+        if (shape.size == 3) {
+            val dim1 = shape[1]
+            val dim2 = shape[2]
 
-            for (c in 0 until numClasses) {
-                val conf = output[4 + c][col]
-                if (conf > maxConfidence) {
-                    maxConfidence = conf
-                    classIdx = c
+            if (dim1 <= dim2) {
+                // Formato transverso [1, C, 8400] donde C = 4 + numClasses
+                val outputArray = Array(1) { Array(dim1) { FloatArray(dim2) } }
+                try {
+                    interp.run(inputBuffer, outputArray)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error ejecutando inferencia TFLite [1, C, N]: ${e.message}")
+                    return emptyList()
                 }
-            }
 
-            if (maxConfidence >= confidenceThreshold && classIdx in 0 until labels.size) {
-                val cx = output[0][col] * imgWidth / inputSize
-                val cy = output[1][col] * imgHeight / inputSize
-                val w = output[2][col] * imgWidth / inputSize
-                val h = output[3][col] * imgHeight / inputSize
+                val output = outputArray[0]
+                val numAnchors = dim2
+                val numFeats = dim1
 
-                val left = max(0.0f, cx - w / 2.0f)
-                val top = max(0.0f, cy - h / 2.0f)
-                val right = min(imgWidth, cx + w / 2.0f)
-                val bottom = min(imgHeight, cy + h / 2.0f)
+                for (col in 0 until numAnchors) {
+                    var maxConfidence = 0.0f
+                    var classIdx = -1
 
-                val label = labels[classIdx]
-                val displayName = formatDisplayName(label)
+                    for (c in 0 until numClasses) {
+                        val featIdx = 4 + c
+                        if (featIdx < numFeats) {
+                            val conf = output[featIdx][col]
+                            if (conf > maxConfidence) {
+                                maxConfidence = conf
+                                classIdx = c
+                            }
+                        }
+                    }
 
-                rawDetections.add(
-                    DetectionResult(
-                        boundingBox = RectF(left, top, right, bottom),
-                        label = label,
-                        displayName = displayName,
-                        confidence = maxConfidence,
-                        classIndex = classIdx
-                    )
-                )
+                    if (maxConfidence >= confidenceThreshold && classIdx in 0 until labels.size) {
+                        val cxRaw = output[0][col]
+                        val cyRaw = output[1][col]
+                        val wRaw = output[2][col]
+                        val hRaw = output[3][col]
+
+                        val isNormalized = (cxRaw <= 1.05f && cyRaw <= 1.05f && wRaw <= 1.05f && hRaw <= 1.05f)
+                        val cx = if (isNormalized) cxRaw * imgWidth else cxRaw * imgWidth / inputSize
+                        val cy = if (isNormalized) cyRaw * imgHeight else cyRaw * imgHeight / inputSize
+                        val w = if (isNormalized) wRaw * imgWidth else wRaw * imgWidth / inputSize
+                        val h = if (isNormalized) hRaw * imgHeight else hRaw * imgHeight / inputSize
+
+                        val left = max(0.0f, cx - w / 2.0f)
+                        val top = max(0.0f, cy - h / 2.0f)
+                        val right = min(imgWidth, cx + w / 2.0f)
+                        val bottom = min(imgHeight, cy + h / 2.0f)
+
+                        val label = labels[classIdx]
+                        rawDetections.add(
+                            DetectionResult(
+                                boundingBox = RectF(left, top, right, bottom),
+                                label = label,
+                                displayName = formatDisplayName(label),
+                                confidence = maxConfidence,
+                                classIndex = classIdx
+                            )
+                        )
+                    }
+                }
+            } else {
+                // Formato estándar [1, 8400, C] donde dim1 = 8400, dim2 = C
+                val outputArray = Array(1) { Array(dim1) { FloatArray(dim2) } }
+                try {
+                    interp.run(inputBuffer, outputArray)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error ejecutando inferencia TFLite [1, N, C]: ${e.message}")
+                    return emptyList()
+                }
+
+                val output = outputArray[0]
+                val numAnchors = dim1
+                val numFeats = dim2
+
+                for (row in 0 until numAnchors) {
+                    var maxConfidence = 0.0f
+                    var classIdx = -1
+
+                    for (c in 0 until numClasses) {
+                        val featIdx = 4 + c
+                        if (featIdx < numFeats) {
+                            val conf = output[row][featIdx]
+                            if (conf > maxConfidence) {
+                                maxConfidence = conf
+                                classIdx = c
+                            }
+                        }
+                    }
+
+                    if (maxConfidence >= confidenceThreshold && classIdx in 0 until labels.size) {
+                        val cxRaw = output[row][0]
+                        val cyRaw = output[row][1]
+                        val wRaw = output[row][2]
+                        val hRaw = output[row][3]
+
+                        val isNormalized = (cxRaw <= 1.05f && cyRaw <= 1.05f && wRaw <= 1.05f && hRaw <= 1.05f)
+                        val cx = if (isNormalized) cxRaw * imgWidth else cxRaw * imgWidth / inputSize
+                        val cy = if (isNormalized) cyRaw * imgHeight else cyRaw * imgHeight / inputSize
+                        val w = if (isNormalized) wRaw * imgWidth else wRaw * imgWidth / inputSize
+                        val h = if (isNormalized) hRaw * imgHeight else hRaw * imgHeight / inputSize
+
+                        val left = max(0.0f, cx - w / 2.0f)
+                        val top = max(0.0f, cy - h / 2.0f)
+                        val right = min(imgWidth, cx + w / 2.0f)
+                        val bottom = min(imgHeight, cy + h / 2.0f)
+
+                        val label = labels[classIdx]
+                        rawDetections.add(
+                            DetectionResult(
+                                boundingBox = RectF(left, top, right, bottom),
+                                label = label,
+                                displayName = formatDisplayName(label),
+                                confidence = maxConfidence,
+                                classIndex = classIdx
+                            )
+                        )
+                    }
+                }
             }
         }
 
-        return applyNMS(rawDetections)
+        val filtered = applyNMS(rawDetections)
+        if (filtered.isNotEmpty()) {
+            Log.d(TAG, "Detecciones encontradas: ${filtered.size} -> ${filtered.map { "${it.displayName}: ${(it.confidence*100).toInt()}%" }}")
+        }
+        return filtered
     }
 
     private fun applyNMS(detections: List<DetectionResult>): List<DetectionResult> {
