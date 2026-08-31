@@ -80,8 +80,8 @@ class MainActivity : AppCompatActivity() {
             val topDetection = latestDetections.maxByOrNull { it.confidence }
             val intent = Intent(this, ChatActivity::class.java).apply {
                 if (topDetection != null) {
-                    putExtra("EQUIPMENT_ID", topDetection.label)
-                    putExtra("EQUIPMENT_NAME", topDetection.displayName)
+                    putExtra(ChatActivity.EXTRA_EQUIPMENT_ID, topDetection.label)
+                    putExtra(ChatActivity.EXTRA_EQUIPMENT_NAME, topDetection.displayName)
                 }
             }
             startActivity(intent)

@@ -30,12 +30,12 @@ class OverlayView @JvmOverloads constructor(
     private var selectedDetection: DetectionResult? = null
     var onDetectionSelectedListener: ((DetectionResult) -> Unit)? = null
 
-    // Paleta de colores estándar YOLO por clase (idéntica a Ultralytics / Roboflow)
+    // Paleta de colores estándar YOLO por clase (26 colores para 26 clases)
     private val CLASS_COLORS = intArrayOf(
-        Color.parseColor("#00E676"), // 0: Verde brillante (Incubadora / Kjeldahl)
-        Color.parseColor("#00E5FF"), // 1: Cyan / Aqua (Ohaus PR224)
-        Color.parseColor("#FF6D00"), // 2: Naranja vivo (Contador de colonias)
-        Color.parseColor("#7C4DFF"), // 3: Púrpura / Índigo (Aquasearcher)
+        Color.parseColor("#00E676"), // 0: Verde brillante
+        Color.parseColor("#00E5FF"), // 1: Cyan / Aqua
+        Color.parseColor("#FF6D00"), // 2: Naranja vivo
+        Color.parseColor("#7C4DFF"), // 3: Púrpura / Índigo
         Color.parseColor("#FFD600"), // 4: Amarillo brillante
         Color.parseColor("#FF1744"), // 5: Rojo intenso
         Color.parseColor("#00B0FF"), // 6: Azul claro
@@ -51,7 +51,13 @@ class OverlayView @JvmOverloads constructor(
         Color.parseColor("#40C4FF"), // 16: Celeste
         Color.parseColor("#FFD740"), // 17: Dorado
         Color.parseColor("#B388FF"), // 18: Lavanda
-        Color.parseColor("#00E5FF")  // 19: Cyan brillante
+        Color.parseColor("#00E5FF"), // 19: Cyan brillante
+        Color.parseColor("#FF6E40"), // 20: Naranja profundo
+        Color.parseColor("#69F0AE"), // 21: Verde menta
+        Color.parseColor("#EA80FC"), // 22: Orquídea
+        Color.parseColor("#18FFFF"), // 23: Aqua brillante
+        Color.parseColor("#FFAB40"), // 24: Ámbar claro
+        Color.parseColor("#448AFF")  // 25: Azul índigo
     )
 
     private val boxPaint = Paint().apply {
@@ -121,10 +127,25 @@ class OverlayView @JvmOverloads constructor(
             // 2. Formatear texto de etiqueta con porcentaje (ej: "Ohaus pr224 85%" o "Dosi-Fiber 96.4%")
             val confVal = detection.confidence * 100f
             val confStr = if (confVal >= 99.95f) "100%" else String.format(Locale.US, "%.1f%%", confVal).replace(".0%", "%")
-            val labelText = "${detection.displayName} $confStr"
 
-            val textWidth = textPaint.measureText(labelText)
+            // Truncar nombres largos con elipsis para que quepan en pantalla
+            val maxLabelWidth = viewWidth * 0.85f // Máximo 85% del ancho de pantalla
+            val confTextWidth = textPaint.measureText(" $confStr")
+            var displayName = detection.displayName
+            var fullLabelText = "$displayName $confStr"
+            var textWidth = textPaint.measureText(fullLabelText)
             val paddingH = 16f
+
+            if (textWidth + (paddingH * 2) > maxLabelWidth) {
+                // Recortar el nombre progresivamente hasta que quepa
+                while (displayName.length > 10 && textPaint.measureText("$displayName… $confStr") + (paddingH * 2) > maxLabelWidth) {
+                    displayName = displayName.dropLast(1).trimEnd()
+                }
+                fullLabelText = "$displayName… $confStr"
+                textWidth = textPaint.measureText(fullLabelText)
+            }
+
+            val labelText = fullLabelText
             val paddingV = 10f
             val fontMetrics = textPaint.fontMetrics
             val textHeight = fontMetrics.descent - fontMetrics.ascent
@@ -150,7 +171,10 @@ class OverlayView @JvmOverloads constructor(
 
             // 5. Dibujar texto en blanco centrado verticalmente en la etiqueta
             val textY = labelTop + paddingV - fontMetrics.ascent
+            canvas.save()
+            canvas.clipRect(labelRect)
             canvas.drawText(labelText, labelLeft + paddingH, textY, textPaint)
+            canvas.restore()
         }
     }
 

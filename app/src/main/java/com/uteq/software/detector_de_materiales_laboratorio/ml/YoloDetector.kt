@@ -28,7 +28,7 @@ class YoloDetector(
     private var interpreter: Interpreter? = null
     private val labels = ArrayList<String>()
     private val numClasses: Int
-        get() = if (labels.isNotEmpty()) labels.size else 20
+        get() = if (labels.isNotEmpty()) labels.size else 26
 
     val inputSize = 640
 

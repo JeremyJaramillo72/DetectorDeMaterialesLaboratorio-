@@ -12,6 +12,36 @@ class KnowledgeBaseRepository private constructor(private val context: Context) 
     private var knowledgeBaseRoot: KnowledgeBaseRoot? = null
     private val equipmentMap = HashMap<String, EquipmentData>()
 
+    // Mapa de traducción: nombre Roboflow (labels.txt) → id interno del JSON
+    private val roboflowToId = mapOf(
+        "agitador de tubos - mezclador vortex" to "agitador_vortex",
+        "agua destilada desmineralizada" to "bidon_agua_destilada",
+        "analizador de fibra cruda y fracciones" to "analizador_fibra",
+        "balanza analitica de la serie ohaus pioneer" to "balanza_ohaus_pioneer",
+        "bateria de desionizacion y tratamiento de agua" to "sistema_tratamiento_agua",
+        "bomba calorimetrica de oxigeno" to "calorimetro_bomba",
+        "bomba de vacio de membrana - diafragma portatil" to "bomba_vacio_membrana",
+        "bomba de vacio por recirculacion de agua" to "bomba_vacio_recirculacion",
+        "cabina de flujo laminar" to "cabina_flujo_laminar_uvp",
+        "campana de extraccion de gases de laboratorio" to "campana_extraccion_gases",
+        "destilacion por arrastre de vapor" to "destilador_kjeldahl",
+        "destilador por arrastre de vapor tipo kjeldahl" to "destilador_kjeldahl",
+        "destilador_de_agua_continuo_metalico" to "destilador_agua",
+        "estufa - horno universal de secado" to "estufa_secado_memmert",
+        "extractor de laboratorio automatico para analisis de grasas y aceites" to "extractor_soxhlet",
+        "molino ciclonico de muestras bromatologicas" to "molino_ciclonico_foss",
+        "mufla electrica de laboratorio" to "mufla_electrica",
+        "placa calefactora con agitador magneticometalico" to "placa_calefactora_heidolph",
+        "potenciometro - ph-metro digital de mesa" to "phmetro_ohaus",
+        "refractometro digital abbe de mesa" to "refractometro_atago",
+        "sistema de tratamiento y desionizacion deagua" to "sistema_tratamiento_agua",
+        "soporte giratorio para pipetas de vidrio" to "gradilla_pipetas",
+        "stufa de laboratorio de conveccion" to "estufa_secado_memmert",
+        "termometro digital parr model 6775" to "calorimetro_bomba",
+        "unidad de destilacion kjeldahl" to "destilador_kjeldahl",
+        "viscosimetro rotacional digital brookfield" to "viscosimetro_brookfield"
+    )
+
     init {
         loadKnowledgeBase()
     }
@@ -37,7 +67,13 @@ class KnowledgeBaseRepository private constructor(private val context: Context) 
 
     fun getEquipmentByClass(yoloClass: String): EquipmentData? {
         val key = yoloClass.lowercase().trim()
-        return equipmentMap[key]
+        // Primero intentar búsqueda directa
+        equipmentMap[key]?.let { return it }
+        // Luego usar el mapa de traducción Roboflow → id interno
+        roboflowToId[key]?.let { mappedId ->
+            equipmentMap[mappedId]?.let { return it }
+        }
+        return null
     }
 
     fun getEquipmentById(id: String): EquipmentData? {
