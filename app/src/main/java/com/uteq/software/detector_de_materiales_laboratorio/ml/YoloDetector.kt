@@ -20,8 +20,8 @@ class YoloDetector(
     private val modelFileName: String = "yolo11_bromatologia.tflite",
     private val fallbackModelName: String = "yolov8_bromatologia.tflite",
     private val labelFileName: String = "labels.txt",
-    private val confidenceThreshold: Float = 0.20f,
-    private val iouThreshold: Float = 0.45f
+    private val confidenceThreshold: Float = 0.40f, // Umbral calibrado al 40% para evitar falsos positivos
+    private val iouThreshold: Float = 0.40f        // Umbral IoU para suprimir cajas duplicadas
 ) {
 
     private val TAG = "YoloDetector"
@@ -262,29 +262,32 @@ class YoloDetector(
             }
         }
 
-        return applyNMS(rawDetections)
+        return applyGlobalNMS(rawDetections)
     }
 
-    private fun applyNMS(detections: List<DetectionResult>): List<DetectionResult> {
+    /**
+     * NMS Global / Agnóstico de Clase:
+     * Si 2 clases diferentes predicen cajas sobre el mismo objeto (IoU >= 0.40),
+     * se conserva ÚNICAMENTE la que tiene mayor confianza, eliminando falsos positivos cruzados.
+     */
+    private fun applyGlobalNMS(detections: List<DetectionResult>): List<DetectionResult> {
+        if (detections.isEmpty()) return emptyList()
+
         val result = ArrayList<DetectionResult>()
-        val groupedByClass = detections.groupBy { it.classIndex }
+        val pq = PriorityQueue<DetectionResult>(detections.size) { a, b ->
+            b.confidence.compareTo(a.confidence)
+        }
+        pq.addAll(detections)
 
-        for ((_, classDetections) in groupedByClass) {
-            val pq = PriorityQueue<DetectionResult>(classDetections.size) { a, b ->
-                b.confidence.compareTo(a.confidence)
-            }
-            pq.addAll(classDetections)
+        while (pq.isNotEmpty()) {
+            val best = pq.poll() ?: break
+            result.add(best)
 
-            while (pq.isNotEmpty()) {
-                val best = pq.poll() ?: break
-                result.add(best)
-
-                val it = pq.iterator()
-                while (it.hasNext()) {
-                    val next = it.next()
-                    if (calculateIoU(best.boundingBox, next.boundingBox) >= iouThreshold) {
-                        it.remove()
-                    }
+            val it = pq.iterator()
+            while (it.hasNext()) {
+                val next = it.next()
+                if (calculateIoU(best.boundingBox, next.boundingBox) >= iouThreshold) {
+                    it.remove()
                 }
             }
         }
