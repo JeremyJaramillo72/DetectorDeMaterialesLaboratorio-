@@ -20,7 +20,7 @@ class YoloDetector(
     private val modelFileName: String = "yolo11_bromatologia.tflite",
     private val fallbackModelName: String = "yolov8_bromatologia.tflite",
     private val labelFileName: String = "labels.txt",
-    private val confidenceThreshold: Float = 0.40f, // Umbral calibrado al 40% para evitar falsos positivos
+    private val confidenceThreshold: Float = 0.35f, // Umbral calibrado al 35% para máxima respuesta y precisión
     private val iouThreshold: Float = 0.40f        // Umbral IoU para suprimir cajas duplicadas
 ) {
 
