@@ -10,7 +10,7 @@ A continuación se presentan las fotografías y especificaciones de los equipos 
 - **Función**: Destilación por arrastre de vapor para cuantificación de nitrógeno total y proteína bruta.
 - **Norma UTEQ**: AOAC 984.13 / INEN 0516
 
-![Unidad Kjeldahl Selecta](/C:/Users/ASUS/.gemini/antigravity/brain/03704090-cc79-4b63-b6ba-fcf041db0253/images_opt/04_destilador_kjeldahl.jpg)
+![Unidad Kjeldahl Selecta](images_opt/04_destilador_kjeldahl.jpg)
 
 ---
 
@@ -19,7 +19,7 @@ A continuación se presentan las fotografías y especificaciones de los equipos 
 - **Función**: Digestión y extracción de Fibra Cruda (Weende) y fracciones Van Soest (FND, FAD, Lignina).
 - **Norma UTEQ**: AOAC 962.09 / ISO 6865
 
-![Analizador de Fibra Dosi-Fiber](/C:/Users/ASUS/.gemini/antigravity/brain/03704090-cc79-4b63-b6ba-fcf041db0253/images_opt/11_analizador_fibra_dosifiber.jpg)
+![Analizador de Fibra Dosi-Fiber](images_opt/11_analizador_fibra_dosifiber.jpg)
 
 ---
 
@@ -27,7 +27,7 @@ A continuación se presentan las fotografías y especificaciones de los equipos 
 - **Marca / Modelo**: Heidolph MR Hei-Standard
 - **Función**: Calentamiento hasta 300°C y agitación magnética homogénea hasta 1400 rpm de reactivos y disoluciones.
 
-![Placa Agitadora Heidolph](/C:/Users/ASUS/.gemini/antigravity/brain/03704090-cc79-4b63-b6ba-fcf041db0253/images_opt/16_placa_calefactora_heidolph.jpg)
+![Placa Agitadora Heidolph](images_opt/16_placa_calefactora_heidolph.jpg)
 
 ---
 
@@ -36,7 +36,7 @@ A continuación se presentan las fotografías y especificaciones de los equipos 
 - **Función**: Determinación electroquímica de pH, potencial de óxido-reducción (mV) y temperatura.
 - **Norma UTEQ**: NTE INEN 0013 / AOAC 981.12
 
-![pH-metro Digital OHAUS Starter 3100](/C:/Users/ASUS/.gemini/antigravity/brain/03704090-cc79-4b63-b6ba-fcf041db0253/images_opt/17_phmetro_ohaus_starter3100.jpg)
+![pH-metro Digital OHAUS Starter 3100](images_opt/17_phmetro_ohaus_starter3100.jpg)
 
 ---
 
@@ -45,7 +45,7 @@ A continuación se presentan las fotografías y especificaciones de los equipos 
 - **Función**: Molienda ciclónica de alta velocidad con cribas calibradas (0.5 mm y 1.0 mm) sin pérdida de humedad.
 - **Norma UTEQ**: AOAC 930.15
 
-![Molino Ciclónico FOSS 1093](/C:/Users/ASUS/.gemini/antigravity/brain/03704090-cc79-4b63-b6ba-fcf041db0253/images_opt/07_molino_ciclonico_foss.jpg)
+![Molino Ciclónico FOSS 1093](images_opt/07_molino_ciclonico_foss.jpg)
 
 ---
 
@@ -54,112 +54,110 @@ A continuación se presentan las fotografías y especificaciones de los equipos 
 - **Función**: Deshidratación térmica a 105°C para determinación gravimétrica de materia seca y humedad total.
 - **Norma UTEQ**: AOAC 930.15 / INEN 0518
 
-![Estufa Memmert](/C:/Users/ASUS/.gemini/antigravity/brain/03704090-cc79-4b63-b6ba-fcf041db0253/images_opt/06_estufa_secado_memmert.jpg)
+![Estufa Memmert](images_opt/06_estufa_secado_memmert.jpg)
 
 ---
 
-### 7. Refractómetro Abbe Digital de Precisión
-- **Marca / Modelo**: ATAGO DR-A1 con Termómetro Digital
-- **Función**: Medición del Índice de Refracción (nD) y porcentaje de Sólidos Solubles (°Brix).
+### 7. Refractómetro Digital Abbe de Mesa
+- **Marca / Modelo**: ATAGO DR-A1 (Cat. 1310)
+- **Función**: Medición de índice de refracción (nD) y escala Brix (0.0 a 95.0%) en líquidos y aceites.
 - **Norma UTEQ**: AOAC 932.12 / INEN 0380
 
-![Refractómetro Digital ATAGO DR-A1](/C:/Users/ASUS/.gemini/antigravity/brain/03704090-cc79-4b63-b6ba-fcf041db0253/images_opt/14_refractometro_atago.jpg)
+![Refractómetro Digital ATAGO DR-A1](images_opt/14_refractometro_atago.jpg)
 
 ---
 
-### 8. Bomba Calorimétrica de Oxígeno (Energía Bruta)
-- **Marca / Modelo**: Parr 1341 Oxygen Bomb Calorimeter + Termómetro Digital Parr 6775
-- **Función**: Determinación del poder calorífico y contenido de energía bruta (kcal/g, MJ/kg) en alimentos balanceados.
-- **Norma UTEQ**: ASTM D5865 / ISO 9831
+### 8. Bomba Calorimétrica de Oxígeno
+- **Marca / Modelo**: Parr 1341 Plain Jacket Calorimeter / Termómetro Parr 6775
+- **Función**: Determinación del poder calorífico bruto / energía bruta (EB) en piensos y materias primas.
+- **Norma UTEQ**: ISO 9831 / ASTM D5865
 
-![Bomba Calorimétrica Parr](/C:/Users/ASUS/.gemini/antigravity/brain/03704090-cc79-4b63-b6ba-fcf041db0253/images_opt/15_calorimetro_parr.jpg)
-
----
-
-### 9. Campana de Extracción de Gases y Humos
-- **Marca / Modelo**: Labconco Protector Premier Fume Hood
-- **Función**: Contención y evacuación de vapores tóxicos generados durante digestiones ácidas y extracciones.
-
-![Campana de Extracción Labconco](/C:/Users/ASUS/.gemini/antigravity/brain/03704090-cc79-4b63-b6ba-fcf041db0253/images_opt/13_campana_extraccion_labconco.jpg)
+![Bomba Calorimétrica Parr](images_opt/15_calorimetro_parr.jpg)
 
 ---
 
-### 10. Cabina de Flujo Laminar / UV PCR Workstation
-- **Marca / Modelo**: Analytik Jena UVP UV PCR Workstation
-- **Función**: Área estéril libre de partículas con radiación UV germicida y flujo HEPA para análisis microbiológico.
-- **Norma UTEQ**: NTE INEN 1529
+### 9. Campana de Extracción de Gases y Vapores
+- **Marca / Modelo**: Labconco Protector Premier Laboratory Hood
+- **Función**: Extracción y contención de vapores corrosivos (digestiones ácidas Kjeldahl, reactivos volátiles).
 
-![Cabina Flujo Laminar UVP](/C:/Users/ASUS/.gemini/antigravity/brain/03704090-cc79-4b63-b6ba-fcf041db0253/images_opt/10_cabina_flujo_laminar_uvp.jpg)
-
----
-
-### 11. Sistema de Tratamiento y Desionización de Agua
-- **Tipo**: Batería de columnas desionizadoras de lecho mixto y prefiltro de sedimentos.
-- **Función**: Producción de agua desionizada y desmineralizada Tipo II para reactivos analíticos.
-- **Norma UTEQ**: ASTM D1193
-
-![Sistema Tratamiento Agua](/C:/Users/ASUS/.gemini/antigravity/brain/03704090-cc79-4b63-b6ba-fcf041db0253/images_opt/01_sistema_tratamiento_agua.jpg)
+![Campana de Extracción Labconco](images_opt/13_campana_extraccion_labconco.jpg)
 
 ---
 
-### 12. Destilador de Agua Continuo Metálico
-- **Tipo**: Destilador mural en acero inoxidable AISI 304 con serpentín refrigerado.
-- **Función**: Producción continua de agua destilada de alta pureza.
+### 10. Cabina de Flujo Laminar / Trabajo Limpio UV
+- **Marca / Modelo**: Analytik Jena UVP PCR Workstation
+- **Función**: Área aséptica con luz UV germicida para manipulación microbiológica y preparación de muestras.
 
-![Destilador de Agua](/C:/Users/ASUS/.gemini/antigravity/brain/03704090-cc79-4b63-b6ba-fcf041db0253/images_opt/02_destilador_agua.jpg)
+![Cabina Flujo Laminar UVP](images_opt/10_cabina_flujo_laminar_uvp.jpg)
+
+---
+
+### 11. Batería de Desionización y Tratamiento de Agua
+- **Marca / Modelo**: Sistema Desionizador con Filtro de Sedimentos y Manómetro
+- **Función**: Purificación de agua para preparación de reactivos analíticos tipo II/III.
+
+![Sistema Tratamiento Agua](images_opt/01_sistema_tratamiento_agua.jpg)
+
+---
+
+### 12. Destilador de Agua Metálico de Pared
+- **Marca / Modelo**: Destilador Mural Acero Inoxidable (Producción ~4 L/h)
+- **Función**: Producción de agua destilada de alta pureza por evaporación y condensación.
+
+![Destilador de Agua](images_opt/02_destilador_agua.jpg)
 
 ---
 
 ### 13. Bomba de Vacío por Recirculación de Agua
-- **Marca / Modelo**: J.P. SELECTA - Cat. 4001611
-- **Función**: Generación de vacío constante mediante efecto Venturi para filtraciones al vacío.
+- **Marca / Modelo**: J.P. SELECTA (Cat. 4001611) con Manómetro
+- **Función**: Generación de vacío constante para filtraciones al vacío y desecadores sin consumo excesivo de agua.
 
-![Bomba de Recirculacion](/C:/Users/ASUS/.gemini/antigravity/brain/03704090-cc79-4b63-b6ba-fcf041db0253/images_opt/03_bomba_vacio_recirculacion.jpg)
-
----
-
-### 14. Bomba de Vacío de Membrana / Diafragma Portátil
-- **Tipo**: Bomba electromecánica seca libre de aceite con doble manómetro.
-- **Función**: Filtración acelerada de solventes y filtración por membrana microporosa (0.45 µm).
-
-![Bomba de Vacío de Membrana](/C:/Users/ASUS/.gemini/antigravity/brain/03704090-cc79-4b63-b6ba-fcf041db0253/images_opt/12_bomba_vacio_membrana.jpg)
+![Bomba de Recirculacion](images_opt/03_bomba_vacio_recirculacion.jpg)
 
 ---
 
-### 15. Agitador de Tubos / Mezclador Vortex
-- **Marca / Modelo**: Boeco / Bioevopeak Vortex Mixer
-- **Función**: Agitación orbital rápida y resuspensión homogénea de reactivos en tubos de ensayo.
+### 14. Bomba de Vacío Portátil de Membrana
+- **Marca / Modelo**: Bomba de Diafragma con Doble Manómetro y Regulador
+- **Función**: Filtración al vacío móvil para rampa de crisoles y filtración de muestras.
 
-![Agitador Vortex](/C:/Users/ASUS/.gemini/antigravity/brain/03704090-cc79-4b63-b6ba-fcf041db0253/images_opt/18_agitador_vortex.jpg)
-
----
-
-### 16. Gradilla con Tubos Macro Kjeldahl y Balones
-- **Material**: Gradilla con tubos cilíndricos de borosilicato 3.3 y matraces balón de destilación.
-- **Función**: Sostén y mineralización ácida a 420°C.
-
-![Tubos Kjeldahl](/C:/Users/ASUS/.gemini/antigravity/brain/03704090-cc79-4b63-b6ba-fcf041db0253/images_opt/05_gradilla_tubos_kjeldahl.jpg)
+![Bomba de Vacío de Membrana](images_opt/12_bomba_vacio_membrana.jpg)
 
 ---
 
-### 17. Soporte Giratorio para Pipetas de Vidrio
-- **Material**: Gradilla circular rotatoria de 94 posiciones con pipetas serológicas y volumétricas.
-- **Función**: Almacenamiento seguro, secado y dosificación de líquidos.
+### 15. Agitador de Tubos Tipo Vortex
+- **Marca / Modelo**: Boeco / Bioevopeak V-1 Plus
+- **Función**: Agitación orbital rápida de tubos de ensayo y disolución de extractos.
 
-![Gradilla y Pipetas](/C:/Users/ASUS/.gemini/antigravity/brain/03704090-cc79-4b63-b6ba-fcf041db0253/images_opt/19_gradilla_pipetas_tubos.jpg)
-
----
-
-### 18. Piseta / Frasco Lavador de Reactivo NaOH 0.1 N
-- **Material**: LDPE flexible con tubo sifón y rotulación de seguridad química.
-- **Función**: Dosificación controlada de Hidróxido de Sodio 0.1 N en titulaciones volumétricas.
-
-![Piseta Reactivo NaOH](/C:/Users/ASUS/.gemini/antigravity/brain/03704090-cc79-4b63-b6ba-fcf041db0253/images_opt/08_piseta_reactivo.jpg)
+![Agitador Vortex](images_opt/18_agitador_vortex.jpg)
 
 ---
 
-### 19. Cilindro de Gas a Alta Presión con Manómetros
-- **Componentes**: Botella de acero para gas comprimido con válvula de seguridad y manorreductor doble.
-- **Función**: Suministro de oxígeno puro a 30 atm para la bomba calorimétrica Parr.
+### 16. Tubos de Digestión Kjeldahl y Balones de Destilación
+- **Material**: Vidrio Borosilicato 3.3 en Gradilla Metálica Especial
+- **Función**: Contenedores para digestión ácida a 420°C y destilación.
 
-![Cilindro de Gas](/C:/Users/ASUS/.gemini/antigravity/brain/03704090-cc79-4b63-b6ba-fcf041db0253/images_opt/09_cilindro_gas.jpg)
+![Tubos Kjeldahl](images_opt/05_gradilla_tubos_kjeldahl.jpg)
+
+---
+
+### 17. Gradilla / Soporte Giratorio para Pipetas Graduadas
+- **Material**: Polipropileno autoclavable (Capacidad 94 pipetas)
+- **Función**: Secado y soporte vertical ordenado de material volumétrico.
+
+![Gradilla y Pipetas](images_opt/19_gradilla_pipetas_tubos.jpg)
+
+---
+
+### 18. Piseta de Reactivo Rotulada (NaOH 0.1 N)
+- **Material**: Polietileno de baja densidad (LDPE) con Rotulación SGA/GHS
+- **Función**: Dosificación controlada de disoluciones valoradas y agua destilada.
+
+![Piseta Reactivo NaOH](images_opt/08_piseta_reactivo.jpg)
+
+---
+
+### 19. Cilindro de Gas con Manómetro Regulador
+- **Material**: Cilindro de Acero Alta Presión (200 bar) con Válvula y Manorreductor
+- **Función**: Suministro de gas combustible/inerte para equipos de combustión y cromatografía.
+
+![Cilindro de Gas](images_opt/09_cilindro_gas.jpg)
