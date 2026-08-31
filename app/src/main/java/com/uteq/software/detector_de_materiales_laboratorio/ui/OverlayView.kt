@@ -5,13 +5,14 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
+import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import androidx.core.content.ContextCompat
-import com.uteq.software.detector_de_materiales_laboratorio.R
 import com.uteq.software.detector_de_materiales_laboratorio.model.DetectionResult
+import java.util.Locale
 import kotlin.math.max
+import kotlin.math.min
 
 class OverlayView @JvmOverloads constructor(
     context: Context,
@@ -29,55 +30,45 @@ class OverlayView @JvmOverloads constructor(
     private var selectedDetection: DetectionResult? = null
     var onDetectionSelectedListener: ((DetectionResult) -> Unit)? = null
 
+    // Paleta de colores estándar YOLO por clase (idéntica a Ultralytics / Roboflow)
+    private val CLASS_COLORS = intArrayOf(
+        Color.parseColor("#00E676"), // 0: Verde brillante (Incubadora / Kjeldahl)
+        Color.parseColor("#00E5FF"), // 1: Cyan / Aqua (Ohaus PR224)
+        Color.parseColor("#FF6D00"), // 2: Naranja vivo (Contador de colonias)
+        Color.parseColor("#7C4DFF"), // 3: Púrpura / Índigo (Aquasearcher)
+        Color.parseColor("#FFD600"), // 4: Amarillo brillante
+        Color.parseColor("#FF1744"), // 5: Rojo intenso
+        Color.parseColor("#00B0FF"), // 6: Azul claro
+        Color.parseColor("#F50057"), // 7: Rosa profundo
+        Color.parseColor("#651FFF"), // 8: Violeta eléctrico
+        Color.parseColor("#1DE9B6"), // 9: Turquesa
+        Color.parseColor("#FF9100"), // 10: Ámbar
+        Color.parseColor("#00E676"), // 11: Verde esmeralda
+        Color.parseColor("#00B0FF"), // 12: Azul cielo
+        Color.parseColor("#E040FB"), // 13: Magenta neón
+        Color.parseColor("#76FF03"), // 14: Verde lima
+        Color.parseColor("#FF5252"), // 15: Coral
+        Color.parseColor("#40C4FF"), // 16: Celeste
+        Color.parseColor("#FFD740"), // 17: Dorado
+        Color.parseColor("#B388FF"), // 18: Lavanda
+        Color.parseColor("#00E5FF")  // 19: Cyan brillante
+    )
+
     private val boxPaint = Paint().apply {
-        color = ContextCompat.getColor(context, R.color.box_emerald)
-        strokeWidth = 8f
+        strokeWidth = 7f
         style = Paint.Style.STROKE
         isAntiAlias = true
-        strokeCap = Paint.Cap.ROUND
-        strokeJoin = Paint.Join.ROUND
     }
 
-    private val selectedBoxPaint = Paint().apply {
-        color = ContextCompat.getColor(context, R.color.box_selected)
-        strokeWidth = 12f
-        style = Paint.Style.STROKE
-        isAntiAlias = true
-        strokeCap = Paint.Cap.ROUND
-        strokeJoin = Paint.Join.ROUND
-    }
-
-    private val cornerPaint = Paint().apply {
-        color = Color.WHITE
-        strokeWidth = 14f
-        style = Paint.Style.STROKE
-        isAntiAlias = true
-        strokeCap = Paint.Cap.SQUARE
-    }
-
-    private val textBackgroundPaint = Paint().apply {
-        color = ContextCompat.getColor(context, R.color.box_text_bg)
+    private val labelBgPaint = Paint().apply {
         style = Paint.Style.FILL
         isAntiAlias = true
     }
 
     private val textPaint = Paint().apply {
         color = Color.WHITE
-        textSize = 42f
-        isFakeBoldText = true
-        isAntiAlias = true
-    }
-
-    private val confidenceBadgePaint = Paint().apply {
-        color = ContextCompat.getColor(context, R.color.uteq_accent)
-        style = Paint.Style.FILL
-        isAntiAlias = true
-    }
-
-    private val confidenceTextPaint = Paint().apply {
-        color = Color.WHITE
-        textSize = 34f
-        isFakeBoldText = true
+        textSize = 38f
+        typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
         isAntiAlias = true
     }
 
@@ -112,62 +103,54 @@ class OverlayView @JvmOverloads constructor(
         for (detection in results) {
             val rawBox = detection.boundingBox
 
-            val left = (rawBox.left * scaleFactor) + postScaleWidthOffset
-            val top = (rawBox.top * scaleFactor) + postScaleHeightOffset
-            val right = (rawBox.right * scaleFactor) + postScaleWidthOffset
-            val bottom = (rawBox.bottom * scaleFactor) + postScaleHeightOffset
+            // Mapear coordenadas a la pantalla
+            val left = max(0f, (rawBox.left * scaleFactor) + postScaleWidthOffset)
+            val top = max(0f, (rawBox.top * scaleFactor) + postScaleHeightOffset)
+            val right = min(viewWidth, (rawBox.right * scaleFactor) + postScaleWidthOffset)
+            val bottom = min(viewHeight, (rawBox.bottom * scaleFactor) + postScaleHeightOffset)
             val mappedBox = RectF(left, top, right, bottom)
 
-            val isSelected = selectedDetection == detection
-            val currentBoxPaint = if (isSelected) selectedBoxPaint else boxPaint
+            // Obtener color asignado a la clase
+            val colorIdx = (detection.classIndex).coerceAtLeast(0) % CLASS_COLORS.size
+            val color = CLASS_COLORS[colorIdx]
 
-            // 1. Dibujar Bounding Box
-            canvas.drawRoundRect(mappedBox, 16f, 16f, currentBoxPaint)
+            // 1. Dibujar el recuadro delimitador sólido estilo YOLO
+            boxPaint.color = color
+            canvas.drawRect(mappedBox, boxPaint)
 
-            // 2. Dibujar esquinas reforzadas estilo HUD futurista
-            val cornerLength = 36f
-            // Superior Izquierda
-            canvas.drawLine(mappedBox.left, mappedBox.top, mappedBox.left + cornerLength, mappedBox.top, cornerPaint)
-            canvas.drawLine(mappedBox.left, mappedBox.top, mappedBox.left, mappedBox.top + cornerLength, cornerPaint)
-            // Superior Derecha
-            canvas.drawLine(mappedBox.right - cornerLength, mappedBox.top, mappedBox.right, mappedBox.top, cornerPaint)
-            canvas.drawLine(mappedBox.right, mappedBox.top, mappedBox.right, mappedBox.top + cornerLength, cornerPaint)
-            // Inferior Izquierda
-            canvas.drawLine(mappedBox.left, mappedBox.bottom, mappedBox.left + cornerLength, mappedBox.bottom, cornerPaint)
-            canvas.drawLine(mappedBox.left, mappedBox.bottom - cornerLength, mappedBox.left, mappedBox.bottom, cornerPaint)
-            // Inferior Derecha
-            canvas.drawLine(mappedBox.right - cornerLength, mappedBox.bottom, mappedBox.right, mappedBox.bottom, cornerPaint)
-            canvas.drawLine(mappedBox.right, mappedBox.bottom - cornerLength, mappedBox.right, mappedBox.bottom, cornerPaint)
-
-            // 3. Etiqueta con Nombre del Equipo y Confianza %
-            val labelText = detection.displayName
-            val confidenceText = "${(detection.confidence * 100).toInt()}%"
+            // 2. Formatear texto de etiqueta con porcentaje (ej: "Ohaus pr224 85%" o "Dosi-Fiber 96.4%")
+            val confVal = detection.confidence * 100f
+            val confStr = if (confVal >= 99.95f) "100%" else String.format(Locale.US, "%.1f%%", confVal).replace(".0%", "%")
+            val labelText = "${detection.displayName} $confStr"
 
             val textWidth = textPaint.measureText(labelText)
-            val confWidth = confidenceTextPaint.measureText(confidenceText)
-            val tagHeight = 70f
-            val padding = 20f
+            val paddingH = 16f
+            val paddingV = 10f
+            val fontMetrics = textPaint.fontMetrics
+            val textHeight = fontMetrics.descent - fontMetrics.ascent
+            val labelHeight = textHeight + (paddingV * 2)
+            val labelWidth = textWidth + (paddingH * 2)
 
-            val tagTop = max(10f, mappedBox.top - tagHeight - 12f)
-            val tagBottom = tagTop + tagHeight
-            val tagLeft = mappedBox.left
-            val tagRight = tagLeft + textWidth + confWidth + (padding * 3)
+            // 3. Posicionar el encabezado sólido encima de la caja (o dentro si top < labelHeight)
+            var labelTop = mappedBox.top - labelHeight
+            var labelBottom = mappedBox.top
 
-            val tagRect = RectF(tagLeft, tagTop, tagRight, tagBottom)
-            canvas.drawRoundRect(tagRect, 12f, 12f, textBackgroundPaint)
+            if (labelTop < 0) {
+                labelTop = mappedBox.top
+                labelBottom = mappedBox.top + labelHeight
+            }
 
-            val textY = tagTop + (tagHeight / 2f) - ((textPaint.descent() + textPaint.ascent()) / 2f)
-            canvas.drawText(labelText, tagLeft + padding, textY, textPaint)
+            val labelLeft = mappedBox.left
+            val labelRight = min(viewWidth, labelLeft + labelWidth)
+            val labelRect = RectF(labelLeft, labelTop, labelRight, labelBottom)
 
-            // Badge de Confianza
-            val badgeLeft = tagLeft + textWidth + (padding * 1.5f)
-            val badgeRight = tagRight - padding / 2f
-            val badgeRect = RectF(badgeLeft, tagTop + 10f, badgeRight, tagBottom - 10f)
-            canvas.drawRoundRect(badgeRect, 8f, 8f, confidenceBadgePaint)
+            // 4. Dibujar fondo sólido del mismo color del recuadro
+            labelBgPaint.color = color
+            canvas.drawRect(labelRect, labelBgPaint)
 
-            val confY = badgeRect.centerY() - ((confidenceTextPaint.descent() + confidenceTextPaint.ascent()) / 2f)
-            val confX = badgeRect.left + (badgeRect.width() - confWidth) / 2f
-            canvas.drawText(confidenceText, confX, confY, confidenceTextPaint)
+            // 5. Dibujar texto en blanco centrado verticalmente en la etiqueta
+            val textY = labelTop + paddingV - fontMetrics.ascent
+            canvas.drawText(labelText, labelLeft + paddingH, textY, textPaint)
         }
     }
 
