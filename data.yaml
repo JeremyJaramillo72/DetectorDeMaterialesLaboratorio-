@@ -1,10 +1,8 @@
-# Configuración de Dataset para YOLOv8 / YOLOv11 - Laboratorio de Bromatología UTEQ
-path: ./dataset
+path: /content/dataset
 train: images/train
 val: images/val
 test: images/test
 
-# 20 Clases Detectables de Equipos y Materiales de Bromatología
 nc: 20
 names:
   0: destilador_kjeldahl
