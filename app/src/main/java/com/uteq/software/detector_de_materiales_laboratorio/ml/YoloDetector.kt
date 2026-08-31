@@ -53,13 +53,15 @@ class YoloDetector(
             e.printStackTrace()
             labels.addAll(
                 listOf(
-                    "destilador_kjeldahl", "analizador_fibra", "placa_calefactora_heidolph",
-                    "phmetro_ohaus", "molino_ciclonico_foss", "estufa_secado_memmert",
-                    "refractometro_atago", "calorimetro_bomba", "campana_extraccion_gases",
-                    "cabina_flujo_laminar_uvp", "sistema_tratamiento_agua", "destilador_agua",
-                    "bomba_vacio_recirculacion", "bomba_vacio_membrana", "agitador_vortex",
-                    "gradilla_tubos_kjeldahl", "gradilla_pipetas", "piseta_reactivo",
-                    "cilindro_gas", "bidon_agua_destilada"
+                    "Agitador de Tubos - Mezclador Vortex", "Agua Destilada Desmineralizada", "Analizador de Fibra Cruda y Fracciones",
+                    "Balanza Analitica de la Serie Ohaus Pioneer", "Bateria de Desionizacion y Tratamiento de Agua", "Bomba Calorimetrica de Oxigeno",
+                    "Bomba de Vacio de Membrana - Diafragma Portatil", "Bomba de Vacio por Recirculacion de Agua", "Cabina de Flujo Laminar",
+                    "Campana de Extraccion de Gases de Laboratorio", "Destilacion por Arrastre de Vapor", "Destilador por Arrastre de Vapor tipo Kjeldahl",
+                    "Destilador de Agua Continuo Metalico", "Estufa - Horno Universal de Secado", "Extractor de Laboratorio Automatico para Analisis de Grasas y Aceites",
+                    "Molino Ciclonico de Muestras Bromatologicas", "Mufla Electrica de Laboratorio", "Placa Calefactora con Agitador MagneticoMetalico",
+                    "Potenciometro - pH-metro Digital de Mesa", "Refractometro Digital Abbe de Mesa", "Sistema de Tratamiento y Desionizacion deAgua",
+                    "Soporte Giratorio para Pipetas de Vidrio", "Stufa de Laboratorio de Conveccion", "Termometro Digital Parr Model 6775",
+                    "Unidad de Destilacion Kjeldahl", "Viscosimetro Rotacional Digital Brookfield"
                 )
             )
         }
@@ -311,29 +313,7 @@ class YoloDetector(
     }
 
     private fun formatDisplayName(rawLabel: String): String {
-        return when (rawLabel) {
-            "destilador_kjeldahl" -> "Unidad Kjeldahl Selecta"
-            "analizador_fibra" -> "Analizador de Fibra Dosi-Fiber"
-            "placa_calefactora_heidolph" -> "Placa Agitadora Heidolph"
-            "phmetro_ohaus" -> "pH-metro OHAUS Starter 3100"
-            "molino_ciclonico_foss" -> "Molino Ciclónico FOSS 1093"
-            "estufa_secado_memmert" -> "Estufa de Secado Memmert"
-            "refractometro_atago" -> "Refractómetro Digital ATAGO"
-            "calorimetro_bomba" -> "Bomba Calorimétrica Parr"
-            "campana_extraccion_gases" -> "Campana de Gases Labconco"
-            "cabina_flujo_laminar_uvp" -> "Cabina Flujo Laminar UVP"
-            "sistema_tratamiento_agua" -> "Sistema Tratamiento de Agua"
-            "destilador_agua" -> "Destilador de Agua Metálico"
-            "bomba_vacio_recirculacion" -> "Bomba Vacío Recirculación"
-            "bomba_vacio_membrana" -> "Bomba Vacío de Membrana"
-            "agitador_vortex" -> "Agitador de Tubos Vortex"
-            "gradilla_tubos_kjeldahl" -> "Tubos Digestión Kjeldahl"
-            "gradilla_pipetas" -> "Soporte Giratorio Pipetas"
-            "piseta_reactivo" -> "Piseta Reactivo NaOH 0.1N"
-            "cilindro_gas" -> "Cilindro de Gas y Manómetro"
-            "bidon_agua_destilada" -> "Bidón de Agua Destilada"
-            else -> rawLabel.replace("_", " ").replaceFirstChar { it.uppercase() }
-        }
+        return rawLabel.replace("_", " ").replace("MetalicoMetalico", "Metálico").trim()
     }
 
     private fun generateDemoDetections(width: Int, height: Int): List<DetectionResult> {

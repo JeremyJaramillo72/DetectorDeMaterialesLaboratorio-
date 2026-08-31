@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 26
+names: ['Agitador de Tubos - Mezclador Vortex', 'Agua Destilada Desmineralizada', 'Analizador de Fibra Cruda y Fracciones', 'Balanza Analitica de la Serie Ohaus Pioneer', 'Bateria de Desionizacion y Tratamiento de Agua', 'Bomba Calorimetrica de Oxigeno', 'Bomba de Vacio de Membrana - Diafragma Portatil', 'Bomba de Vacio por Recirculacion de Agua', 'Cabina de Flujo Laminar', 'Campana de Extraccion de Gases de Laboratorio', 'Destilacion por Arrastre de Vapor', 'Destilador por Arrastre de Vapor tipo Kjeldahl', 'Destilador_de_Agua_Continuo_Metalico', 'Estufa - Horno Universal de Secado', 'Extractor de Laboratorio Automatico para Analisis de Grasas y Aceites', 'Molino Ciclonico de Muestras Bromatologicas', 'Mufla Electrica de Laboratorio', 'Placa Calefactora con Agitador MagneticoMetalico', 'Potenciometro - pH-metro Digital de Mesa', 'Refractometro Digital Abbe de Mesa', 'Sistema de Tratamiento y Desionizacion deAgua', 'Soporte Giratorio para Pipetas de Vidrio', 'Stufa de Laboratorio de Conveccion', 'Termometro Digital Parr Model 6775', 'Unidad de Destilacion Kjeldahl', 'Viscosimetro Rotacional Digital Brookfield']
+
+roboflow:
+  workspace: jeremy-jaramillo
+  project: my-first-project-lpfru
+  version: 1
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/jeremy-jaramillo/my-first-project-lpfru/dataset/1
