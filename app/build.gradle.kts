@@ -38,7 +38,7 @@ android {
     }
     packaging {
         jniLibs {
-            useLegacyPackaging = true
+            useLegacyPackaging = false
         }
     }
 }
@@ -55,8 +55,9 @@ dependencies {
     implementation(libs.camera.lifecycle)
     implementation(libs.camera.view)
 
-    // TensorFlow Lite
-    implementation(libs.tflite)
+    // LiteRT (16 KB page size compatible)
+    implementation(libs.litert)
+    implementation(libs.litert.api)
 
     // Networking & JSON
     implementation(libs.okhttp)

@@ -8,8 +8,8 @@ appcompat = "1.7.1"
 material = "1.14.0"
 activityKtx = "1.13.0"
 constraintlayout = "2.2.1"
-camera = "1.3.4"
-tflite = "2.16.1"
+camera = "1.4.2"
+litert = "1.4.2"
 okhttp = "4.12.0"
 gson = "2.10.1"
 coroutines = "1.8.0"
@@ -30,8 +30,9 @@ camera-camera2 = { group = "androidx.camera", name = "camera-camera2", version.r
 camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "camera" }
 camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "camera" }
 
-# TensorFlow Lite
-tflite = { group = "org.tensorflow", name = "tensorflow-lite", version.ref = "tflite" }
+# LiteRT (TensorFlow Lite con soporte 16 KB page size)
+litert = { group = "com.google.ai.edge.litert", name = "litert", version.ref = "litert" }
+litert-api = { group = "com.google.ai.edge.litert", name = "litert-api", version.ref = "litert" }
 
 # Networking & JSON
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
