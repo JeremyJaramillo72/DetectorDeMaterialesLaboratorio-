@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
+    android:background="@color/obsidian_base"
     tools:context=".MainActivity">
 
     <!-- CameraX Preview -->
@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:scaleType="fillCenter" />
 
-    <!-- Overlay de Bounding Boxes y Detecciones -->
+    <!-- Overlay de Bounding Boxes y Detecciones AR -->
     <com.uteq.software.detector_de_materiales_laboratorio.ui.OverlayView
         android:id="@+id/overlayView"
         android:layout_width="0dp"
@@ -29,15 +29,33 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Barra Superior / HUD -->
+    <!-- Retícula Central Sutil para Guía de Escaneo -->
+    <View
+        android:id="@+id/reticleCenter"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
+        android:alpha="0.35"
+        android:background="@drawable/bg_badge_model"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Gradiente Superior de Protección Visual -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:background="@drawable/bg_top_hud"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Header Flotante Glassmorphic (Top HUD) -->
     <LinearLayout
         android:id="@+id/layoutTopHUD"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_top_hud"
         android:orientation="vertical"
-        android:paddingHorizontal="16dp"
-        android:paddingTop="36dp"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="38dp"
         android:paddingBottom="12dp"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -47,24 +65,58 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="🔬 UTEQ Bromatología"
-                android:textColor="@color/white"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:orientation="vertical">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:letterSpacing="0.02"
+                    android:text="UTEQ • Bromatología"
+                    android:textColor="@color/white"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <!-- Punto indicador de estado en vivo -->
+                    <View
+                        android:layout_width="7dp"
+                        android:layout_height="7dp"
+                        android:layout_marginEnd="6dp"
+                        android:background="@drawable/bg_badge_model" />
+
+                    <TextView
+                        android:id="@+id/tvLiveStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:letterSpacing="0.04"
+                        android:text="IA EN VIVO • DETECCIÓN ACTIVA"
+                        android:textColor="@color/neon_emerald"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Badge Modelo Telemetría -->
             <TextView
                 android:id="@+id/tvModelBadge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_badge_model"
-                android:paddingHorizontal="10dp"
-                android:paddingVertical="4dp"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="5dp"
                 android:text="YOLO11 • 8 Clases"
-                android:textColor="@color/uteq_accent"
+                android:textColor="@color/neon_emerald"
                 android:textSize="11sp"
                 android:textStyle="bold" />
 
@@ -74,53 +126,116 @@
             android:id="@+id/tvStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="Apunta la cámara a un equipo o toca el recuadro para ver detalles"
+            android:layout_marginTop="8dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="Enfoca un equipo de laboratorio o toca el recuadro para ver su ficha"
             android:textColor="@color/text_secondary"
             android:textSize="12sp" />
 
     </LinearLayout>
 
-    <!-- Barra de Control Inferior -->
+    <!-- Gradiente Inferior de Sombra Inmersiva -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:background="@drawable/bg_bottom_hud"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <!-- Dock Flotante de Controles Glassmorphic -->
     <LinearLayout
-        android:id="@+id/layoutBottomBar"
+        android:id="@+id/layoutBottomDock"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_bottom_hud"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/bg_glass_dock"
+        android:elevation="12dp"
+        android:orientation="vertical"
         android:paddingHorizontal="16dp"
-        android:paddingVertical="18dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="14dp"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <!-- Botón Ver Ficha Técnica del Equipo Detectado -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnQuickDetails"
-            style="@style/Widget.Material3.Button.OutlinedButton"
-            android:layout_width="0dp"
-            android:layout_height="52dp"
-            android:layout_marginEnd="10dp"
-            android:layout_weight="1"
-            android:text="📄 Ficha Técnica"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            app:cornerRadius="12dp"
-            app:strokeColor="@color/card_border" />
+        <!-- Título Dinámico del Equipo Detectado en el Dock -->
+        <LinearLayout
+            android:id="@+id/layoutDetectionHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-        <!-- Botón Consultar Asistente RAG -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnOpenChat"
-            android:layout_width="0dp"
-            android:layout_height="52dp"
-            android:layout_weight="1"
-            android:backgroundTint="@color/uteq_primary"
-            android:text="💬 Asistente RAG"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:cornerRadius="12dp" />
+            <TextView
+                android:id="@+id/tvDockEquipmentName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="🔍 Escaneando área de laboratorio..."
+                android:textColor="@color/text_primary"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvDockConfidence"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_badge_live"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="2dp"
+                android:text="En espera"
+                android:textColor="@color/neon_cyan"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <!-- Botones de Acción Estilizados -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <!-- Botón Ficha Técnica -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnQuickDetails"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_btn_glass"
+                android:stateListAnimator="@null"
+                android:text="📄 Ficha Técnica"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                app:backgroundTint="@color/transparent"
+                app:cornerRadius="14dp"
+                app:strokeColor="@color/glass_border"
+                app:strokeWidth="1dp" />
+
+            <!-- Botón Asistente Gemini RAG -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnOpenChat"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1.2"
+                android:background="@drawable/bg_btn_gradient"
+                android:stateListAnimator="@null"
+                android:text="✨ Asistente IA"
+                android:textAllCaps="false"
+                android:textColor="@color/obsidian_base"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                app:backgroundTint="@color/transparent"
+                app:cornerRadius="14dp" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

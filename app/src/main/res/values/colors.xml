@@ -1,28 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Base -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    
-    <!-- Paleta Institucional UTEQ & Laboratorio -->
-    <color name="uteq_primary">#0D5C3A</color>
-    <color name="uteq_primary_dark">#083823</color>
-    <color name="uteq_accent">#00B86B</color>
+    <color name="transparent">#00000000</color>
+
+    <!-- Obsidian Deep Theme (Fondo y Superficies) -->
+    <color name="obsidian_base">#070A11</color>
+    <color name="obsidian_surface">#0F172A</color>
+    <color name="obsidian_card">#162032</color>
+    <color name="obsidian_card_elevated">#1E2B42</color>
+
+    <!-- Glassmorphism Surfaces & Borders -->
+    <color name="glass_surface">#CC0F1A2C</color>
+    <color name="glass_dock">#E60B1322</color>
+    <color name="glass_border">#2A3C58</color>
+    <color name="glass_border_active">#00E676</color>
+    <color name="glass_border_subtle">#1F2E45</color>
+
+    <!-- Identidad UTEQ & Acentos Eléctricos -->
+    <color name="uteq_primary">#059669</color>
+    <color name="uteq_primary_dark">#047857</color>
+    <color name="uteq_accent">#00E676</color>
     <color name="uteq_secondary">#1E293B</color>
     <color name="uteq_surface">#0F172A</color>
-    
-    <!-- Colores de Detección y Bounding Boxes -->
-    <color name="box_emerald">#10B981</color>
-    <color name="box_cyan">#06B6D4</color>
+
+    <!-- Neón & Highlights para Visión Artificial y Chat -->
+    <color name="neon_emerald">#00E676</color>
+    <color name="neon_emerald_dim">#1A00E676</color>
+    <color name="neon_cyan">#00E5FF</color>
+    <color name="neon_cyan_dim">#1A00E5FF</color>
+    <color name="neon_violet">#8B5CF6</color>
+    <color name="neon_violet_dim">#1A8B5CF6</color>
+    <color name="neon_amber">#F59E0B</color>
+    <color name="neon_amber_dim">#1AF59E0B</color>
+    <color name="neon_rose">#F43F5E</color>
+    <color name="neon_rose_dim">#1AF43F5E</color>
+
+    <!-- Cajas de Detección YOLO -->
+    <color name="box_emerald">#00E676</color>
+    <color name="box_cyan">#00E5FF</color>
     <color name="box_amber">#F59E0B</color>
     <color name="box_purple">#8B5CF6</color>
-    <color name="box_text_bg">#CC0D5C3A</color>
-    <color name="box_selected">#3B82F6</color>
-    
-    <!-- UI y Tarjetas -->
-    <color name="card_dark">#1E293B</color>
-    <color name="card_border">#334155</color>
+    <color name="box_text_bg">#D90A1526</color>
+    <color name="box_selected">#38BDF8</color>
+
+    <!-- UI, Tarjetas y Badges -->
+    <color name="card_dark">#162032</color>
+    <color name="card_border">#2A3C58</color>
     <color name="text_primary">#F8FAFC</color>
     <color name="text_secondary">#94A3B8</color>
-    <color name="badge_epp">#EF4444</color>
-    <color name="badge_norm">#3B82F6</color>
+    <color name="text_muted">#64748B</color>
+    <color name="badge_epp">#F43F5E</color>
+    <color name="badge_norm">#38BDF8</color>
 </resources>

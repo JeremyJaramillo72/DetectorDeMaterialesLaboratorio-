@@ -48,7 +48,7 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun setupToolbar() {
-        binding.toolbarChat.setNavigationOnClickListener {
+        binding.btnBack.setOnClickListener {
             finish()
         }
 

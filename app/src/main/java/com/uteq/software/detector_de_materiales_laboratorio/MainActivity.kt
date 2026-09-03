@@ -247,17 +247,31 @@ class MainActivity : AppCompatActivity() {
     private fun updateHUD(detections: List<DetectionResult>) {
         when {
             !yoloDetector.isModelLoaded() -> {
-                binding.tvStatus.text =
-                    "Falta el modelo: copia yolo11_bromatologia.tflite a app/src/main/assets/"
+                binding.tvStatus.text = "Falta el modelo: copia yolo11_bromatologia.tflite a assets/"
+                binding.tvDockEquipmentName.text = "⚠️ Modelo YOLO no cargado"
+                binding.tvDockConfidence.text = "Sin modelo"
+                binding.tvDockConfidence.setBackgroundResource(R.drawable.bg_chip_epp)
+                binding.tvDockConfidence.setTextColor(ContextCompat.getColor(this, R.color.badge_epp))
             }
             detections.isEmpty() -> {
-                binding.tvStatus.text = "Apunta la cámara al equipo dentro del recuadro verde"
+                binding.tvStatus.text = "Enfoca un equipo de laboratorio dentro del recuadro"
+                binding.tvDockEquipmentName.text = "🔍 Escaneando área de laboratorio..."
+                binding.tvDockConfidence.text = "En espera"
+                binding.tvDockConfidence.setBackgroundResource(R.drawable.bg_badge_live)
+                binding.tvDockConfidence.setTextColor(ContextCompat.getColor(this, R.color.neon_cyan))
+                binding.reticleCenter.alpha = 0.35f
             }
             else -> {
-                val names = detections.joinToString(", ") {
-                    "${it.displayName} (${(it.confidence * 100).toInt()}%)"
+                val topDetection = detections.maxByOrNull { it.confidence }
+                if (topDetection != null) {
+                    val confPercent = (topDetection.confidence * 100).toInt()
+                    binding.tvStatus.text = "✅ Equipo detectado • Toca el recuadro para ver detalles"
+                    binding.tvDockEquipmentName.text = "🎯 ${topDetection.displayName}"
+                    binding.tvDockConfidence.text = "$confPercent% match"
+                    binding.tvDockConfidence.setBackgroundResource(R.drawable.bg_badge_model)
+                    binding.tvDockConfidence.setTextColor(ContextCompat.getColor(this, R.color.neon_emerald))
+                    binding.reticleCenter.alpha = 0.15f
                 }
-                binding.tvStatus.text = "Detectado: $names"
             }
         }
     }

@@ -4,149 +4,228 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/uteq_surface">
+    android:background="@color/obsidian_base">
 
-    <!-- Barra de Herramientas / Toolbar -->
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbarChat"
+    <!-- Header Toolbar Glassmorphic -->
+    <LinearLayout
+        android:id="@+id/layoutChatHeader"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/uteq_primary"
-        app:layout_constraintTop_toTopOf="parent"
-        app:navigationIcon="@android:drawable/ic_menu_revert"
-        app:title="Asistente RAG Bromatología"
-        app:titleTextColor="@color/white" />
+        android:layout_height="wrap_content"
+        android:background="@color/obsidian_card"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="36dp"
+        android:paddingBottom="12dp"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <!-- Chip del Equipo Seleccionado -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_badge_live"
+                android:contentDescription="Regresar"
+                android:src="@android:drawable/ic_menu_revert"
+                app:tint="@color/neon_cyan" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:letterSpacing="0.01"
+                    android:text="Asistente RAG Bromatología"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:letterSpacing="0.03"
+                    android:text="⚡ Gemini 2.5 Flash • UTEQ"
+                    android:textColor="@color/neon_emerald"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_badge_model"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="4dp"
+                android:text="IA ONLINE"
+                android:textColor="@color/neon_emerald"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Chip del Equipo Seleccionado Activo -->
     <LinearLayout
         android:id="@+id/layoutSelectedChip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/card_dark"
+        android:background="#0D1625"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingHorizontal="16dp"
         android:paddingVertical="8dp"
-        app:layout_constraintTop_toBottomOf="@id/toolbarChat">
+        app:layout_constraintTop_toBottomOf="@id/layoutChatHeader">
 
         <TextView
             android:id="@+id/tvActiveEquipment"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@color/uteq_accent"
-            android:textSize="13sp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/neon_cyan"
+            android:textSize="12sp"
             android:textStyle="bold"
             tools:text="🔬 Equipo Activo: Unidad de Destilación Kjeldahl" />
 
     </LinearLayout>
 
-    <!-- Chips de Preguntas Rápidas -->
+    <!-- Chips de Preguntas Rápidas Estilizadas -->
     <HorizontalScrollView
         android:id="@+id/scrollChips"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingHorizontal="12dp"
-        android:paddingVertical="6dp"
+        android:paddingVertical="8dp"
         android:scrollbars="none"
         app:layout_constraintTop_toBottomOf="@id/layoutSelectedChip">
 
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/chipGroupQuickQuestions"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:singleLine="true">
+            android:orientation="horizontal">
 
-            <com.google.android.material.chip.Chip
+            <TextView
                 android:id="@+id/chipPPE"
-                style="@style/Widget.Material3.Chip.Assist"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/bg_chip_quick"
+                android:paddingHorizontal="14dp"
+                android:paddingVertical="8dp"
                 android:text="🦺 ¿Qué EPP necesito?"
                 android:textColor="@color/text_primary"
-                app:chipBackgroundColor="@color/card_dark"
-                app:chipStrokeColor="@color/card_border" />
+                android:textSize="12sp" />
 
-            <com.google.android.material.chip.Chip
+            <TextView
                 android:id="@+id/chipProcedure"
-                style="@style/Widget.Material3.Chip.Assist"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/bg_chip_quick"
+                android:paddingHorizontal="14dp"
+                android:paddingVertical="8dp"
                 android:text="📋 ¿Procedimiento paso a paso?"
                 android:textColor="@color/text_primary"
-                app:chipBackgroundColor="@color/card_dark"
-                app:chipStrokeColor="@color/card_border" />
+                android:textSize="12sp" />
 
-            <com.google.android.material.chip.Chip
+            <TextView
                 android:id="@+id/chipPractices"
-                style="@style/Widget.Material3.Chip.Assist"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/bg_chip_quick"
+                android:paddingHorizontal="14dp"
+                android:paddingVertical="8dp"
                 android:text="🧪 ¿Qué prácticas UTEQ aplica?"
                 android:textColor="@color/text_primary"
-                app:chipBackgroundColor="@color/card_dark"
-                app:chipStrokeColor="@color/card_border" />
+                android:textSize="12sp" />
 
-            <com.google.android.material.chip.Chip
+            <TextView
                 android:id="@+id/chipRisks"
-                style="@style/Widget.Material3.Chip.Assist"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/bg_chip_quick"
+                android:paddingHorizontal="14dp"
+                android:paddingVertical="8dp"
                 android:text="⚠️ ¿Cuáles son los riesgos?"
                 android:textColor="@color/text_primary"
-                app:chipBackgroundColor="@color/card_dark"
-                app:chipStrokeColor="@color/card_border" />
+                android:textSize="12sp" />
 
-        </com.google.android.material.chip.ChipGroup>
+        </LinearLayout>
     </HorizontalScrollView>
 
-    <!-- Lista de Mensajes -->
+    <!-- Lista de Mensajes del Chat -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvChatMessages"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:clipToPadding="false"
-        android:paddingBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@id/layoutInputBar"
+        android:paddingHorizontal="12dp"
+        android:paddingTop="6dp"
+        android:paddingBottom="12dp"
+        app:layout_constraintBottom_toTopOf="@id/layoutInputDock"
         app:layout_constraintTop_toBottomOf="@id/scrollChips"
         tools:listitem="@layout/item_chat_message" />
 
-    <!-- Barra Inferior de Entrada de Texto -->
+    <!-- Barra Inferior de Entrada Flotante (Glass Capsule) -->
     <LinearLayout
-        android:id="@+id/layoutInputBar"
+        android:id="@+id/layoutInputDock"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/card_dark"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="8dp"
+        android:background="@color/obsidian_base"
+        android:paddingHorizontal="12dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <EditText
-            android:id="@+id/etChatMessage"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:background="@null"
-            android:hint="@string/chat_hint"
-            android:inputType="textCapSentences|textMultiLine"
-            android:maxLines="4"
-            android:padding="10dp"
-            android:textColor="@color/text_primary"
-            android:textColorHint="@color/text_secondary"
-            android:textSize="14sp" />
+            android:background="@drawable/bg_input_capsule"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="4dp">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/btnSendMessage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="4dp"
-            android:backgroundTint="@color/uteq_accent"
-            android:contentDescription="Enviar"
-            app:fabCustomSize="46dp"
-            app:srcCompat="@android:drawable/ic_menu_send"
-            app:tint="@color/white" />
+            <EditText
+                android:id="@+id/etChatMessage"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@null"
+                android:hint="Escribe tu consulta sobre el equipo..."
+                android:inputType="textCapSentences|textMultiLine"
+                android:maxLines="4"
+                android:paddingVertical="10dp"
+                android:paddingHorizontal="8dp"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_muted"
+                android:textSize="14sp" />
 
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/btnSendMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/neon_emerald"
+                android:contentDescription="Enviar mensaje"
+                app:elevation="4dp"
+                app:fabCustomSize="42dp"
+                app:srcCompat="@android:drawable/ic_menu_send"
+                app:tint="@color/obsidian_base" />
+
+        </LinearLayout>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

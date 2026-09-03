@@ -4,138 +4,198 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/uteq_surface"
-    android:padding="20dp">
+    android:background="@color/obsidian_surface"
+    android:paddingHorizontal="20dp"
+    android:paddingTop="12dp"
+    android:paddingBottom="28dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Barra de arrastre superior -->
+        <!-- Barra de arrastre superior redondeada -->
         <View
-            android:layout_width="48dp"
-            android:layout_height="5dp"
+            android:layout_width="44dp"
+            android:layout_height="4dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="16dp"
             android:background="@drawable/drag_handle" />
 
-        <!-- Encabezado con Nombre y Fabricante -->
+        <!-- Badge de Categoría / Laboratorio -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:background="@drawable/bg_badge_model"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="3dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="FICHA TÉCNICA OFICIAL • BROMATOLOGÍA UTEQ"
+                android:textColor="@color/neon_emerald"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Nombre Común del Equipo -->
         <TextView
             android:id="@+id/tvEquipmentName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:letterSpacing="0.01"
             android:textColor="@color/text_primary"
-            android:textSize="20sp"
+            android:textSize="21sp"
             android:textStyle="bold"
             tools:text="Unidad de Destilación Kjeldahl" />
 
+        <!-- Fabricante y Modelo Oficial -->
         <TextView
             android:id="@+id/tvEquipmentOfficial"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:textColor="@color/uteq_accent"
-            android:textSize="13sp"
-            tools:text="J.P. SELECTA - Pro-Nitro A (Cat. 4002430)" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginVertical="12dp"
-            android:background="@color/card_border" />
-
-        <!-- Función Bromatológica -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="🔬 Función en Bromatología"
-            android:textColor="@color/text_primary"
-            android:textSize="15sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tvFunction"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:lineSpacingExtra="3dp"
             android:textColor="@color/text_secondary"
-            android:textSize="14sp"
-            tools:text="Destilación por arrastre de vapor para cuantificación de nitrógeno total y proteína cruda en alimentos." />
+            android:textSize="13sp"
+            tools:text="J.P. SELECTA • Pro-Nitro A (Cat. 4002430)" />
 
-        <!-- EPP Obligatorio -->
-        <TextView
-            android:layout_width="wrap_content"
+        <!-- TARJETA 1: Función y Principio Bromatológico -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="🦺 EPP Obligatorio"
-            android:textColor="@color/badge_epp"
-            android:textSize="15sp"
-            android:textStyle="bold" />
+            android:background="@drawable/bg_glass_card"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-        <TextView
-            android:id="@+id/tvEPP"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="🔬 Propósito y Función Analítica"
+                    android:textColor="@color/neon_cyan"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvFunction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:lineSpacingExtra="3dp"
+                android:textColor="@color/text_primary"
+                android:textSize="13sp"
+                tools:text="Destilación por arrastre de vapor para cuantificación de nitrógeno total y proteína cruda en alimentos." />
+        </LinearLayout>
+
+        <!-- TARJETA 2: EPP Obligatorio de Bioseguridad -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textColor="@color/text_secondary"
-            android:textSize="13sp"
-            tools:text="• Mandil antifluidos\n• Gafas de seguridad\n• Guantes de nitrilo" />
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_glass_card"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-        <!-- Riesgos y Bioseguridad -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="⚠️ Riesgos y Bioseguridad"
-            android:textColor="@color/box_amber"
-            android:textSize="15sp"
-            android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🦺 Elementos de Protección Personal (EPP)"
+                android:textColor="@color/neon_rose"
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/tvRisks"
+            <TextView
+                android:id="@+id/tvEPP"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:lineSpacingExtra="3dp"
+                android:textColor="@color/text_primary"
+                android:textSize="13sp"
+                tools:text="• Mandil antifluidos blanco\n• Gafas de policarbonato con protección lateral\n• Guantes de nitrilo" />
+        </LinearLayout>
+
+        <!-- TARJETA 3: Riesgos y Bioseguridad -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textColor="@color/text_secondary"
-            android:textSize="13sp"
-            tools:text="• Quemaduras térmicas por vapor\n• Contacto con NaOH 40%" />
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_glass_card"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-        <!-- Guías de Práctica UTEQ -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="🧪 Guías de Práctica UTEQ"
-            android:textColor="@color/box_cyan"
-            android:textSize="15sp"
-            android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="⚠️ Riesgos Operativos y Precauciones"
+                android:textColor="@color/neon_amber"
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/tvPractices"
+            <TextView
+                android:id="@+id/tvRisks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:lineSpacingExtra="3dp"
+                android:textColor="@color/text_primary"
+                android:textSize="13sp"
+                tools:text="• Quemaduras térmicas por vapor caliente\n• Contacto accidental con reactivos corrosivos (NaOH 40%)" />
+        </LinearLayout>
+
+        <!-- TARJETA 4: Prácticas UTEQ y Normativa -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textColor="@color/text_secondary"
-            android:textSize="13sp"
-            tools:text="• Práctica N° 03: Proteína Cruda en Alimentos Balanceados (AOAC 984.13)" />
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_glass_card"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-        <!-- Botón para Consultar al Asistente RAG -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🧪 Guías de Práctica UTEQ y Normativas"
+                android:textColor="@color/neon_violet"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvPractices"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:lineSpacingExtra="3dp"
+                android:textColor="@color/text_primary"
+                android:textSize="13sp"
+                tools:text="• Práctica N° 03: Determinación de Proteína Cruda en Balanceados (AOAC 984.13)" />
+        </LinearLayout>
+
+        <!-- Botón de Consulta al Asistente RAG -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnConsultRAG"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginTop="22dp"
-            android:backgroundTint="@color/uteq_primary"
-            android:text="💬 Consultar al Asistente RAG (LLM)"
+            android:layout_height="52dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/bg_btn_gradient"
+            android:stateListAnimator="@null"
+            android:text="✨ Consultar Asistente RAG (Gemini)"
             android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="15sp"
+            android:textColor="@color/obsidian_base"
+            android:textSize="14sp"
             android:textStyle="bold"
-            app:cornerRadius="14dp"
-            app:icon="@android:drawable/ic_menu_send"
-            app:iconGravity="textStart" />
+            app:backgroundTint="@color/transparent"
+            app:cornerRadius="14dp" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
