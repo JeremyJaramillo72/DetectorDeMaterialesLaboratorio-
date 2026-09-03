@@ -53,15 +53,10 @@ class YoloDetector(
             e.printStackTrace()
             labels.addAll(
                 listOf(
-                    "Agitador de Tubos - Mezclador Vortex", "Agua Destilada Desmineralizada", "Analizador de Fibra Cruda y Fracciones",
-                    "Balanza Analitica de la Serie Ohaus Pioneer", "Bateria de Desionizacion y Tratamiento de Agua", "Bomba Calorimetrica de Oxigeno",
-                    "Bomba de Vacio de Membrana - Diafragma Portatil", "Bomba de Vacio por Recirculacion de Agua", "Cabina de Flujo Laminar",
-                    "Campana de Extraccion de Gases de Laboratorio", "Destilacion por Arrastre de Vapor", "Destilador por Arrastre de Vapor tipo Kjeldahl",
-                    "Destilador de Agua Continuo Metalico", "Estufa - Horno Universal de Secado", "Extractor de Laboratorio Automatico para Analisis de Grasas y Aceites",
-                    "Molino Ciclonico de Muestras Bromatologicas", "Mufla Electrica de Laboratorio", "Placa Calefactora con Agitador MagneticoMetalico",
-                    "Potenciometro - pH-metro Digital de Mesa", "Refractometro Digital Abbe de Mesa", "Sistema de Tratamiento y Desionizacion deAgua",
-                    "Soporte Giratorio para Pipetas de Vidrio", "Stufa de Laboratorio de Conveccion", "Termometro Digital Parr Model 6775",
-                    "Unidad de Destilacion Kjeldahl", "Viscosimetro Rotacional Digital Brookfield"
+                    "Analizador de Fibra Cruda y Fracciones", "Bomba de Vacio por Recirculacion de Agua",
+                    "Destilacion de Nitrogeno y Proteinas", "Destilador de Agua Continuo Metalico",
+                    "Destilador por Arrastre de Vapor tipo Kjeldahl", "Microcospio Trinocular",
+                    "Sistema de Tratamiento y Desionizacion deAgua", "Viscosimetro Brookfield Modelo DV-E"
                 )
             )
         }
@@ -324,10 +319,10 @@ class YoloDetector(
         return listOf(
             DetectionResult(
                 boundingBox = box,
-                label = "destilador_kjeldahl",
-                displayName = "Unidad Kjeldahl Selecta",
+                label = "Destilador por Arrastre de Vapor tipo Kjeldahl",
+                displayName = "Destilador por Arrastre de Vapor tipo Kjeldahl",
                 confidence = 0.954f,
-                classIndex = 0
+                classIndex = 4
             )
         )
     }

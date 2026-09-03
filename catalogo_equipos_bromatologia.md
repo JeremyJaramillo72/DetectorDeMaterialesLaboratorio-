@@ -10,8 +10,6 @@
 
 ## 📋 Tabla de Equipos Seleccionados (8 Equipos Oficiales)
 
-| N° | Nombre del Equipo | Marca / Fabricante | Modelo Oficial | Imagen |
-|:--:|:---|:---|:---|:--:|
 | ID | Etiqueta Roboflow (YOLO11) | Fabricante / Nombre Común | Modelo Oficial | Imagen |
 |:--:|:---|:---|:---|:--:|
 | **0** | `Analizador de Fibra Cruda y Fracciones` | J.P. SELECTA | DOSI-FIBER (Cat. 4000623) | ![Foto](images_opt/equipos_seleccionados/analizador_fibra_cruda_fracciones.jpg) |

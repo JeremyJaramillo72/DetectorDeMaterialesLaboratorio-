@@ -30,7 +30,7 @@ class OverlayView @JvmOverloads constructor(
     private var selectedDetection: DetectionResult? = null
     var onDetectionSelectedListener: ((DetectionResult) -> Unit)? = null
 
-    // Paleta de colores estándar YOLO por clase (26 colores para 26 clases)
+    // Paleta de colores estándar YOLO por clase (8 clases activas, con colores extra para extensibilidad)
     private val CLASS_COLORS = intArrayOf(
         Color.parseColor("#00E676"), // 0: Verde brillante
         Color.parseColor("#00E5FF"), // 1: Cyan / Aqua
