@@ -12,14 +12,16 @@
 
 | N° | Nombre del Equipo | Marca / Fabricante | Modelo Oficial | Imagen |
 |:--:|:---|:---|:---|:--:|
-| **1** | **Sistema de Tratamiento y Desionización de Agua** | Aquapro / Genérico Industrial | Sistema Multietapa 3 Etapas con Manómetros | ![Foto](images_opt/equipos_seleccionados/sistema_tratamiento_desionizacion_agua.jpg) |
-| **2** | **Viscosímetro Brookfield Modelo DV-E** | AMETEK Brookfield | DV-E Viscometer (DVE) | ![Foto](images_opt/equipos_seleccionados/viscosimetro_brookfield_dve.jpg) |
-| **3** | **Destilador de Agua Continuo Metálico** | Boeco / J.P. Selecta | Destilador Mural Acero Inox 4 L/h | ![Foto](images_opt/equipos_seleccionados/destilador_agua_continuo_metalico.jpg) |
-| **4** | **Analizador de Fibra Cruda y Fracciones** | J.P. SELECTA | DOSI-FIBER (Cat. 4000623) | ![Foto](images_opt/equipos_seleccionados/analizador_fibra_cruda_fracciones.jpg) |
-| **5** | **Bomba de Vacío por Recirculación de Agua** | J.P. SELECTA | Bomba Recirculante (Cat. 4001611) | ![Foto](images_opt/equipos_seleccionados/bomba_vacio_recirculacion_agua.jpg) |
-| **6** | **Microscopio Trinocular** | Carl Zeiss | ZEISS Primo Star Trinocular | ![Foto](images_opt/equipos_seleccionados/microscopio_trinocular.jpg) |
-| **7** | **Destilación por Arrastre de Vapor** | J.P. SELECTA | Pro-Nitro (Sistema de Arrastre de Vapor) | ![Foto](images_opt/equipos_seleccionados/destilacion_arrastre_vapor.jpg) |
-| **8** | **Destilador de Proteína** | Fisher Scientific | Distillation Unit 100 (Unidad Kjeldahl) | ![Foto](images_opt/equipos_seleccionados/destilador_proteina.jpg) |
+| ID | Etiqueta Roboflow (YOLO11) | Fabricante / Nombre Común | Modelo Oficial | Imagen |
+|:--:|:---|:---|:---|:--:|
+| **0** | `Analizador de Fibra Cruda y Fracciones` | J.P. SELECTA | DOSI-FIBER (Cat. 4000623) | ![Foto](images_opt/equipos_seleccionados/analizador_fibra_cruda_fracciones.jpg) |
+| **1** | `Bomba de Vacio por Recirculacion de Agua` | J.P. SELECTA | Bomba Recirculante (Cat. 4001611) | ![Foto](images_opt/equipos_seleccionados/bomba_vacio_recirculacion_agua.jpg) |
+| **2** | `Destilacion de Nitrogeno y Proteinas` | Fisher Scientific | Distillation Unit 100 (Unidad Kjeldahl) | ![Foto](images_opt/equipos_seleccionados/destilador_proteina.jpg) |
+| **3** | `Destilador de Agua Continuo Metalico` | Boeco / J.P. Selecta | Destilador Mural Acero Inox 4 L/h | ![Foto](images_opt/equipos_seleccionados/destilador_agua_continuo_metalico.jpg) |
+| **4** | `Destilador por Arrastre de Vapor tipo Kjeldahl` | J.P. SELECTA | Pro-Nitro (Arrastre de Vapor) | ![Foto](images_opt/equipos_seleccionados/destilacion_arrastre_vapor.jpg) |
+| **5** | `Microcospio Trinocular` | Carl Zeiss | ZEISS Primo Star Trinocular | ![Foto](images_opt/equipos_seleccionados/microscopio_trinocular.jpg) |
+| **6** | `Sistema de Tratamiento y Desionizacion deAgua` | Aquapro / Genérico Industrial | Sistema Multietapa 3 Etapas con Manómetros | ![Foto](images_opt/equipos_seleccionados/sistema_tratamiento_desionizacion_agua.jpg) |
+| **7** | `Viscosimetro Brookfield Modelo DV-E` | AMETEK Brookfield | DV-E Viscometer (DVE) | ![Foto](images_opt/equipos_seleccionados/viscosimetro_brookfield_dve.jpg) |
 
 ---
 

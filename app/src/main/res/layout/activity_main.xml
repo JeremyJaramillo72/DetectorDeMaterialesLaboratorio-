@@ -63,7 +63,7 @@
                 android:background="@drawable/bg_badge_model"
                 android:paddingHorizontal="10dp"
                 android:paddingVertical="4dp"
-                android:text="YOLO11 • 26 Clases"
+                android:text="YOLO11 • 8 Clases"
                 android:textColor="@color/uteq_accent"
                 android:textSize="11sp"
                 android:textStyle="bold" />

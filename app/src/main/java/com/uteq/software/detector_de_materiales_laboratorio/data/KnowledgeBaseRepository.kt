@@ -46,7 +46,11 @@ class KnowledgeBaseRepository private constructor(private val context: Context) 
         "microcospio trinocular" to "microscopio_trinocular",
         "destilador de proteina" to "destilador_proteina",
         "destilador de proteína" to "destilador_proteina",
-        "destilador de agua continuo metalico" to "destilador_agua"
+        "destilacion de nitrogeno y proteinas" to "destilador_proteina",
+        "destilación de nitrógeno y proteínas" to "destilador_proteina",
+        "destilador de agua continuo metalico" to "destilador_agua",
+        "sistema de tratamiento y desionizacion de agua" to "sistema_tratamiento_agua",
+        "sistema de tratamiento y desionización de agua" to "sistema_tratamiento_agua"
     )
 
     init {
