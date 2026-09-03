@@ -1,6 +1,7 @@
 *.iml
 .gradle
 /local.properties
+local.properties
 /.idea
 .DS_Store
 /build
@@ -8,8 +9,12 @@ app/build
 /captures
 .externalNativeBuild
 .cxx
-local.properties
 *.zip
-Laboratorio de Bromatología -1-001/
 .kotlin/
 scratch/
+dataset/
+dataset_precise/
+temp_roboflow/
+fotos_para_etiquetar/
+*.tflite
+!app/src/main/assets/*.tflite
