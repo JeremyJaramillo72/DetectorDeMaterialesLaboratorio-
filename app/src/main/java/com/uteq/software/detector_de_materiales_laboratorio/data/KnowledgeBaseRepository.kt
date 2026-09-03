@@ -39,7 +39,14 @@ class KnowledgeBaseRepository private constructor(private val context: Context) 
         "stufa de laboratorio de conveccion" to "estufa_secado_memmert",
         "termometro digital parr model 6775" to "calorimetro_bomba",
         "unidad de destilacion kjeldahl" to "destilador_kjeldahl",
-        "viscosimetro rotacional digital brookfield" to "viscosimetro_brookfield"
+        "viscosimetro rotacional digital brookfield" to "viscosimetro_brookfield",
+        "viscosímetro brookfield modelo dv-e" to "viscosimetro_brookfield",
+        "viscosimetro brookfield modelo dv-e" to "viscosimetro_brookfield",
+        "microscopio trinocular" to "microscopio_trinocular",
+        "microcospio trinocular" to "microscopio_trinocular",
+        "destilador de proteina" to "destilador_proteina",
+        "destilador de proteína" to "destilador_proteina",
+        "destilador de agua continuo metalico" to "destilador_agua"
     )
 
     init {

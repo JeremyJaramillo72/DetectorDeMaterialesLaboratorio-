@@ -97,6 +97,7 @@ class YoloDetector(
     }
 
     fun isModelLoaded(): Boolean = interpreter != null
+    fun getLoadedModelName(): String? = if (interpreter != null) modelFileName.removeSuffix(".tflite") else null
 
     fun detect(bitmap: Bitmap): List<DetectionResult> {
         val interp = interpreter ?: return generateDemoDetections(bitmap.width, bitmap.height)

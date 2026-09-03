@@ -961,6 +961,336 @@
       "fuentes_referencias": [
         "Manual de Buenas Prácticas de Laboratorio y Manejo de Cristalería - UTEQ"
       ]
+    },
+    {
+      "id": "balanza_ohaus_pioneer",
+      "clase_yolo": "balanza_ohaus_pioneer",
+      "nombre_comun": "Balanza Analítica Ohaus Pioneer",
+      "nombre_oficial": "Balanza Analítica de Precisión Serie Pioneer PX",
+      "fabricante": "OHAUS Corporation",
+      "modelo": "Pioneer PX224 / PX124",
+      "ubicacion": "Mesa analítica de pesaje de muestras",
+      "funcion_principal": "Determinación gravimétrica de masa con resolución de 0.1 mg para pesaje de muestras, reactivos y precipitados en análisis bromatológicos cuantitativos (cenizas, humedad, grasa, fibra).",
+      "principio_funcionamiento": "Utiliza una celda de carga electromagnética de compensación de fuerza. Al colocar una muestra en el platillo, el sensor detecta la fuerza gravitacional y la compensa con una corriente eléctrica proporcional, convirtiendo la señal en una lectura digital de masa.",
+      "componentes_principales": [
+        "Platillo de acero inoxidable de 90 mm de diámetro",
+        "Cámara de pesaje con puertas corredizas de vidrio antiviento",
+        "Pantalla LCD retroiluminada con interfaz de usuario intuitiva",
+        "Nivel de burbuja y patas ajustables para nivelación",
+        "Puerto USB y RS232 para transferencia de datos",
+        "Función de tara, calibración interna/externa y conteo de piezas"
+      ],
+      "guias_practica_uteq": [
+        "Práctica N° 01: Determinación de Humedad y Materia Seca en Alimentos (AOAC 930.15)",
+        "Práctica N° 02: Determinación de Cenizas Totales por Calcinación (AOAC 942.05)",
+        "Práctica N° 04: Determinación de Extracto Etéreo / Grasa Cruda (AOAC 920.39)"
+      ],
+      "procedimiento_operativo_estandar": [
+        "1. Verificar que la balanza esté nivelada utilizando el nivel de burbuja integrado.",
+        "2. Encender la balanza y esperar a que se estabilice (mínimo 30 minutos de calentamiento).",
+        "3. Realizar calibración con pesas patrón certificadas si es necesario.",
+        "4. Presionar TARE para poner en cero la lectura con el recipiente vacío.",
+        "5. Colocar la muestra con pinzas o espátula, sin tocar el platillo con las manos.",
+        "6. Esperar a que el indicador de estabilidad aparezca antes de registrar la lectura.",
+        "7. Registrar la masa con todas las cifras significativas.",
+        "8. Retirar la muestra y limpiar cualquier derrame sobre el platillo."
+      ],
+      "epp_requerido": [
+        "Guantes de nitrilo (evitar transferencia de grasa/aceite corporal)",
+        "Bata de laboratorio"
+      ],
+      "riesgos_asociados": [
+        "Lecturas erróneas por corrientes de aire o vibraciones en la mesa de trabajo",
+        "Contaminación cruzada de muestras por platillo sucio",
+        "Daño al mecanismo interno por sobrecarga (no exceder capacidad máxima)"
+      ],
+      "normas_seguridad": [
+        "No apoyar las manos sobre la mesa durante el pesaje.",
+        "Mantener las puertas de la cámara cerradas durante la lectura.",
+        "Calibrar periódicamente con pesas patrón trazables."
+      ],
+      "fuentes_referencias": [
+        "Manual de Usuario OHAUS Pioneer PX Series",
+        "AOAC Official Methods of Analysis, 21st Edition"
+      ]
+    },
+    {
+      "id": "extractor_soxhlet",
+      "clase_yolo": "extractor_soxhlet",
+      "nombre_comun": "Extractor Automático de Grasas Soxhlet",
+      "nombre_oficial": "Extractor Automático de Laboratorio para Análisis de Grasas y Aceites",
+      "fabricante": "VELP Scientifica / ANKOM Technology",
+      "modelo": "SER 148 / XT15 Extractor",
+      "ubicacion": "Mesa analítica de extracción de lípidos",
+      "funcion_principal": "Extracción cuantitativa de grasa cruda (extracto etéreo) de muestras alimenticias mediante solventes orgánicos (éter de petróleo, hexano) para la determinación del contenido lipídico según métodos oficiales AOAC.",
+      "principio_funcionamiento": "El solvente orgánico se calienta hasta ebullición en un vaso colector, los vapores ascienden por un tubo lateral, condensan en un refrigerante y gotean sobre la muestra contenida en un dedal de celulosa. El solvente disuelve la grasa de la muestra y, al llenarse el sifón, retorna al vaso colector arrastrando los lípidos. Este ciclo se repite automáticamente durante el tiempo programado.",
+      "componentes_principales": [
+        "Cámara de extracción con posiciones múltiples (3 o 6 muestras)",
+        "Vasos colectores de aluminio o vidrio borosilicato",
+        "Condensador refrigerado por agua o sistema Peltier",
+        "Panel de control digital con temporizador y selector de etapas",
+        "Dedales de celulosa para contención de muestras",
+        "Sistema de recuperación de solvente integrado"
+      ],
+      "guias_practica_uteq": [
+        "Práctica N° 04: Determinación de Extracto Etéreo / Grasa Cruda (AOAC 920.39)",
+        "Práctica N° 08: Análisis Proximal Completo de Alimentos Balanceados"
+      ],
+      "procedimiento_operativo_estandar": [
+        "1. Pesar la muestra seca y molida (1-3 g) en un dedal de celulosa previamente pesado.",
+        "2. Insertar los dedales en las posiciones del extractor.",
+        "3. Agregar el volumen de solvente especificado (éter de petróleo 40-60°C) en cada vaso colector.",
+        "4. Verificar el flujo de agua de refrigeración del condensador.",
+        "5. Programar el tiempo de extracción según el método (mínimo 4 horas para Soxhlet clásico).",
+        "6. Iniciar el programa de extracción automática.",
+        "7. Al finalizar, activar el sistema de recuperación de solvente.",
+        "8. Retirar los vasos y secar en estufa a 105°C hasta peso constante.",
+        "9. Calcular el contenido de grasa por diferencia gravimétrica."
+      ],
+      "epp_requerido": [
+        "Guantes de nitrilo resistentes a solventes",
+        "Gafas de seguridad químicas con ventilación indirecta",
+        "Bata de laboratorio de algodón (no sintética)",
+        "Trabajo bajo campana de extracción de gases"
+      ],
+      "riesgos_asociados": [
+        "Inflamabilidad: éter de petróleo y hexano son altamente inflamables (punto de ignición < 0°C)",
+        "Toxicidad por inhalación de vapores orgánicos en espacios cerrados",
+        "Riesgo de explosión si hay fugas de solvente cerca de fuentes de calor",
+        "Quemaduras térmicas por contacto con vasos calientes"
+      ],
+      "normas_seguridad": [
+        "Operar exclusivamente bajo campana de extracción con flujo de aire verificado.",
+        "No calentar solventes en llama abierta; usar solo el calentamiento eléctrico del equipo.",
+        "Verificar la integridad de las mangueras de refrigeración antes de cada uso.",
+        "Almacenar los solventes en gabinete para inflamables."
+      ],
+      "fuentes_referencias": [
+        "AOAC Official Method 920.39 - Fat (Crude) in Animal Feed",
+        "Manual de Operación VELP SER 148 Solvent Extractor",
+        "NTE INEN 0523 - Determinación de grasa en alimentos"
+      ]
+    },
+    {
+      "id": "mufla_electrica",
+      "clase_yolo": "mufla_electrica",
+      "nombre_comun": "Mufla Eléctrica de Laboratorio",
+      "nombre_oficial": "Horno Mufla Eléctrico de Alta Temperatura para Calcinación",
+      "fabricante": "Thermo Scientific / Nabertherm",
+      "modelo": "Thermolyne F48000 / L 9/11",
+      "ubicacion": "Mesa de calcinación y análisis de cenizas",
+      "funcion_principal": "Calcinación (incineración) de muestras orgánicas a temperaturas de 550-600°C para la determinación cuantitativa de cenizas totales (contenido mineral) en alimentos, harinas, forrajes y productos cárnicos.",
+      "principio_funcionamiento": "Elementos calefactores de aleación de alta resistencia (kanthal o carburo de silicio) rodean la cámara de cerámica refractaria. Un controlador PID regula la temperatura con precisión, elevándola gradualmente para volatilizar toda la materia orgánica de la muestra, dejando únicamente el residuo inorgánico (cenizas).",
+      "componentes_principales": [
+        "Cámara interior de cerámica refractaria de alta alúmina",
+        "Elementos calefactores de resistencia embebidos en las paredes",
+        "Controlador digital PID de temperatura con rampa programable",
+        "Puerta frontal con cierre hermético y aislamiento térmico multicapa",
+        "Termopar tipo K o tipo S para medición de temperatura interna",
+        "Chimenea de ventilación superior para evacuación de gases"
+      ],
+      "guias_practica_uteq": [
+        "Práctica N° 02: Determinación de Cenizas Totales por Calcinación (AOAC 942.05)",
+        "Práctica N° 07: Determinación de Minerales en Alimentos por Vía Seca",
+        "Práctica N° 08: Análisis Proximal Completo de Alimentos Balanceados"
+      ],
+      "procedimiento_operativo_estandar": [
+        "1. Pesar crisoles de porcelana previamente calcinados y tarados a peso constante.",
+        "2. Colocar la muestra seca (2-5 g) en el crisol y registrar la masa exacta.",
+        "3. Pre-carbonizar la muestra en mechero Bunsen o placa calefactora hasta que cese el humo.",
+        "4. Introducir los crisoles en la mufla con pinzas de crisol largas.",
+        "5. Programar la temperatura a 550°C con rampa gradual (no exceder 600°C para alimentos).",
+        "6. Mantener la calcinación durante 4-6 horas o hasta cenizas blancas/grises.",
+        "7. Apagar la mufla y dejar enfriar hasta ~200°C antes de abrir la puerta.",
+        "8. Transferir los crisoles al desecador hasta temperatura ambiente.",
+        "9. Pesar y calcular el porcentaje de cenizas."
+      ],
+      "epp_requerido": [
+        "Guantes de protección térmica (resistentes a 250°C mínimo)",
+        "Gafas de seguridad con protección contra radiación infrarroja",
+        "Bata de laboratorio de algodón ignífugo",
+        "Pinzas de crisol de acero inoxidable con mango largo"
+      ],
+      "riesgos_asociados": [
+        "Quemaduras graves por contacto con superficies a 550°C o crisoles calientes",
+        "Inhalación de humos tóxicos durante la pre-carbonización de muestras",
+        "Riesgo de incendio si se colocan muestras con exceso de grasa sin pre-carbonizar",
+        "Choque térmico y rotura de crisoles si se enfrían bruscamente"
+      ],
+      "normas_seguridad": [
+        "No abrir la puerta de la mufla cuando la temperatura supere los 300°C.",
+        "Pre-carbonizar siempre las muestras antes de introducirlas en la mufla.",
+        "Utilizar pinzas largas para manipular crisoles calientes.",
+        "No colocar materiales plásticos o inflamables cerca de la mufla encendida."
+      ],
+      "fuentes_referencias": [
+        "AOAC Official Method 942.05 - Ash of Animal Feed",
+        "Manual de Operación Thermo Scientific Thermolyne F48000",
+        "NTE INEN 0401 - Determinación de cenizas en cereales y derivados"
+      ]
+    },
+    {
+      "id": "viscosimetro_brookfield",
+      "clase_yolo": "viscosimetro_brookfield",
+      "nombre_comun": "Viscosímetro Rotacional Brookfield",
+      "nombre_oficial": "Viscosímetro Rotacional Digital Brookfield",
+      "fabricante": "AMETEK Brookfield",
+      "modelo": "DV-II+ Pro / DV2T",
+      "ubicacion": "Mesa analítica de análisis reológico",
+      "funcion_principal": "Medición de la viscosidad dinámica (en centipoise, cP o mPa·s) de fluidos alimenticios como salsas, jugos concentrados, miel, jarabes, purés y emulsiones para control de calidad y caracterización reológica de productos procesados.",
+      "principio_funcionamiento": "Un husillo (spindle) cilíndrico o de disco sumergido en la muestra gira a velocidad controlada. El torque necesario para mantener la rotación contra la resistencia viscosa del fluido es medido por un resorte calibrado y un transductor. La viscosidad se calcula a partir de la velocidad de rotación, la geometría del spindle y el torque medido.",
+      "componentes_principales": [
+        "Cabezal de medición con motor de precisión y resorte calibrado",
+        "Set de husillos (spindles) intercambiables de acero inoxidable (LV o RV)",
+        "Pantalla LCD digital con indicación de viscosidad, torque % y velocidad RPM",
+        "Soporte de laboratorio con columna vertical y ajuste de altura",
+        "Protector de husillo (guard leg) para centrado y protección",
+        "Puerto RS-232 / USB para registro de datos en software Rheocalc"
+      ],
+      "guias_practica_uteq": [
+        "Práctica N° 09: Determinación de Viscosidad en Productos Alimenticios Fluidos",
+        "Práctica N° 10: Control de Calidad Reológico de Salsas y Emulsiones"
+      ],
+      "procedimiento_operativo_estandar": [
+        "1. Nivelar el viscosímetro utilizando el nivel de burbuja integrado.",
+        "2. Seleccionar el husillo adecuado según el rango de viscosidad esperado.",
+        "3. Acoplar el husillo al eje del cabezal girando en sentido antihorario.",
+        "4. Verter la muestra en un vaso de precipitados de 600 mL (volumen estandarizado).",
+        "5. Sumergir el husillo hasta la marca de inmersión indicada.",
+        "6. Seleccionar la velocidad de rotación (RPM) según el método.",
+        "7. Iniciar la medición y esperar a que la lectura se estabilice (torque entre 10-100%).",
+        "8. Registrar la viscosidad (cP), el porcentaje de torque y la temperatura.",
+        "9. Detener la rotación, retirar y limpiar el husillo inmediatamente."
+      ],
+      "epp_requerido": [
+        "Guantes de nitrilo",
+        "Bata de laboratorio",
+        "Gafas de seguridad si se trabaja con muestras ácidas o calientes"
+      ],
+      "riesgos_asociados": [
+        "Daño mecánico al resorte calibrado si se golpea o fuerza el husillo",
+        "Lecturas erróneas por burbujas de aire atrapadas en la muestra",
+        "Salpicaduras de muestra caliente si no se controla la temperatura"
+      ],
+      "normas_seguridad": [
+        "No girar manualmente el husillo acoplado; siempre usar el control del equipo.",
+        "Verificar que el porcentaje de torque esté entre 10% y 100% para lecturas confiables.",
+        "Limpiar los husillos inmediatamente después de cada medición para evitar residuos solidificados."
+      ],
+      "fuentes_referencias": [
+        "Manual de Operación Brookfield DV-II+ Pro Viscometer",
+        "Brookfield Engineering: More Solutions to Sticky Problems",
+        "NTE INEN 1009 - Miel de abeja. Requisitos"
+    },
+    {
+      "id": "microscopio_trinocular",
+      "clase_yolo": "microscopio_trinocular",
+      "nombre_comun": "Microscopio Trinocular Zeiss Primo Star",
+      "nombre_oficial": "Microscopio Óptico Trinocular de Laboratorio Primo Star",
+      "fabricante": "Carl Zeiss Microscopy GmbH",
+      "modelo": "Primo Star Trinocular (ICS Optics)",
+      "ubicacion": "Mesa de microbiología y microscopía analítica",
+      "funcion_principal": "Inspección morfológica y celular de estructuras biológicas, adulteraciones en harinas y almidones, identificación botánica de forrajes y control microbiológico de alimentos (mohos, levaduras y bacterias).",
+      "principio_funcionamiento": "Utiliza un sistema óptico infinito con corrección cromática (ICS). La luz generada por un LED de alta intensidad atraviesa el condensador Abbe (AN 0.9/1.25) e ilumina la muestra montada en la platina mecánica. Los objetivos Plan-Achromat generan una imagen ampliada sin aberraciones esféricas ni cromáticas que se divide entre los oculares binoculares y el fototubo trinocular para captura de imagen digital.",
+      "componentes_principales": [
+        "Cabezal trinocular Siedentopf inclinado a 30° con fototubo",
+        "Oculares de gran campo WF 10x / 20 mm con ajuste dióptrico",
+        "Revólver cuádruple inclinado hacia atrás",
+        "Objetivos Plan-Achromat: 4x/0.10, 10x/0.25, 40x/0.65 retráctil y 100x/1.25 Oil retráctil de inmersión",
+        "Condensador Abbe 0.9/1.25 con diafragma iris",
+        "Platina mecánica de doble capa (140 x 135 mm) con pinza portaobjetos",
+        "Mando coaxial de enfoque macrométrico y micrométrico (precisión 0.3 mm/rotación)",
+        "Iluminación LED con indicador de intensidad luminosa lateral de 5 barras"
+      ],
+      "guias_practica_uteq": [
+        "Práctica N° 05: Inspección Microscópica de Harinas y Detección de Almidones Adulterados",
+        "Práctica N° 11: Control Microbiológico y Recuento de Levaduras en Matrices Lácteas",
+        "Práctica N° 12: Identificación Botánica y Fibras en Alimentos Balanceados"
+      ],
+      "procedimiento_operativo_estandar": [
+        "1. Conectar el equipo a la red eléctrica de 110V y encender con el interruptor lateral.",
+        "2. Regular la intensidad lumínica con el reóstato hasta un nivel confortable para la vista.",
+        "3. Colocar el portaobjetos con el cubreobjetos asegurado bajo la pinza de la platina mecánica.",
+        "4. Seleccionar el objetivo de menor aumento (4x) rotando el revólver.",
+        "5. Subir la platina con el tornillo macrométrico observando lateralmente para no chocar el lente.",
+        "6. Mirando por los oculares, enfocar alejando la platina con el macrométrico y afinar con el micrométrico.",
+        "7. Ajustar la distancia interpupilar y las dioptrías en ambos ojos.",
+        "8. Cambiar progresivamente a 10x y 40x. Para 100x, colocar una gota de aceite de inmersión sobre el cubreobjetos.",
+        "9. Limpiar el objetivo de 100x inmediatamente con papel óptico y solvente especial al terminar."
+      ],
+      "epp_requerido": [
+        "Mandil o bata de laboratorio blanca de manga larga",
+        "Guantes de nitrilo (al manipular muestras fijadas o tinciones químicas)"
+      ],
+      "riesgos_asociados": [
+        "Fractura del cubreobjetos o portaobjetos y daño a la lente frontal del objetivo de 40x o 100x por aproximación excesiva",
+        "Fatiga ocular por mala regulación de la intensidad luminosa",
+        "Daño irreversible a la óptica por limpieza con materiales abrasivos o acumulación de aceite seco"
+      ],
+      "normas_seguridad": [
+        "Nunca usar alcohol común ni toallas de papel para limpiar los objetivos; usar exclusivamente papel de óptica con éter/etanol.",
+        "Al transportar el equipo, sujetar con dos manos: una en el asa de transporte integrada y otra bajo la base.",
+        "Cubrir siempre el microscopio con su funda guardapolvo al terminar las observaciones."
+      ],
+      "fuentes_referencias": [
+        "Manual de Instrucciones ZEISS Primo Star / Primostar 3 - Carl Zeiss Microscopy",
+        "AOAC Official Methods of Analysis - Microscopic Examination of Animal Feeds",
+        "Guía de Buenas Prácticas de Microscopía Óptica - Laboratorio UTEQ"
+      ]
+    },
+    {
+      "id": "destilador_proteina",
+      "clase_yolo": "destilador_proteina",
+      "nombre_comun": "Destilador de Proteína Fisher Scientific",
+      "nombre_oficial": "Unidad de Destilación Kjeldahl para Proteína Bruta",
+      "fabricante": "Fisher Scientific / Labconco",
+      "modelo": "Distillation Unit 100",
+      "ubicacion": "Mesa analítica de nitrógeno y proteína total",
+      "funcion_principal": "Destilación por arrastre de vapor de macro-muestras orgánicas previamente digeridas para la determinación cuantitativa de nitrógeno total y cálculo de proteína bruta (%PB = %N x 6.25) en cereales, balanceados, harinas y ensilajes.",
+      "principio_funcionamiento": "La digestión ácida (con sulfato de amonio disuelto) es alcalinizada automáticamente mediante la dosificación de solución de hidróxido de sodio al 40%. La inyección de vapor saturado arrastra el gas amoníaco libre (NH3) volatilizado hacia un serpentín refrigerante de condensación donde se disuelve en una solución ácida receptora de ácido bórico al 4% para su posterior titulación volumétrica con ácido clorhídrico 0.1 N.",
+      "componentes_principales": [
+        "Panel frontal digital con temporizador LED en minutos",
+        "Dosificador automático de NaOH 40% con escala selectora digital (x10 mL)",
+        "Bomba de dosificación de reactivo resistente a álcalis concentrados",
+        "Generador de vapor rápido con pulsador de inyección continua",
+        "Serpentín condensador de vidrio borosilicato 3.3 de alta tasa de intercambio térmico",
+        "Soporte de tubo macro Kjeldahl con junta de sellado de silicona fluorada",
+        "Cubeta colectora de derrames y mangueras sanitarias de entrada y purga"
+      ],
+      "guias_practica_uteq": [
+        "Práctica N° 03: Determinación de Proteína Cruda en Alimentos Balanceados (AOAC 984.13)",
+        "Práctica N° 06: Control de Calidad de Harinas de Pescado y Concentrados Proteicos (NTE INEN 0516)"
+      ],
+      "procedimiento_operativo_estandar": [
+        "1. Conectar el flujo de agua de refrigeración verificando un caudal continuo en la salida.",
+        "2. Encender el equipo y esperar a que el generador de vapor alcance régimen de trabajo.",
+        "3. Colocar el matraz Erlenmeyer con 25 mL de Ácido Bórico al 4% con indicador Tashiro en el extremo del tubo colector.",
+        "4. Acoplar firmemente el tubo de digestión Kjeldahl con la muestra digerida y fría.",
+        "5. Programar el volumen de NaOH (ej. 40 o 50 mL según acidez residual) y el tiempo de destilación (mínimo 4 minutos).",
+        "6. Iniciar la destilación y observar el viraje del indicador de violeta a verde al llegar las primeras gotas de amoníaco.",
+        "7. Al sonar la alarma de fin de ciclo, descender el Erlenmeyer, enjuagar la punta con agua destilada y titular con HCl 0.1 N."
+      ],
+      "epp_requerido": [
+        "Gafas de seguridad química con ventilación indirecta",
+        "Guantes de nitrilo o neopreno resistentes a álcalis cáusticos (NaOH 40%)",
+        "Mandil o bata de laboratorio de manga larga abotonada",
+        "Operación en área con adecuada extracción de aire o bajo campana"
+      ],
+      "riesgos_asociados": [
+        "Quemaduras químicas graves por proyección de NaOH concentrado si la junta de goma no está bien sellada",
+        "Quemaduras térmicas por vapor de agua o contacto con el tubo de digestión caliente",
+        "Subestimación de nitrógeno si el flujo de agua de condensación es insuficiente y se escapan vapores de amoníaco"
+      ],
+      "normas_seguridad": [
+        "Verificar siempre que el agua de refrigeración esté fluyendo antes de comenzar la destilación.",
+        "Manipular los tubos de digestión con guantes de protección térmica después de la destilación.",
+        "En caso de salpicadura de reactivo, lavar inmediatamente con abundante agua corriente durante 15 minutos."
+      ],
+      "fuentes_referencias": [
+        "Manual de Operación Fisher Scientific Distillation Unit 100",
+        "AOAC Official Method 984.13 - Protein (Crude) in Animal Feed",
+        "Norma Técnica Ecuatoriana NTE INEN 0516 - Determinación de Nitrógeno Total"
+      ]
     }
   ]
 }

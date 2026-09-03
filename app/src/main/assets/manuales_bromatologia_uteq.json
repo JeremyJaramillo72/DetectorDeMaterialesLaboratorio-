@@ -1181,6 +1181,115 @@
         "Manual de Operación Brookfield DV-II+ Pro Viscometer",
         "Brookfield Engineering: More Solutions to Sticky Problems",
         "NTE INEN 1009 - Miel de abeja. Requisitos"
+    },
+    {
+      "id": "microscopio_trinocular",
+      "clase_yolo": "microscopio_trinocular",
+      "nombre_comun": "Microscopio Trinocular Zeiss Primo Star",
+      "nombre_oficial": "Microscopio Óptico Trinocular de Laboratorio Primo Star",
+      "fabricante": "Carl Zeiss Microscopy GmbH",
+      "modelo": "Primo Star Trinocular (ICS Optics)",
+      "ubicacion": "Mesa de microbiología y microscopía analítica",
+      "funcion_principal": "Inspección morfológica y celular de estructuras biológicas, adulteraciones en harinas y almidones, identificación botánica de forrajes y control microbiológico de alimentos (mohos, levaduras y bacterias).",
+      "principio_funcionamiento": "Utiliza un sistema óptico infinito con corrección cromática (ICS). La luz generada por un LED de alta intensidad atraviesa el condensador Abbe (AN 0.9/1.25) e ilumina la muestra montada en la platina mecánica. Los objetivos Plan-Achromat generan una imagen ampliada sin aberraciones esféricas ni cromáticas que se divide entre los oculares binoculares y el fototubo trinocular para captura de imagen digital.",
+      "componentes_principales": [
+        "Cabezal trinocular Siedentopf inclinado a 30° con fototubo",
+        "Oculares de gran campo WF 10x / 20 mm con ajuste dióptrico",
+        "Revólver cuádruple inclinado hacia atrás",
+        "Objetivos Plan-Achromat: 4x/0.10, 10x/0.25, 40x/0.65 retráctil y 100x/1.25 Oil retráctil de inmersión",
+        "Condensador Abbe 0.9/1.25 con diafragma iris",
+        "Platina mecánica de doble capa (140 x 135 mm) con pinza portaobjetos",
+        "Mando coaxial de enfoque macrométrico y micrométrico (precisión 0.3 mm/rotación)",
+        "Iluminación LED con indicador de intensidad luminosa lateral de 5 barras"
+      ],
+      "guias_practica_uteq": [
+        "Práctica N° 05: Inspección Microscópica de Harinas y Detección de Almidones Adulterados",
+        "Práctica N° 11: Control Microbiológico y Recuento de Levaduras en Matrices Lácteas",
+        "Práctica N° 12: Identificación Botánica y Fibras en Alimentos Balanceados"
+      ],
+      "procedimiento_operativo_estandar": [
+        "1. Conectar el equipo a la red eléctrica de 110V y encender con el interruptor lateral.",
+        "2. Regular la intensidad lumínica con el reóstato hasta un nivel confortable para la vista.",
+        "3. Colocar el portaobjetos con el cubreobjetos asegurado bajo la pinza de la platina mecánica.",
+        "4. Seleccionar el objetivo de menor aumento (4x) rotando el revólver.",
+        "5. Subir la platina con el tornillo macrométrico observando lateralmente para no chocar el lente.",
+        "6. Mirando por los oculares, enfocar alejando la platina con el macrométrico y afinar con el micrométrico.",
+        "7. Ajustar la distancia interpupilar y las dioptrías en ambos ojos.",
+        "8. Cambiar progresivamente a 10x y 40x. Para 100x, colocar una gota de aceite de inmersión sobre el cubreobjetos.",
+        "9. Limpiar el objetivo de 100x inmediatamente con papel óptico y solvente especial al terminar."
+      ],
+      "epp_requerido": [
+        "Mandil o bata de laboratorio blanca de manga larga",
+        "Guantes de nitrilo (al manipular muestras fijadas o tinciones químicas)"
+      ],
+      "riesgos_asociados": [
+        "Fractura del cubreobjetos o portaobjetos y daño a la lente frontal del objetivo de 40x o 100x por aproximación excesiva",
+        "Fatiga ocular por mala regulación de la intensidad luminosa",
+        "Daño irreversible a la óptica por limpieza con materiales abrasivos o acumulación de aceite seco"
+      ],
+      "normas_seguridad": [
+        "Nunca usar alcohol común ni toallas de papel para limpiar los objetivos; usar exclusivamente papel de óptica con éter/etanol.",
+        "Al transportar el equipo, sujetar con dos manos: una en el asa de transporte integrada y otra bajo la base.",
+        "Cubrir siempre el microscopio con su funda guardapolvo al terminar las observaciones."
+      ],
+      "fuentes_referencias": [
+        "Manual de Instrucciones ZEISS Primo Star / Primostar 3 - Carl Zeiss Microscopy",
+        "AOAC Official Methods of Analysis - Microscopic Examination of Animal Feeds",
+        "Guía de Buenas Prácticas de Microscopía Óptica - Laboratorio UTEQ"
+      ]
+    },
+    {
+      "id": "destilador_proteina",
+      "clase_yolo": "destilador_proteina",
+      "nombre_comun": "Destilador de Proteína Fisher Scientific",
+      "nombre_oficial": "Unidad de Destilación Kjeldahl para Proteína Bruta",
+      "fabricante": "Fisher Scientific / Labconco",
+      "modelo": "Distillation Unit 100",
+      "ubicacion": "Mesa analítica de nitrógeno y proteína total",
+      "funcion_principal": "Destilación por arrastre de vapor de macro-muestras orgánicas previamente digeridas para la determinación cuantitativa de nitrógeno total y cálculo de proteína bruta (%PB = %N x 6.25) en cereales, balanceados, harinas y ensilajes.",
+      "principio_funcionamiento": "La digestión ácida (con sulfato de amonio disuelto) es alcalinizada automáticamente mediante la dosificación de solución de hidróxido de sodio al 40%. La inyección de vapor saturado arrastra el gas amoníaco libre (NH3) volatilizado hacia un serpentín refrigerante de condensación donde se disuelve en una solución ácida receptora de ácido bórico al 4% para su posterior titulación volumétrica con ácido clorhídrico 0.1 N.",
+      "componentes_principales": [
+        "Panel frontal digital con temporizador LED en minutos",
+        "Dosificador automático de NaOH 40% con escala selectora digital (x10 mL)",
+        "Bomba de dosificación de reactivo resistente a álcalis concentrados",
+        "Generador de vapor rápido con pulsador de inyección continua",
+        "Serpentín condensador de vidrio borosilicato 3.3 de alta tasa de intercambio térmico",
+        "Soporte de tubo macro Kjeldahl con junta de sellado de silicona fluorada",
+        "Cubeta colectora de derrames y mangueras sanitarias de entrada y purga"
+      ],
+      "guias_practica_uteq": [
+        "Práctica N° 03: Determinación de Proteína Cruda en Alimentos Balanceados (AOAC 984.13)",
+        "Práctica N° 06: Control de Calidad de Harinas de Pescado y Concentrados Proteicos (NTE INEN 0516)"
+      ],
+      "procedimiento_operativo_estandar": [
+        "1. Conectar el flujo de agua de refrigeración verificando un caudal continuo en la salida.",
+        "2. Encender el equipo y esperar a que el generador de vapor alcance régimen de trabajo.",
+        "3. Colocar el matraz Erlenmeyer con 25 mL de Ácido Bórico al 4% con indicador Tashiro en el extremo del tubo colector.",
+        "4. Acoplar firmemente el tubo de digestión Kjeldahl con la muestra digerida y fría.",
+        "5. Programar el volumen de NaOH (ej. 40 o 50 mL según acidez residual) y el tiempo de destilación (mínimo 4 minutos).",
+        "6. Iniciar la destilación y observar el viraje del indicador de violeta a verde al llegar las primeras gotas de amoníaco.",
+        "7. Al sonar la alarma de fin de ciclo, descender el Erlenmeyer, enjuagar la punta con agua destilada y titular con HCl 0.1 N."
+      ],
+      "epp_requerido": [
+        "Gafas de seguridad química con ventilación indirecta",
+        "Guantes de nitrilo o neopreno resistentes a álcalis cáusticos (NaOH 40%)",
+        "Mandil o bata de laboratorio de manga larga abotonada",
+        "Operación en área con adecuada extracción de aire o bajo campana"
+      ],
+      "riesgos_asociados": [
+        "Quemaduras químicas graves por proyección de NaOH concentrado si la junta de goma no está bien sellada",
+        "Quemaduras térmicas por vapor de agua o contacto con el tubo de digestión caliente",
+        "Subestimación de nitrógeno si el flujo de agua de condensación es insuficiente y se escapan vapores de amoníaco"
+      ],
+      "normas_seguridad": [
+        "Verificar siempre que el agua de refrigeración esté fluyendo antes de comenzar la destilación.",
+        "Manipular los tubos de digestión con guantes de protección térmica después de la destilación.",
+        "En caso de salpicadura de reactivo, lavar inmediatamente con abundante agua corriente durante 15 minutos."
+      ],
+      "fuentes_referencias": [
+        "Manual de Operación Fisher Scientific Distillation Unit 100",
+        "AOAC Official Method 984.13 - Protein (Crude) in Animal Feed",
+        "Norma Técnica Ecuatoriana NTE INEN 0516 - Determinación de Nitrógeno Total"
       ]
     }
   ]
