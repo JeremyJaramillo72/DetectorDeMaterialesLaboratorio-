@@ -18,3 +18,5 @@ temp_roboflow/
 fotos_para_etiquetar/
 *.tflite
 !app/src/main/assets/*.tflite
+.env
+*.env
