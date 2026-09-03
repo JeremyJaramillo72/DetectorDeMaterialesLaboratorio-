@@ -1,336 +1,252 @@
-# 🔬 Catálogo Fotográfico e Inventario de Equipos y Materiales
+# 🔬 Catálogo Fotográfico y Fichas Técnicas Oficiales
 ## Laboratorio de Bromatología - UTEQ
-### Dataset Oficial de Detección con Visión Artificial (26 Clases YOLO11)
+### Equipos Seleccionados para el Asistente Inteligente de Visión Artificial y RAG
 
 **Universidad Técnica Estatal de Quevedo (UTEQ)**  
 **Facultad de Ciencias Pecuarias y Biológicas**  
-*Proyecto: Asistente Inteligente de Laboratorio con Visión Artificial y RAG*
+*Carrera de Ingeniería en Alimentos / Zootecnia*
 
 ---
 
-### Tabla de Clases del Modelo YOLO11
+## 📋 Tabla de Equipos Seleccionados (8 Equipos Oficiales)
 
-| ID Clase | Nombre de Clase en Entrenamiento (labels.txt) | Equipo / Material Representado | Fotografía |
-|:---:|:---|:---|:---:|
-| **0** | `Agitador de Tubos - Mezclador Vortex` | Agitador Vortex Boeco V-1 Plus | [Ver foto](#clase-0-agitador-de-tubos---mezclador-vortex) |
-| **1** | `Agua Destilada Desmineralizada` | Piseta / Envase de Agua Destilada | [Ver foto](#clase-1-agua-destilada-desmineralizada) |
-| **2** | `Analizador de Fibra Cruda y Fracciones` | Analizador Dosi-Fiber J.P. Selecta | [Ver foto](#clase-2-analizador-de-fibra-cruda-y-fracciones) |
-| **3** | `Balanza Analitica de la Serie Ohaus Pioneer` | Balanza Analítica Ohaus Pioneer PX224 | [Ver foto](#clase-3-balanza-analitica-de-la-serie-ohaus-pioneer) |
-| **4** | `Bateria de Desionizacion y Tratamiento de Agua` | Batería Desionizadora con Manómetros | [Ver foto](#clase-4-bateria-de-desionizacion-y-tratamiento-de-agua) |
-| **5** | `Bomba Calorimetrica de Oxigeno` | Bomba Calorimétrica Parr 1341 | [Ver foto](#clase-5-bomba-calorimetrica-de-oxigeno) |
-| **6** | `Bomba de Vacio de Membrana - Diafragma Portatil` | Bomba de Vacío de Membrana Portátil | [Ver foto](#clase-6-bomba-de-vacio-de-membrana---diafragma-portatil) |
-| **7** | `Bomba de Vacio por Recirculacion de Agua` | Bomba de Vacío por Recirculación Selecta | [Ver foto](#clase-7-bomba-de-vacio-por-recirculacion-de-agua) |
-| **8** | `Cabina de Flujo Laminar` | Cabina de Flujo Aséptico UVP Workstation | [Ver foto](#clase-8-cabina-de-flujo-laminar) |
-| **9** | `Campana de Extraccion de Gases de Laboratorio` | Campana de Gases Labconco Protector | [Ver foto](#clase-9-campana-de-extraccion-de-gases-de-laboratorio) |
-| **10** | `Destilacion por Arrastre de Vapor` | Sistema de Destilación por Arrastre | [Ver foto](#clase-10-destilacion-por-arrastre-de-vapor) |
-| **11** | `Destilador por Arrastre de Vapor tipo Kjeldahl` | Destilador por Arrastre Kjeldahl | [Ver foto](#clase-11-destilador-por-arrastre-de-vapor-tipo-kjeldahl) |
-| **12** | `Destilador_de_Agua_Continuo_Metalico` | Destilador Mural Acero Inoxidable | [Ver foto](#clase-12-destilador_de_agua_continuo_metalico) |
-| **13** | `Estufa - Horno Universal de Secado` | Horno / Estufa de Secado Memmert | [Ver foto](#clase-13-estufa---horno-universal-de-secado) |
-| **14** | `Extractor de Laboratorio Automatico para Analisis de Grasas y Aceites` | Extractor de Grasas Soxhlet Automático | [Ver foto](#clase-14-extractor-de-laboratorio-automatico-para-analisis-de-grasas-y-aceites) |
-| **15** | `Molino Ciclonico de Muestras Bromatologicas` | Molino Ciclónico FOSS Cyclotec 1093 | [Ver foto](#clase-15-molino-ciclonico-de-muestras-bromatologicas) |
-| **16** | `Mufla Electrica de Laboratorio` | Horno Mufla para Calcinación 550°C | [Ver foto](#clase-16-mufla-electrica-de-laboratorio) |
-| **17** | `Placa Calefactora con Agitador MagneticoMetalico` | Placa Calefactora Agitadora Heidolph | [Ver foto](#clase-17-placa-calefactora-con-agitador-magneticometalico) |
-| **18** | `Potenciometro - pH-metro Digital de Mesa` | pH-metro Digital OHAUS Starter 3100 | [Ver foto](#clase-18-potenciometro---ph-metro-digital-de-mesa) |
-| **19** | `Refractometro Digital Abbe de Mesa` | Refractómetro Digital ATAGO DR-A1 | [Ver foto](#clase-19-refractometro-digital-abbe-de-mesa) |
-| **20** | `Sistema de Tratamiento y Desionizacion deAgua` | Sistema Multietapa de Purificación | [Ver foto](#clase-20-sistema-de-tratamiento-y-desionizacion-deagua) |
-| **21** | `Soporte Giratorio para Pipetas de Vidrio` | Gradilla / Soporte Rotatorio Pipetas | [Ver foto](#clase-21-soporte-giratorio-para-pipetas-de-vidrio) |
-| **22** | `Stufa de Laboratorio de Conveccion` | Estufa de Convección de Laboratorio | [Ver foto](#clase-22-stufa-de-laboratorio-de-conveccion) |
-| **23** | `Termometro Digital Parr Model 6775` | Termómetro Digital de Alta Precisión Parr | [Ver foto](#clase-23-termometro-digital-parr-model-6775) |
-| **24** | `Unidad de Destilacion Kjeldahl` | Unidad Pro-Nitro A para Proteína | [Ver foto](#clase-24-unidad-de-destilacion-kjeldahl) |
-| **25** | `Viscosimetro Rotacional Digital Brookfield` | Viscosímetro Digital AMETEK Brookfield | [Ver foto](#clase-25-viscosimetro-rotacional-digital-brookfield) |
+| N° | Nombre del Equipo | Marca / Fabricante | Modelo Oficial | Imagen |
+|:--:|:---|:---|:---|:--:|
+| **1** | **Sistema de Tratamiento y Desionización de Agua** | Aquapro / Genérico Industrial | Sistema Multietapa 3 Etapas con Manómetros | ![Foto](images_opt/equipos_seleccionados/sistema_tratamiento_desionizacion_agua.jpg) |
+| **2** | **Viscosímetro Brookfield Modelo DV-E** | AMETEK Brookfield | DV-E Viscometer (DVE) | ![Foto](images_opt/equipos_seleccionados/viscosimetro_brookfield_dve.jpg) |
+| **3** | **Destilador de Agua Continuo Metálico** | Boeco / J.P. Selecta | Destilador Mural Acero Inox 4 L/h | ![Foto](images_opt/equipos_seleccionados/destilador_agua_continuo_metalico.jpg) |
+| **4** | **Analizador de Fibra Cruda y Fracciones** | J.P. SELECTA | DOSI-FIBER (Cat. 4000623) | ![Foto](images_opt/equipos_seleccionados/analizador_fibra_cruda_fracciones.jpg) |
+| **5** | **Bomba de Vacío por Recirculación de Agua** | J.P. SELECTA | Bomba Recirculante (Cat. 4001611) | ![Foto](images_opt/equipos_seleccionados/bomba_vacio_recirculacion_agua.jpg) |
+| **6** | **Microscopio Trinocular** | Carl Zeiss | ZEISS Primo Star Trinocular | ![Foto](images_opt/equipos_seleccionados/microscopio_trinocular.jpg) |
+| **7** | **Destilación por Arrastre de Vapor** | J.P. SELECTA | Pro-Nitro (Sistema de Arrastre de Vapor) | ![Foto](images_opt/equipos_seleccionados/destilacion_arrastre_vapor.jpg) |
+| **8** | **Destilador de Proteína** | Fisher Scientific | Distillation Unit 100 (Unidad Kjeldahl) | ![Foto](images_opt/equipos_seleccionados/destilador_proteina.jpg) |
 
 ---
 
-## Fichas Técnicas con Fotografía Exclusiva por Clase
-
-<a name="clase-0-agitador-de-tubos---mezclador-vortex"></a>
-### Clase 0: Agitador de Tubos - Mezclador Vortex
-- **Nombre en Entrenamiento**: `Agitador de Tubos - Mezclador Vortex`
-- **Marca / Modelo**: Boeco / Bioevopeak V-1 Plus
-- **Función**: Agitación orbital de alta velocidad de tubos de ensayo y microtubos para disolución rápida y homogenización de precipitados y extractos.
-
-![Agitador de Tubos - Mezclador Vortex](images_opt/00_agitador_vortex.jpg)
+## 📑 Fichas Técnicas Detalladas
 
 ---
 
-<a name="clase-1-agua-destilada-desmineralizada"></a>
-### Clase 1: Agua Destilada Desmineralizada
-- **Nombre en Entrenamiento**: `Agua Destilada Desmineralizada`
-- **Elemento**: Piseta / Recipiente Dosificador de Agua Destilada Tipo II/III
-- **Función**: Almacenamiento y dosificación controlada de agua desmineralizada libre de interferencias iónicas para lavado de electrodos, enjuague de material volumétrico y preparación de soluciones valoradas.
+### 1. Sistema de Tratamiento y Desionización de Agua
 
-![Agua Destilada Desmineralizada](images_opt/01_agua_destilada.jpg)
+![Sistema de Tratamiento y Desionizacion de Agua](images_opt/equipos_seleccionados/sistema_tratamiento_desionizacion_agua.jpg)
 
----
+- **Nombre Oficial**: Batería de Filtración, Purificación y Desionización de Agua
+- **Tipo de Equipo**: Sistema de purificación por lecho mixto de resinas de intercambio iónico
+- **Ubicación en Laboratorio**: Área húmeda de suministro de agua destilada y reactivos
 
-<a name="clase-2-analizador-de-fibra-cruda-y-fracciones"></a>
-### Clase 2: Analizador de Fibra Cruda y Fracciones
-- **Nombre en Entrenamiento**: `Analizador de Fibra Cruda y Fracciones`
-- **Marca / Modelo**: J.P. SELECTA - DOSI-FIBER (Cat. 4000623)
-- **Función**: Digestión ácida y alcalina en caliente y filtración integrada para la determinación de Fibra Cruda (método Weende) y fracciones insolubles Van Soest (FND, FAD, Lignina) en forrajes y alimentos balanceados.
-- **Norma UTEQ**: AOAC 962.09 / ISO 6865
+#### Especificaciones Técnicas
+- **Etapas de Filtración**:
+  1. *Filtro de Sedimentos de Polipropileno Spun (5 µm)*: Remueve sólidos suspendidos, partículas de óxido, arena y turbidez.
+  2. *Filtro de Carbón Activado en Bloque (CTO)*: Retención de cloro residual libre, compuestos orgánicos volátiles (COVs) y olores.
+  3. *Columna Desionizadora de Lecho Mixto*: Resinas catiónicas ácidas fuertes ($H^+$) y aniónicas básicas fuertes ($OH^-$).
+- **Instrumentación**: Manómetro de presión hidráulica diferencial glicerina (0 - 10 bar / 0 - 150 psi).
+- **Calidad de Agua Producida**: Conductividad $< 1.0\ \mu\text{S/cm}$ (Agua Grado II / Grado III según norma ISO 3696 / ASTM D1193).
+- **Caudal de Tratamiento**: 1.5 a 3.0 L/min a presión de red (2.0 - 4.0 bar).
 
-![Analizador de Fibra Cruda y Fracciones](images_opt/02_analizador_fibra.jpg)
+#### Función en Bromatología
+Purificación de agua potable de red para la alimentación de destiladores continuos de agua, generadores de vapor de destiladores Kjeldahl, preparación de reactivos químicos analíticos valorados (NaOH, HCl, $H_2SO_4$) y enjuague final del material de vidrio volumétrico.
 
----
-
-<a name="clase-3-balanza-analitica-de-la-serie-ohaus-pioneer"></a>
-### Clase 3: Balanza Analitica de la Serie Ohaus Pioneer
-- **Nombre en Entrenamiento**: `Balanza Analitica de la Serie Ohaus Pioneer`
-- **Marca / Modelo**: OHAUS Corporation - Serie Pioneer PX224 / PX124
-- **Función**: Determinación gravimétrica analítica con precisión de 0.1 mg (0.0001 g) para pesaje de crisoles, dedales de extracción, reactivos analíticos y muestras desecadas.
-- **Norma UTEQ**: AOAC 930.15 / AOAC 942.05
-
-![Balanza Analitica de la Serie Ohaus Pioneer](images_opt/03_balanza_ohaus_pioneer.jpg)
+#### Procedimiento Operativo Estándar
+1. Abrir la válvula de paso de agua de la red principal.
+2. Verificar en el manómetro que la presión de entrada esté en el rango operativo (mínimo 1.5 bar).
+3. Purgar los primeros 500 mL antes de conectar la salida al tanque de almacenamiento o equipo de destilación.
+4. Medir la conductividad del agua efluente con conductímetro portátil ($< 2.5\ \mu\text{S/cm}$).
+5. Cerrar la válvula de corte general al finalizar la jornada de trabajo.
 
 ---
 
-<a name="clase-4-bateria-de-desionizacion-y-tratamiento-de-agua"></a>
-### Clase 4: Bateria de Desionizacion y Tratamiento de Agua
-- **Nombre en Entrenamiento**: `Bateria de Desionizacion y Tratamiento de Agua`
-- **Marca / Modelo**: Sistema Desionizador de Lecho Mixto con Filtro de Sedimentos y Manómetros
-- **Función**: Reducción de conductividad y remoción de sales minerales del agua de red mediante intercambio catiónico/aniónico para suministro a equipos de destilación.
+### 2. Viscosímetro Brookfield Modelo DV-E
 
-![Bateria de Desionizacion y Tratamiento de Agua](images_opt/04_bateria_desionizacion.jpg)
+![Viscosimetro Brookfield Modelo DV-E](images_opt/equipos_seleccionados/viscosimetro_brookfield_dve.jpg)
 
----
+- **Nombre Oficial**: Viscosímetro Rotacional Digital Brookfield DV-E
+- **Fabricante**: AMETEK Brookfield (EE.UU.)
+- **Modelo**: DV-E (Serie Digital Económica)
+- **Ubicación en Laboratorio**: Mesa de reología y análisis físico de alimentos
 
-<a name="clase-5-bomba-calorimetrica-de-oxigeno"></a>
-### Clase 5: Bomba Calorimetrica de Oxigeno
-- **Nombre en Entrenamiento**: `Bomba Calorimetrica de Oxigeno`
-- **Marca / Modelo**: Parr 1341 Plain Jacket Oxygen Bomb Calorimeter
-- **Función**: Determinación experimental del poder calorífico bruto / energía bruta (EB en kcal/kg o MJ/kg) mediante combustión completa a 30 atm de O₂ de raciones alimenticias y forrajes.
-- **Norma UTEQ**: ISO 9831 / ASTM D5865
+#### Especificaciones Técnicas
+- **Principio de Medición**: Resistencia al cizallamiento rotacional mediante resorte de torsión calibrado de precisión bimetálica.
+- **Rango de Velocidades**: 18 velocidades fijas seleccionables (0.3, 0.5, 0.6, 1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0, 10, 12, 20, 30, 50, 60, 100 RPM).
+- **Precisión**: $\pm 1.0\%$ de la escala completa (Full Scale Range - FSR).
+- **Repetibilidad**: $\pm 0.2\%$ de la escala completa.
+- **Pantalla Digital LCD**: Muestra simultáneamente:
+  - Viscosidad dinámica en centipoise (cP) o miliPascal-segundo ($mPa\cdot s$).
+  - Porcentaje de torsión (% torque del resorte, rango operativo válido 10% - 100%).
+  - Velocidad de rotación seleccionada (RPM).
+  - Código del husillo / spindle activo (código de 2 dígitos).
+- **Juego de Husillos (Spindles)**: Husillos cilíndricos de acero inoxidable AISI 316 (LV1 a LV4 para modelo LV; RV1 a RV7 para modelo RV).
+- **Alimentación Eléctrica**: 115 / 230 VAC, 50/60 Hz, 30 W.
 
-![Bomba Calorimetrica de Oxigeno](images_opt/05_bomba_calorimetrica.jpg)
+#### Función en Bromatología
+Caracterización reológica y control de calidad de fluidos alimentarios newtonianos y no newtonianos: salsas, mayonesas, miel de abeja, jarabes de azúcar, pulpas de frutas, lácteos fluidos, concentrados y emulsiones cárnicas.
 
----
-
-<a name="clase-6-bomba-de-vacio-de-membrana---diafragma-portatil"></a>
-### Clase 6: Bomba de Vacio de Membrana - Diafragma Portatil
-- **Nombre en Entrenamiento**: `Bomba de Vacio de Membrana - Diafragma Portatil`
-- **Marca / Modelo**: Bomba de Vacío Libre de Aceite con Manómetro y Válvula de Regulación
-- **Función**: Generación de presión negativa limpia y seca para filtración de crisoles en análisis de fibra, secado en desecadores y filtración en línea de solventes.
-
-![Bomba de Vacio de Membrana - Diafragma Portatil](images_opt/06_bomba_vacio_membrana.jpg)
-
----
-
-<a name="clase-7-bomba-de-vacio-por-recirculacion-de-agua"></a>
-### Clase 7: Bomba de Vacio por Recirculacion de Agua
-- **Nombre en Entrenamiento**: `Bomba de Vacio por Recirculacion de Agua`
-- **Marca / Modelo**: J.P. SELECTA (Cat. 4001611) con Tanque de Reserva y Doble Manómetro
-- **Función**: Succión continua por efecto Venturi mediante recirculación interna de agua en circuito cerrado, reduciendo a cero el desperdicio hídrico en filtraciones al vacío prolongadas.
-
-![Bomba de Vacio por Recirculacion de Agua](images_opt/07_bomba_vacio_recirculacion.jpg)
+#### Norma de Referencia
+- **NTE INEN 1009**: Miel de abeja. Determinación de viscosidad.
+- **ASTM D2196**: Standard Test Methods for Rheological Properties of Non-Newtonian Materials by Rotational Viscometer.
 
 ---
 
-<a name="clase-8-cabina-de-flujo-laminar"></a>
-### Clase 8: Cabina de Flujo Laminar
-- **Nombre en Entrenamiento**: `Cabina de Flujo Laminar`
-- **Marca / Modelo**: Analytik Jena UVP PCR Workstation
-- **Función**: Creación de un recinto aséptico con iluminación germicida ultravioleta (UV-C 254 nm) para preparación de reactivos biológicos, inoculaciones y protección contra contaminantes aéreos.
+### 3. Destilador de Agua Continuo Metálico
 
-![Cabina de Flujo Laminar](images_opt/08_cabina_flujo_laminar.jpg)
+![Destilador de Agua Continuo Metalico](images_opt/equipos_seleccionados/destilador_agua_continuo_metalico.jpg)
 
----
+- **Nombre Oficial**: Destilador de Agua Metálico Continuo de Fijación Mural
+- **Fabricante**: Boeco / J.P. SELECTA
+- **Ubicación en Laboratorio**: Pared húmeda de destilación y lavado químico
 
-<a name="clase-9-campana-de-extraccion-de-gases-de-laboratorio"></a>
-### Clase 9: Campana de Extraccion de Gases de Laboratorio
-- **Nombre en Entrenamiento**: `Campana de Extraccion de Gases de Laboratorio`
-- **Marca / Modelo**: Labconco Protector Premier Laboratory Fume Hood
-- **Función**: Evacuación forzada y neutralización de vapores ácidos de digestión (SO₃, H₂SO₄) y solventes orgánicos volátiles, protegiendo al personal técnico de inhalaciones tóxicas.
+#### Especificaciones Técnicas
+- **Producción Nominal**: 4 Litros / hora de agua destilada continua.
+- **Material de Construcción**: Caldera y refrigerante tubular íntegramente fabricados en acero inoxidable AISI 304 / 316 pulido sanitario.
+- **Potencia Calefactora**: 3000 W (Resistencia eléctrica blindada de inmersión en acero inox).
+- **Consumo de Agua de Refrigeración**: Aprox. 40 - 60 L/h.
+- **Dispositivos de Seguridad**:
+  - Termostato de corte automático por sobretemperatura en caso de corte del flujo de agua.
+  - Válvula de flotador y tubo de rebose continuo para control de nivel en la caldera.
+- **Calidad del Agua Destilada**: Conductividad $1.5 - 2.5\ \mu\text{S/cm}$ a 25°C, pH entre 5.5 y 7.0, exento de pirógenos e iones metálicos pesados.
 
-![Campana de Extraccion de Gases de Laboratorio](images_opt/09_campana_extraccion_gases.jpg)
-
----
-
-<a name="clase-10-destilacion-por-arrastre-de-vapor"></a>
-### Clase 10: Destilacion por Arrastre de Vapor
-- **Nombre en Entrenamiento**: `Destilacion por Arrastre de Vapor`
-- **Equipo**: Sistema de Arrastre de Vapor para Separación de Compuestos
-- **Función**: Inyección de vapor saturado en reactores de vidrio para arrastrar y separar analitos termo-sensibles o con elevado punto de ebullición presentes en matrices bromatológicas digeridas.
-
-![Destilacion por Arrastre de Vapor](images_opt/10_destilacion_arrastre_vapor.jpg)
+#### Función en Bromatología
+Abastecimiento ininterrumpido de agua destilada de alta pureza química para titulaciones cuantitativas, lavado de electrodos, ensayos microbiológicos y dilución de reactivos de digestión ácida.
 
 ---
 
-<a name="clase-11-destilador-por-arrastre-de-vapor-tipo-kjeldahl"></a>
-### Clase 11: Destilador por Arrastre de Vapor tipo Kjeldahl
-- **Nombre en Entrenamiento**: `Destilador por Arrastre de Vapor tipo Kjeldahl`
-- **Marca / Modelo**: J.P. SELECTA - Pro-Nitro A (Módulo Destilador)
-- **Función**: Dosificación automática de NaOH concentrado sobre macro-tubos Kjeldahl y destilación directa del amoníaco volatilizado hacia un refrigerante para titulación cuantitativa.
-- **Norma UTEQ**: AOAC 984.13 / INEN 0516
+### 4. Analizador de Fibra Cruda y Fracciones
 
-![Destilador por Arrastre de Vapor tipo Kjeldahl](images_opt/11_destilador_arrastre_vapor_kjeldahl.jpg)
+![Analizador de Fibra Cruda y Fracciones](images_opt/equipos_seleccionados/analizador_fibra_cruda_fracciones.jpg)
 
----
+- **Nombre Oficial**: Extractor Analizador de Fibra DOSI-FIBER
+- **Fabricante**: J.P. SELECTA S.A. (España)
+- **Modelo**: DOSI-FIBER (Referencia Cat. 4000623)
+- **Ubicación en Laboratorio**: Mesa analítica de análisis proximal de alimentos
 
-<a name="clase-12-destilador_de_agua_continuo_metalico"></a>
-### Clase 12: Destilador_de_Agua_Continuo_Metalico
-- **Nombre en Entrenamiento**: `Destilador_de_Agua_Continuo_Metalico`
-- **Marca / Modelo**: Destilador Mural de Acero Inoxidable (Capacidad: 4 L/h)
-- **Función**: Producción continua de agua destilada de alta pureza química mediante calentamiento eléctrico por resistencias blindadas y posterior condensación tubular en acero inox.
+#### Especificaciones Técnicas
+- **Capacidad de Muestreo**: 6 posiciones simultáneas e independientes con calefacción individual por posición.
+- **Volumen de Reactivo**: 150 mL por muestra en columna de ebullición.
+- **Control de Calefacción**: Reguladores de energía electrónicos individuales para cada una de las 6 placas calefactoras infrarrojas.
+- **Sistema de Filtración**: Filtración al vacío integrada a través de crisoles de vidrio borosilicato con placa porosa filtrante de cuarzo sinterizado (porosidad P2: 40 - 100 µm).
+- **Refrigerante / Condensador**: 6 refrigerantes de reflujo tipo dedo frío de acero inoxidable y vidrio para evitar pérdida de volumen por evaporación ácida o alcalina.
+- **Válvulas**: Válvulas de 3 vías con posiciones: Calefacción/Digestión, Descarga a drenaje y Conexión de vacío.
 
-![Destilador_de_Agua_Continuo_Metalico](images_opt/12_destilador_agua_metalico.jpg)
+#### Función en Bromatología
+- Determinación gravimétrica de **Fibra Cruda** (Método oficial Weende con digestión secuencial ácida $H_2SO_4\ 0.255\text{ N}$ y alcalina $NaOH\ 0.313\text{ N}$).
+- Fraccionamiento de fibras según el método de **Van Soest**:
+  - Fibra Detergente Neutro (FDN - Hemicelulosa, Celulosa, Lignina).
+  - Fibra Detergente Ácido (FDA - Celulosa y Lignina).
+  - Lignina Detergente Ácido (LDA).
 
----
-
-<a name="clase-13-estufa---horno-universal-de-secado"></a>
-### Clase 13: Estufa - Horno Universal de Secado
-- **Nombre en Entrenamiento**: `Estufa - Horno Universal de Secado`
-- **Marca / Modelo**: Memmert UN55 / UN110
-- **Función**: Evaporación y deshidratación térmica controlada a 105°C ± 1°C para la determinación gravimétrica de materia seca, humedad total y secado de crisoles a peso constante.
-- **Norma UTEQ**: AOAC 930.15 / INEN 0518
-
-![Estufa - Horno Universal de Secado](images_opt/13_estufa_horno_secado.jpg)
+#### Norma de Referencia
+- **AOAC Official Method 962.09**: Fiber (Crude) in Animal Feed and Pet Food.
+- **ISO 6865**: Animal feeding stuffs - Determination of crude fibre content.
 
 ---
 
-<a name="clase-14-extractor-de-laboratorio-automatico-para-analisis-de-grasas-y-aceites"></a>
-### Clase 14: Extractor de Laboratorio Automatico para Analisis de Grasas y Aceites
-- **Nombre en Entrenamiento**: `Extractor de Laboratorio Automatico para Analisis de Grasas y Aceites`
-- **Marca / Modelo**: VELP Scientifica SER 148 / ANKOM Technology
-- **Función**: Extracción automática de extracto etéreo (grasa cruda) en alimentos mediante lavado con solvente orgánico (éter de petróleo / hexano), reflujo, recuperación de solvente y secado gravimétrico.
-- **Norma UTEQ**: AOAC 920.39 / INEN 0523
+### 5. Bomba de Vacío por Recirculación de Agua
 
-![Extractor de Laboratorio Automatico para Analisis de Grasas y Aceites](images_opt/14_extractor_grasas_aceites.jpg)
+![Bomba de Vacio por Recirculacion de Agua](images_opt/equipos_seleccionados/bomba_vacio_recirculacion_agua.jpg)
 
----
+- **Nombre Oficial**: Bomba de Vacío por Recirculación de Agua de Doble Toma
+- **Fabricante**: J.P. SELECTA S.A.
+- **Modelo**: Cat. 4001611
+- **Ubicación en Laboratorio**: Mesa de filtración analítica y secado al vacío
 
-<a name="clase-15-molino-ciclonico-de-muestras-bromatologicas"></a>
-### Clase 15: Molino Ciclonico de Muestras Bromatologicas
-- **Nombre en Entrenamiento**: `Molino Ciclonico de Muestras Bromatologicas`
-- **Marca / Modelo**: FOSS - Cyclotec 1093 Sample Mill
-- **Función**: Molienda por impacto de alta velocidad con flujo de aire ciclónico que impulsa la muestra a través de una criba de 1.0 mm o 0.5 mm, garantizando uniformidad granulométrica sin pérdida de humedad por fricción.
-- **Norma UTEQ**: AOAC 930.15
+#### Especificaciones Técnicas
+- **Principio de Operación**: Generación de depresión por efecto Venturi mediante bomba centrífuga interna sumergida en circuito cerrado de agua.
+- **Tomas de Succión**: 2 tomas de vacío independientes con válvulas antirretorno de retención de teflón.
+- **Caudal de Aspiración**: $60\ \text{L/min}$ ($3.6\ \text{m}^3/\text{h}$).
+- **Vacío Límite Residual**: $20\ \text{mbar}$ (determinado por la tensión de vapor del agua a la temperatura del baño).
+- **Manómetro**: Indicador de vacío analógico graduado de $0$ a $-1\ \text{bar}$ ($-760\ \text{mmHg}$).
+- **Capacidad del Depósito**: 10 Litros en polipropileno químicamente resistente a vapores corrosivos.
+- **Ventaja Ecológica**: Cero consumo de agua potable de red; no requiere conexión continua al grifo como las trompas de vacío convencionales.
 
-![Molino Ciclonico de Muestras Bromatologicas](images_opt/15_molino_ciclonico.jpg)
-
----
-
-<a name="clase-16-mufla-electrica-de-laboratorio"></a>
-### Clase 16: Mufla Electrica de Laboratorio
-- **Nombre en Entrenamiento**: `Mufla Electrica de Laboratorio`
-- **Marca / Modelo**: Thermo Scientific Thermolyne F48000 / Nabertherm
-- **Función**: Incineración y calcinación térmica de muestras orgánicas entre 550°C y 600°C en crisoles de porcelana para la cuantificación del residuo inorgánico (cenizas totales y minerales).
-- **Norma UTEQ**: AOAC 942.05 / INEN 0401
-
-![Mufla Electrica de Laboratorio](images_opt/16_mufla_electrica.jpg)
+#### Función en Bromatología
+Filtración rápida de crisoles en el analizador de fibra Dosi-Fiber, filtración al vacío con embudos Büchner y matraces Kitasato, y desgasificación de solventes antes de cromatografía.
 
 ---
 
-<a name="clase-17-placa-calefactora-con-agitador-magneticometalico"></a>
-### Clase 17: Placa Calefactora con Agitador MagneticoMetalico
-- **Nombre en Entrenamiento**: `Placa Calefactora con Agitador MagneticoMetalico`
-- **Marca / Modelo**: Heidolph MR Hei-Standard
-- **Función**: Calentamiento de soluciones analíticas hasta 300°C con agitación magnética controlada por imán rotatorio de 100 a 1400 rpm para disolución de sales y preparación de reactivos.
+### 6. Microscopio Trinocular Carl Zeiss Primo Star
 
-![Placa Calefactora con Agitador MagneticoMetalico](images_opt/17_placa_calefactora_agitador.jpg)
+![Microscopio Trinocular Zeiss Primo Star](images_opt/equipos_seleccionados/microscopio_trinocular.jpg)
 
----
+- **Nombre Oficial**: Microscopio Óptico Trinocular de Laboratorio Primo Star
+- **Fabricante**: Carl Zeiss Microscopy GmbH (Alemania)
+- **Modelo**: Primo Star Trinocular (ICS Optics)
+- **Ubicación en Laboratorio**: Mesa de microbiología y microscopía analítica
 
-<a name="clase-18-potenciometro---ph-metro-digital-de-mesa"></a>
-### Clase 18: Potenciometro - pH-metro Digital de Mesa
-- **Nombre en Entrenamiento**: `Potenciometro - pH-metro Digital de Mesa`
-- **Marca / Modelo**: OHAUS STARTER 3100
-- **Función**: Cuantificación potenciométrica del pH con compensación automática de temperatura (ATC) y lectura de potencial redox en mV en soluciones, jugos, ensilajes y extractos.
-- **Norma UTEQ**: NTE INEN 0013 / AOAC 981.12
+#### Especificaciones Técnicas
+- **Sistema Óptico**: Óptica con corrección a infinito ICS (Infinity Color-corrected System) con tratamiento antimicótico y antirreflectante integral.
+- **Cabezal / Tubo**:
+  - Trinocular Siedentopf con inclinación ergonómica a 30°.
+  - Distribución de luz visual/fototubo: 100:0 / 0:100 (o 50:50) para acople simultáneo de cámara digital HD.
+  - Distancia interpupilar regulable de 48 a 75 mm.
+- **Oculares**: Gran campo WF 10x / 20 mm con ajuste dióptrico en ambos ojos.
+- **Revólver Cuádruple Inclinado hacia atrás**: Equipado con 4 objetivos Plan-Acromáticos:
+  1. *Plan-Achromat 4x / 0.10* (campo de observación de visión panorámica).
+  2. *Plan-Achromat 10x / 0.25* (inspección de gránulos de almidón y fibras).
+  3. *Plan-Achromat 40x / 0.65* retráctil (estructuras celulares de tejidos vegetales y animales).
+  4. *Plan-Achromat 100x / 1.25 Oil* retráctil de inmersión en aceite (morfología bacteriana y levaduras).
+- **Condensador**: Abbe centrado de apertura numérica AN 0.9 / 1.25 con diafragma iris y ranura para contraste de fases.
+- **Iluminación**: LED de luz blanca con temperatura de color de 3200 K y control electrónico de intensidad luminosa con indicador óptico de barras en el estativo.
+- **Platina Mecánica**: Mecánica de doble capa ($140 \times 135\ \text{mm}$) con mando coaxial X-Y bajo sin cremallera sobresaliente.
 
-![Potenciometro - pH-metro Digital de Mesa](images_opt/18_potenciometro_phmetro.jpg)
-
----
-
-<a name="clase-19-refractometro-digital-abbe-de-mesa"></a>
-### Clase 19: Refractometro Digital Abbe de Mesa
-- **Nombre en Entrenamiento**: `Refractometro Digital Abbe de Mesa`
-- **Marca / Modelo**: ATAGO DR-A1 (Cat. 1310)
-- **Función**: Medición precisa del índice de refracción (nD) y concentración de sólidos solubles (°Brix entre 0.0% y 95.0%) en jarabes, mieles, aceites y grasas fundidas con control de temperatura.
-- **Norma UTEQ**: AOAC 932.12 / INEN 0380
-
-![Refractometro Digital Abbe de Mesa](images_opt/19_refractometro_digital_abbe.jpg)
-
----
-
-<a name="clase-20-sistema-de-tratamiento-y-desionizacion-deagua"></a>
-### Clase 20: Sistema de Tratamiento y Desionizacion deAgua
-- **Nombre en Entrenamiento**: `Sistema de Tratamiento y Desionizacion deAgua`
-- **Equipo**: Módulo Filtrante y Columnas de Desionización de Agua
-- **Función**: Pre-tratamiento de agua potable mediante filtración de sedimentos de 5 micras, decloración por carbón activado y desionización por resinas catiónicas y aniónicas regenerables.
-
-![Sistema de Tratamiento y Desionizacion deAgua](images_opt/20_sistema_tratamiento_desionizacion.jpg)
+#### Función en Bromatología
+- Detección de adulteraciones en harinas y almidones mediante morfología microscópica de granos.
+- Identificación botánica de forrajes, materias primas y alimentos balanceados para animales.
+- Control microbiológico: recuento de levaduras, mohos y frotis bacterianos en productos fermentados y lácteos.
 
 ---
 
-<a name="clase-21-soporte-giratorio-para-pipetas-de-vidrio"></a>
-### Clase 21: Soporte Giratorio para Pipetas de Vidrio
-- **Nombre en Entrenamiento**: `Soporte Giratorio para Pipetas de Vidrio`
-- **Material**: Polipropileno autoclavable de alta resistencia (Capacidad: hasta 94 pipetas)
-- **Función**: Soporte vertical carrusel giratorio para escurrimiento, secado y almacenamiento higiénico de pipetas volumétricas y graduadas de vidrio.
+### 7. Destilación por Arrastre de Vapor (J.P. Selecta Pro-Nitro)
 
-![Soporte Giratorio para Pipetas de Vidrio](images_opt/21_soporte_giratorio_pipetas.jpg)
+![Destilacion por Arrastre de Vapor JP Selecta](images_opt/equipos_seleccionados/destilacion_arrastre_vapor.jpg)
 
----
+- **Nombre Oficial**: Unidad Automática de Destilación por Arrastre de Vapor Pro-Nitro
+- **Fabricante**: J.P. SELECTA S.A.
+- **Modelo**: Pro-Nitro (Generador de Vapor Autónomo)
+- **Ubicación en Laboratorio**: Mesa de destilación y enriquecimiento de extractos
 
-<a name="clase-22-stufa-de-laboratorio-de-conveccion"></a>
-### Clase 22: Stufa de Laboratorio de Conveccion
-- **Nombre en Entrenamiento**: `Stufa de Laboratorio de Conveccion`
-- **Marca / Modelo**: Estufa de Secado y Convección Forzada de Aire
-- **Función**: Secado y calentamiento uniforme de material de cristalería, crisoles de Gooch y muestras analíticas con flujo de aire térmico circulante continuo.
+#### Especificaciones Técnicas
+- **Generador de Vapor**: Generador de vapor continuo de acero inoxidable con control de nivel por electrodos y termostato de sobrepresión.
+- **Tiempo de Destilación**: Programable digitalmente de 1 a 60 minutos con resolución de 1 segundo.
+- **Capacidad de Muestra**: Adaptadores universales para tubos de macro-digestión ($\varnothing 42\ \text{mm}$) y matraces de 250 / 500 mL.
+- **Consumo de Agua en Refrigerante**: $1.5 - 2.0\ \text{L/min}$ a 15°C.
+- **Seguridades Integradas**:
+  - Puerta de policarbonato transparente con microinterruptor magnético de bloqueo de ciclo.
+  - Sensor de presencia de tubo de muestra (impide la inyección de vapor si el tubo no está colocado).
+  - Alarma visual y acústica de falta de agua de alimentación.
 
-![Stufa de Laboratorio de Conveccion](images_opt/22_estufa_laboratorio_conveccion.jpg)
-
----
-
-<a name="clase-23-termometro-digital-parr-model-6775"></a>
-### Clase 23: Termometro Digital Parr Model 6775
-- **Nombre en Entrenamiento**: `Termometro Digital Parr Model 6775`
-- **Marca / Modelo**: Parr Instrument Company - Model 6775 Digital Thermometer
-- **Función**: Medición termométrica de resolución microclimática (0.0001°C) para registrar la elevación exacta de temperatura de la cubeta durante la ignición calorimétrica de bombas de oxígeno.
-
-![Termometro Digital Parr Model 6775](images_opt/23_termometro_digital_parr.jpg)
+#### Función en Bromatología
+Extracción y separación de compuestos orgánicos volátiles, determinación de alcohol en bebidas fermentadas, acidez volátil en vinos y vinagres, y separación por vapor de extractos vegetales.
 
 ---
 
-<a name="clase-24-unidad-de-destilacion-kjeldahl"></a>
-### Clase 24: Unidad de Destilacion Kjeldahl
-- **Nombre en Entrenamiento**: `Unidad de Destilacion Kjeldahl`
-- **Marca / Modelo**: J.P. SELECTA - Pro-Nitro A (Cat. 4002430)
-- **Función**: Unidad integral y programable de destilación por vapor para la recuperación cuantitativa de nitrógeno amoniacal en la determinación de Proteína Bruta (PB = %N × 6.25).
-- **Norma UTEQ**: AOAC 984.13 / INEN 0516
+### 8. Destilador de Proteína (Fisher Scientific Distillation Unit 100)
 
-![Unidad de Destilacion Kjeldahl](images_opt/24_unidad_destilacion_kjeldahl.jpg)
+![Destilador de Proteina Fisher Scientific](images_opt/equipos_seleccionados/destilador_proteina.jpg)
 
----
+- **Nombre Oficial**: Unidad de Destilación Kjeldahl para Proteína Bruta
+- **Fabricante**: Fisher Scientific / Labconco
+- **Modelo**: Distillation Unit 100
+- **Ubicación en Laboratorio**: Mesa analítica de nitrógeno y proteína total
 
-<a name="clase-25-viscosimetro-rotacional-digital-brookfield"></a>
-### Clase 25: Viscosimetro Rotacional Digital Brookfield
-- **Nombre en Entrenamiento**: `Viscosimetro Rotacional Digital Brookfield`
-- **Marca / Modelo**: AMETEK Brookfield - DV-II+ Pro / DV2T
-- **Función**: Medición de la resistencia reológica al cizallamiento y determinación de la viscosidad aparente (cP / mPa·s) en emulsiones, salsas, lácteos, mieles y suspensiones bromatológicas mediante husillos estandarizados.
+#### Especificaciones Técnicas
+- **Método Químico**: Destilación Kjeldahl por arrastre de vapor de macro-muestras digeridas alcalinizadas.
+- **Panel de Control Frontal**:
+  - *Dosificador de Hidróxido de Sodio (NaOH 40%)*: Selector digital programable con escala $x10\ \text{mL}$ con bomba de membrana dosificadora de alta precisión resistente a bases fuertes.
+  - *Temporizador de Destilación*: Pantalla digital LED en minutos con parada automática y señal acústica de fin de destilación.
+  - *Pulsador de Vapor Rápido*: Inyección suplementaria de vapor.
+- **Rango de Recuperación de Nitrógeno**: $\ge 99.5\%$ en soluciones estándar de sulfato de amonio.
+- **Límite de Detección**: $0.1\ \text{mg de Nitrógeno}$.
+- **Refrigerante**: Serpentín condensador de vidrio borosilicato 3.3 con descarga directa sobre el matraz receptor de ácido bórico ($H_3BO_3\ 4\%$) con indicador mixto Tashiro.
 
-![Viscosimetro Rotacional Digital Brookfield](images_opt/25_viscosimetro_brookfield.jpg)
+#### Función en Bromatología
+Determinación cuantitativa de **Proteína Bruta / Proteína Cruda (PB)** en harinas de pescado, soya, granos de cereales, forrajes secos, concentrados y alimentos procesados mediante la reacción:
+$$\%PB = \%N_{\text{total}} \times 6.25\quad (\text{o factor específico según matriz})$$
 
----
-
-## Anexo: Materiales Complementarios de Laboratorio
-
-### A1. Tubos de Digestión Kjeldahl en Gradilla Metálica
-- **Material**: Vidrio borosilicato 3.3 de pared gruesa en soporte de acero inoxidable
-- **Función**: Contenedores analíticos para soportar la digestión ácida a 420°C y acople directo en la unidad de destilación.
-
-![Tubos Kjeldahl](images_opt/05_gradilla_tubos_kjeldahl.jpg)
-
----
-
-### A2. Cilindro de Gas con Manómetro Regulador
-- **Material**: Cilindro de acero de alta presión con reductor de doble escala
-- **Función**: Suministro controlado de gases técnicos de alta pureza para equipos térmicos y combustión.
-
-![Cilindro de Gas](images_opt/09_cilindro_gas.jpg)
+#### Norma de Referencia
+- **AOAC Official Method 984.13**: Protein (Crude) in Animal Feed and Pet Food (Copper Catalyst Kjeldahl Method).
+- **NTE INEN 0516**: Alimentos para animales. Determinación de nitrógeno y cálculo de proteína cruda.
 
 ---
 
 *Catálogo oficial del proyecto **Asistente Inteligente de Laboratorio con Visión Artificial y RAG** — Universidad Técnica Estatal de Quevedo (UTEQ 2026).*  
-*Entrenamiento validado con YOLO11n sobre 26 clases de equipos de Bromatología.*
+*Equipos documentados y verificados físicamente en el Laboratorio de Bromatología.*
