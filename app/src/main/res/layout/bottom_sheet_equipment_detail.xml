@@ -182,20 +182,17 @@
         </LinearLayout>
 
         <!-- Botón de Consulta al Asistente RAG -->
-        <com.google.android.material.button.MaterialButton
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnConsultRAG"
             android:layout_width="match_parent"
             android:layout_height="52dp"
             android:layout_marginTop="20dp"
-            android:background="@drawable/bg_btn_gradient"
-            android:stateListAnimator="@null"
-            android:text="✨ Consultar Asistente RAG (Gemini)"
+            android:background="@drawable/bg_btn_chat"
+            android:text="💬 Consultar Asistente RAG (Gemini)"
             android:textAllCaps="false"
-            android:textColor="@color/obsidian_base"
+            android:textColor="@color/white"
             android:textSize="14sp"
-            android:textStyle="bold"
-            app:backgroundTint="@color/transparent"
-            app:cornerRadius="14dp" />
+            android:textStyle="bold" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

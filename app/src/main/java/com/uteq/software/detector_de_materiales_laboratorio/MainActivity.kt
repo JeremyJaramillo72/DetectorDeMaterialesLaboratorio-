@@ -259,7 +259,6 @@ class MainActivity : AppCompatActivity() {
                 binding.tvDockConfidence.text = "En espera"
                 binding.tvDockConfidence.setBackgroundResource(R.drawable.bg_badge_live)
                 binding.tvDockConfidence.setTextColor(ContextCompat.getColor(this, R.color.neon_cyan))
-                binding.reticleCenter.alpha = 0.35f
             }
             else -> {
                 val topDetection = detections.maxByOrNull { it.confidence }
@@ -270,7 +269,6 @@ class MainActivity : AppCompatActivity() {
                     binding.tvDockConfidence.text = "$confPercent% match"
                     binding.tvDockConfidence.setBackgroundResource(R.drawable.bg_badge_model)
                     binding.tvDockConfidence.setTextColor(ContextCompat.getColor(this, R.color.neon_emerald))
-                    binding.reticleCenter.alpha = 0.15f
                 }
             }
         }
