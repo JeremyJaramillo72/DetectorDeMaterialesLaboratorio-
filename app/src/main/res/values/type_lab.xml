@@ -67,4 +67,20 @@
         <item name="android:letterSpacing">0.005</item>
         <item name="android:textAllCaps">false</item>
     </style>
+
+    <!-- Texto de una sugerencia rápida (chip de contorno) -->
+    <style name="TextAppearance.Lab.Chip" parent="android:TextAppearance">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="android:textColor">@color/ink</item>
+    </style>
+
+    <!-- Metadato de apoyo: hora de un mensaje, aclaración menor -->
+    <style name="TextAppearance.Lab.Caption" parent="android:TextAppearance">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="android:textColor">@color/ink_faint</item>
+    </style>
 </resources>

@@ -3,21 +3,27 @@
 
     <!-- Pantalla de cámara / detección -->
     <string name="brand_line">Bromatología · UTEQ</string>
+    <string name="field_status">Estado</string>
     <string name="field_equipment">Equipo</string>
     <string name="field_confidence">Confianza</string>
+    <string name="confidence_placeholder">—</string>
     <string name="aim_at_equipment">Apunta la cámara a un equipo del laboratorio.</string>
     <string name="action_sheet">Ficha técnica</string>
     <string name="action_assistant">Asistente</string>
     <string name="model_missing">No se encontró el modelo de detección en la app.</string>
 
-    <string name="camera_permission_required">Se requiere permiso de cámara para la detección en tiempo real de los equipos.</string>
-    <string name="detecting_equipments">Escaneando laboratorio…</string>
-    <string name="technical_sheet">Ficha Técnica y Bioseguridad</string>
-    <string name="consult_rag">Consultar Asistente RAG</string>
-    <string name="function_title">Función en Bromatología</string>
-    <string name="ppe_title">EPP Obligatorio</string>
-    <string name="practices_title">Guías de Práctica UTEQ</string>
-    <string name="risks_title">Riesgos y Bioseguridad</string>
-    <string name="sources_title">Fuentes y Normas Oficiales</string>
-    <string name="chat_hint">Pregunta sobre procedimiento, EPP, riesgos o normas…</string>
+    <!-- Ficha técnica -->
+    <string name="field_sheet">Ficha técnica</string>
+    <string name="field_function">Función</string>
+    <string name="field_ppe">EPP</string>
+    <string name="field_risks">Riesgos</string>
+    <string name="field_practices">Prácticas UTEQ</string>
+    <string name="action_consult">Consultar sobre este equipo</string>
+
+    <!-- Asistente -->
+    <string name="chat_title">Asistente</string>
+    <string name="field_context">Contexto</string>
+    <string name="context_general">Modo general · todos los equipos registrados</string>
+    <string name="chat_hint_scoped">Escribe tu consulta sobre este equipo…</string>
+    <string name="chat_hint_general">Escribe tu consulta…</string>
 </resources>

@@ -1,238 +1,163 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  Ficha técnica — sistema "Registro de laboratorio".
+
+  Composición propia para esta pantalla: no es un dashboard de tarjetas, es un
+  documento. El mismo patrón etiqueta-versalita + valor que usa el panel de
+  lectura de la cámara se repite aquí como estructura de todo el contenido,
+  separado por líneas de 1px en vez de contenedores redondeados — así una
+  ficha con 3 líneas de EPP y otra con 8 se leen igual de bien, sin cajas de
+  alto variable compitiendo entre sí.
+
+  El color se reserva a lo que es realmente crítico: RIESGOS es la única
+  etiqueta que usa @color/alert, porque es información de seguridad real, no
+  una categoría más a la que darle su propio tono decorativo.
+-->
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/obsidian_surface"
-    android:paddingHorizontal="20dp"
-    android:paddingTop="12dp"
-    android:paddingBottom="28dp">
+    android:background="@color/paper">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingStart="@dimen/lab_gutter"
+        android:paddingTop="@dimen/lab_space_3"
+        android:paddingEnd="@dimen/lab_gutter"
+        android:paddingBottom="@dimen/lab_space_6">
 
-        <!-- Barra de arrastre superior redondeada -->
         <View
-            android:layout_width="44dp"
-            android:layout_height="4dp"
+            android:layout_width="32dp"
+            android:layout_height="3dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="@dimen/lab_space_5"
             android:background="@drawable/drag_handle" />
 
-        <!-- Badge de Categoría / Laboratorio -->
-        <LinearLayout
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/bg_badge_muted"
-            android:paddingHorizontal="10dp"
-            android:paddingVertical="4dp">
+            android:layout_marginBottom="@dimen/lab_space_2"
+            android:text="@string/field_sheet"
+            android:textAppearance="@style/TextAppearance.Lab.Label" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="FICHA TÉCNICA OFICIAL • BROMATOLOGÍA UTEQ"
-                android:textAppearance="@style/TextAppearance.App.LabelSmall.Eyebrow" />
-        </LinearLayout>
-
-        <!-- Nombre Común del Equipo -->
         <TextView
             android:id="@+id/tvEquipmentName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.App.HeadlineSmall"
+            android:textAppearance="@style/TextAppearance.Lab.Title"
             tools:text="Unidad de Destilación Kjeldahl" />
 
-        <!-- Fabricante y Modelo Oficial -->
         <TextView
             android:id="@+id/tvEquipmentOfficial"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textAppearance="@style/TextAppearance.App.BodySmall"
-            android:textColor="@color/text_secondary"
-            tools:text="J.P. SELECTA • Pro-Nitro A (Cat. 4002430)" />
+            android:layout_marginTop="@dimen/lab_space_1"
+            android:textAppearance="@style/TextAppearance.Lab.BodySoft"
+            tools:text="J.P. SELECTA · Pro-Nitro A (Cat. 4002430)" />
 
-        <!-- TARJETA 1: Función y Principio Bromatológico -->
-        <LinearLayout
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/lab_rule"
+            android:layout_marginTop="@dimen/lab_space_5"
+            android:background="@color/rule" />
+
+        <!-- Función -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/lab_space_5"
+            android:layout_marginBottom="@dimen/lab_space_2"
+            android:text="@string/field_function"
+            android:textAppearance="@style/TextAppearance.Lab.Label" />
+
+        <TextView
+            android:id="@+id/tvFunction"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/bg_glass_card"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:lineSpacingExtra="5sp"
+            android:textAppearance="@style/TextAppearance.Lab.Body"
+            tools:text="Destilación por arrastre de vapor para cuantificación de nitrógeno total y proteína cruda en alimentos." />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/lab_rule"
+            android:layout_marginTop="@dimen/lab_space_5"
+            android:background="@color/rule" />
 
-                <ImageView
-                    android:layout_width="@dimen/icon_sm"
-                    android:layout_height="@dimen/icon_sm"
-                    android:layout_marginEnd="@dimen/space_sm"
-                    android:importantForAccessibility="no"
-                    android:src="@drawable/ic_science"
-                    app:tint="@color/neon_cyan" />
+        <!-- EPP -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/lab_space_5"
+            android:layout_marginBottom="@dimen/lab_space_2"
+            android:text="@string/field_ppe"
+            android:textAppearance="@style/TextAppearance.Lab.Label" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Propósito y Función Analítica"
-                    android:textAppearance="@style/TextAppearance.App.TitleSmall"
-                    android:textColor="@color/neon_cyan" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/tvFunction"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:lineSpacingExtra="3dp"
-                android:textAppearance="@style/TextAppearance.App.BodyMedium"
-                tools:text="Destilación por arrastre de vapor para cuantificación de nitrógeno total y proteína cruda en alimentos." />
-        </LinearLayout>
-
-        <!-- TARJETA 2: EPP Obligatorio de Bioseguridad -->
-        <LinearLayout
+        <TextView
+            android:id="@+id/tvEPP"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/bg_glass_card"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:lineSpacingExtra="5sp"
+            android:textAppearance="@style/TextAppearance.Lab.Body"
+            tools:text="• Mandil antifluidos blanco\n• Gafas de policarbonato con protección lateral\n• Guantes de nitrilo" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/lab_rule"
+            android:layout_marginTop="@dimen/lab_space_5"
+            android:background="@color/rule" />
 
-                <ImageView
-                    android:layout_width="@dimen/icon_sm"
-                    android:layout_height="@dimen/icon_sm"
-                    android:layout_marginEnd="@dimen/space_sm"
-                    android:importantForAccessibility="no"
-                    android:src="@drawable/ic_shield"
-                    app:tint="@color/neon_rose" />
+        <!-- Riesgos: única etiqueta con color — información de seguridad real -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/lab_space_5"
+            android:layout_marginBottom="@dimen/lab_space_2"
+            android:text="@string/field_risks"
+            android:textAppearance="@style/TextAppearance.Lab.Label"
+            android:textColor="@color/alert" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Elementos de Protección Personal (EPP)"
-                    android:textAppearance="@style/TextAppearance.App.TitleSmall"
-                    android:textColor="@color/neon_rose" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/tvEPP"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:lineSpacingExtra="3dp"
-                android:textAppearance="@style/TextAppearance.App.BodyMedium"
-                tools:text="• Mandil antifluidos blanco\n• Gafas de policarbonato con protección lateral\n• Guantes de nitrilo" />
-        </LinearLayout>
-
-        <!-- TARJETA 3: Riesgos y Bioseguridad -->
-        <LinearLayout
+        <TextView
+            android:id="@+id/tvRisks"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/bg_glass_card"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:lineSpacingExtra="5sp"
+            android:textAppearance="@style/TextAppearance.Lab.Body"
+            tools:text="• Quemaduras térmicas por vapor caliente\n• Contacto accidental con reactivos corrosivos (NaOH 40%)" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/lab_rule"
+            android:layout_marginTop="@dimen/lab_space_5"
+            android:background="@color/rule" />
 
-                <ImageView
-                    android:layout_width="@dimen/icon_sm"
-                    android:layout_height="@dimen/icon_sm"
-                    android:layout_marginEnd="@dimen/space_sm"
-                    android:importantForAccessibility="no"
-                    android:src="@drawable/ic_warning"
-                    app:tint="@color/neon_amber" />
+        <!-- Prácticas UTEQ -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/lab_space_5"
+            android:layout_marginBottom="@dimen/lab_space_2"
+            android:text="@string/field_practices"
+            android:textAppearance="@style/TextAppearance.Lab.Label" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Riesgos Operativos y Precauciones"
-                    android:textAppearance="@style/TextAppearance.App.TitleSmall"
-                    android:textColor="@color/neon_amber" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/tvRisks"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:lineSpacingExtra="3dp"
-                android:textAppearance="@style/TextAppearance.App.BodyMedium"
-                tools:text="• Quemaduras térmicas por vapor caliente\n• Contacto accidental con reactivos corrosivos (NaOH 40%)" />
-        </LinearLayout>
-
-        <!-- TARJETA 4: Prácticas UTEQ y Normativa -->
-        <LinearLayout
+        <TextView
+            android:id="@+id/tvPractices"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/bg_glass_card"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:lineSpacingExtra="5sp"
+            android:textAppearance="@style/TextAppearance.Lab.Body"
+            tools:text="• Práctica N° 03: Determinación de Proteína Cruda en Balanceados (AOAC 984.13)" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="@dimen/icon_sm"
-                    android:layout_height="@dimen/icon_sm"
-                    android:layout_marginEnd="@dimen/space_sm"
-                    android:importantForAccessibility="no"
-                    android:src="@drawable/ic_flask"
-                    app:tint="@color/neon_violet" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Guías de Práctica UTEQ y Normativas"
-                    android:textAppearance="@style/TextAppearance.App.TitleSmall"
-                    android:textColor="@color/neon_violet" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/tvPractices"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:lineSpacingExtra="3dp"
-                android:textAppearance="@style/TextAppearance.App.BodyMedium"
-                tools:text="• Práctica N° 03: Determinación de Proteína Cruda en Balanceados (AOAC 984.13)" />
-        </LinearLayout>
-
-        <!-- Botón de Consulta al Asistente RAG -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnConsultRAG"
-            style="@style/Widget.App.Button.Primary"
+            style="@style/Widget.Lab.Button.Primary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Consultar sobre este equipo (RAG)"
-            app:icon="@drawable/ic_chat_bubble" />
+            android:layout_marginTop="@dimen/lab_space_6"
+            android:text="@string/action_consult" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

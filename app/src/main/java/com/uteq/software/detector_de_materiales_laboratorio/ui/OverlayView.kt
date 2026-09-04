@@ -2,7 +2,6 @@ package com.uteq.software.detector_de_materiales_laboratorio.ui
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
 import android.graphics.Typeface
@@ -14,6 +13,8 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
+import androidx.core.content.ContextCompat
+import com.uteq.software.detector_de_materiales_laboratorio.R
 import com.uteq.software.detector_de_materiales_laboratorio.model.DetectionResult
 import java.util.Locale
 import kotlin.math.max
@@ -64,29 +65,29 @@ class OverlayView @JvmOverloads constructor(
     private val haloPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
         strokeWidth = dp(5f)
-        color = Color.parseColor("#E6FFFFFF")
+        color = ContextCompat.getColor(context, R.color.overlay_halo)
     }
 
     /** Línea de tinta: el trazo real de la anotación. */
     private val boxPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
         strokeWidth = dp(2f)
-        color = Color.parseColor("#FF14161A")
+        color = ContextCompat.getColor(context, R.color.overlay_line)
     }
 
     private val labelBgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
-        color = Color.parseColor("#F214161A")
+        color = ContextCompat.getColor(context, R.color.overlay_label_bg)
     }
 
     private val namePaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.WHITE
+        color = ContextCompat.getColor(context, R.color.white)
         textSize = sp(13f)
         typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
     }
 
     private val readoutPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#CCFFFFFF")
+        color = ContextCompat.getColor(context, R.color.overlay_readout)
         textSize = sp(12f)
         letterSpacing = 0.06f
         typeface = Typeface.create("sans-serif-condensed-medium", Typeface.NORMAL)

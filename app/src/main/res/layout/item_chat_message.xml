@@ -1,92 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  Turno de conversación — sistema "Registro de laboratorio".
+
+  La respuesta del asistente es el contenido que el usuario vino a leer: fluye
+  sin caja, como texto de la página, con una etiqueta "ASISTENTE" arriba en
+  vez de un avatar o badge de modelo. La pregunta del usuario es la entrada,
+  no el contenido — por eso es la única que lleva un bloque de fondo, alineado
+  a la derecha, para poder escanear la conversación de un vistazo.
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingHorizontal="4dp"
-    android:paddingVertical="5dp">
+    android:paddingVertical="@dimen/lab_space_3">
 
-    <!-- Burbuja del Asistente RAG (Bot) -->
+    <!-- Respuesta del asistente: sin caja -->
     <LinearLayout
         android:id="@+id/layoutBotMessage"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:layout_marginEnd="42dp"
+        android:layout_marginEnd="24dp"
         android:orientation="vertical">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/tvBotHeader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_chat_bot"
-            android:orientation="vertical"
-            android:padding="14dp">
+            android:layout_marginBottom="@dimen/lab_space_1"
+            android:text="Asistente"
+            android:textAppearance="@style/TextAppearance.Lab.Label" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="14dp"
-                    android:layout_height="14dp"
-                    android:layout_marginEnd="4dp"
-                    android:importantForAccessibility="no"
-                    android:src="@drawable/ic_auto_awesome"
-                    app:tint="@color/neon_emerald" />
-
-                <TextView
-                    android:id="@+id/tvBotHeader"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Asistente Bromatología"
-                    android:textAppearance="@style/TextAppearance.App.LabelMedium"
-                    android:textColor="@color/neon_emerald" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:background="@drawable/bg_badge_muted"
-                    android:paddingHorizontal="6dp"
-                    android:paddingVertical="1dp"
-                    android:text="GEMINI 2.5"
-                    android:textAppearance="@style/TextAppearance.App.LabelSmall.Muted" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/tvBotMessage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:lineSpacingExtra="3.5dp"
-                android:textAppearance="@style/TextAppearance.App.BodyMedium"
-                tools:text="La unidad Kjeldahl se utiliza para destilación por arrastre de vapor en la determinación de nitrógeno total..." />
-
-        </LinearLayout>
+        <TextView
+            android:id="@+id/tvBotMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="5sp"
+            android:textAppearance="@style/TextAppearance.Lab.Body"
+            tools:text="La unidad Kjeldahl se utiliza para destilación por arrastre de vapor en la determinación de nitrógeno total..." />
 
         <TextView
             android:id="@+id/tvBotTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="3dp"
-            android:textColor="@color/text_muted"
-            android:textSize="10sp"
+            android:layout_marginTop="@dimen/lab_space_1"
+            android:textAppearance="@style/TextAppearance.Lab.Caption"
             tools:text="14:35" />
 
     </LinearLayout>
 
-    <!-- Burbuja del Usuario -->
+    <!-- Pregunta del usuario: única con bloque de fondo -->
     <LinearLayout
         android:id="@+id/layoutUserMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:layout_marginStart="42dp"
+        android:layout_marginStart="48dp"
         android:orientation="vertical"
         android:visibility="gone"
         tools:visibility="visible">
@@ -95,12 +65,11 @@
             android:id="@+id/tvUserMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_chat_user"
-            android:elevation="2dp"
-            android:lineSpacingExtra="2.5dp"
-            android:padding="14dp"
-            android:textAppearance="@style/TextAppearance.App.BodyMedium"
-            android:textColor="@color/on_primary_container"
+            android:background="@drawable/bg_user_message"
+            android:lineSpacingExtra="4sp"
+            android:paddingHorizontal="@dimen/lab_space_3"
+            android:paddingVertical="@dimen/lab_space_2"
+            android:textAppearance="@style/TextAppearance.Lab.Body"
             tools:text="¿Cuáles son los pasos para determinar proteína cruda?" />
 
         <TextView
@@ -108,10 +77,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="3dp"
-            android:textColor="@color/text_muted"
-            android:textSize="10sp"
+            android:layout_marginTop="@dimen/lab_space_1"
+            android:textAppearance="@style/TextAppearance.Lab.Caption"
             tools:text="14:36" />
 
     </LinearLayout>

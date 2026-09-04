@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.speech.RecognizerIntent
-import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -155,13 +154,11 @@ class ChatActivity : AppCompatActivity() {
         binding.btnBack.setOnClickListener { finish() }
 
         if (scopedToEquipment && !currentEquipmentName.isNullOrEmpty()) {
-            binding.tvActiveEquipment.text = "Equipo activo: $currentEquipmentName"
-            binding.layoutSelectedChip.visibility = View.VISIBLE
-            binding.etChatMessage.hint = "Escribe o dicta sobre este equipo..."
+            binding.tvActiveEquipment.text = currentEquipmentName
+            binding.etChatMessage.hint = getString(R.string.chat_hint_scoped)
         } else {
-            binding.tvActiveEquipment.text = "Modo general • Laboratorio de Bromatología UTEQ"
-            binding.layoutSelectedChip.visibility = View.VISIBLE
-            binding.etChatMessage.hint = "Escribe o dicta tu consulta..."
+            binding.tvActiveEquipment.text = getString(R.string.context_general)
+            binding.etChatMessage.hint = getString(R.string.chat_hint_general)
         }
     }
 

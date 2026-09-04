@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- ===== Sistema "Registro de laboratorio" (vigente) ===== -->
+    <!-- Sistema "Registro de laboratorio" -->
     <!-- Margen de página: todo el contenido se alinea a esta columna -->
     <dimen name="lab_gutter">20dp</dimen>
     <!-- Ritmo vertical -->
@@ -16,32 +16,6 @@
     <dimen name="lab_rule">1dp</dimen>
     <dimen name="lab_action_height">52dp</dimen>
 
-    <!-- ===== LEGACY (pantallas aún no migradas) ===== -->
-    <!-- Escala de espaciado -->
-    <dimen name="space_xs">4dp</dimen>
-    <dimen name="space_sm">8dp</dimen>
-    <dimen name="space_md">12dp</dimen>
-    <dimen name="space_lg">16dp</dimen>
-    <dimen name="space_xl">24dp</dimen>
-    <dimen name="space_xxl">32dp</dimen>
-
-    <!-- Radios de esquina -->
-    <dimen name="radius_sm">8dp</dimen>
-    <dimen name="radius_md">12dp</dimen>
-    <dimen name="radius_lg">16dp</dimen>
-    <dimen name="radius_xl">24dp</dimen>
-    <dimen name="radius_pill">999dp</dimen>
-
-    <!-- Iconografía -->
-    <dimen name="icon_sm">16dp</dimen>
-    <dimen name="icon_md">20dp</dimen>
-    <dimen name="icon_lg">24dp</dimen>
-
     <!-- Accesibilidad: objetivo táctil mínimo -->
     <dimen name="touch_target_min">48dp</dimen>
-
-    <!-- Elevaciones -->
-    <dimen name="elevation_low">2dp</dimen>
-    <dimen name="elevation_med">6dp</dimen>
-    <dimen name="elevation_high">10dp</dimen>
 </resources>

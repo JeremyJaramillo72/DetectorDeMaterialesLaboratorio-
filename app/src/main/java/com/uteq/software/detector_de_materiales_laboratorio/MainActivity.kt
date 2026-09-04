@@ -8,7 +8,6 @@ import android.graphics.Matrix
 import android.os.Bundle
 import android.util.Log
 import android.util.Size
-import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -264,6 +263,10 @@ class MainActivity : AppCompatActivity() {
     /**
      * El panel de lectura solo afirma tres cosas: qué equipo hay delante, con
      * cuánta confianza, y si se puede abrir su ficha. Sin estados decorativos.
+     *
+     * La altura del panel es fija en los tres estados: nunca se oculta ni se
+     * agrega una fila, y el nombre siempre usa la misma tipografía — solo
+     * cambian el texto y el color. Ver activity_main.xml.
      */
     private fun updateHUD(detections: List<DetectionResult>) {
         when {
@@ -287,26 +290,26 @@ class MainActivity : AppCompatActivity() {
     ) {
         val hasEquipment = confidence != null
 
-        binding.labelEquipment.visibility = if (hasEquipment) View.VISIBLE else View.GONE
-        binding.rowConfidence.visibility = if (hasEquipment) View.VISIBLE else View.GONE
         binding.btnQuickDetails.isEnabled = hasEquipment
+        binding.labelEquipment.text = getString(
+            if (hasEquipment) R.string.field_equipment else R.string.field_status
+        )
 
         binding.tvEquipmentName.text = text
-        binding.tvEquipmentName.setTextAppearance(
-            if (hasEquipment) {
-                R.style.TextAppearance_Lab_Title
-            } else {
-                R.style.TextAppearance_Lab_BodySoft
-            }
+        binding.tvEquipmentName.setTextColor(
+            ContextCompat.getColor(
+                this,
+                when {
+                    isAlert -> R.color.alert
+                    hasEquipment -> R.color.ink
+                    else -> R.color.ink_soft
+                }
+            )
         )
-        if (isAlert) {
-            binding.tvEquipmentName.setTextColor(ContextCompat.getColor(this, R.color.alert))
-        }
 
-        confidence?.let {
-            binding.tvConfidence.text =
-                String.format(Locale.getDefault(), "%.1f %%", it * 100f)
-        }
+        binding.tvConfidence.text = confidence?.let {
+            String.format(Locale.getDefault(), "%.1f %%", it * 100f)
+        } ?: getString(R.string.confidence_placeholder)
     }
 
     private fun rotateBitmapIfNeeded(bitmap: Bitmap, rotationDegrees: Int): Bitmap {

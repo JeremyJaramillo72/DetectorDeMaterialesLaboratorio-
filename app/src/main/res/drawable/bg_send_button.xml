@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Botón de enviar: rectángulo de tinta, radio del sistema. No es un FAB
+     circular — el sistema no usa formas circulares flotantes. -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="#33FFFFFF">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/ink" />
+            <corners android:radius="@dimen/lab_radius" />
+        </shape>
+    </item>
+</ripple>

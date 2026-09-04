@@ -70,7 +70,15 @@
         android:background="@color/rule"
         app:layout_constraintBottom_toTopOf="@id/panelReading" />
 
-    <!-- Lectura: qué equipo, con cuánta confianza, y las dos acciones posibles. -->
+    <!--
+      Lectura: qué equipo, con cuánta confianza, y las dos acciones posibles.
+
+      Altura estable por diseño, no por casualidad: ningún elemento cambia de
+      visibilidad ni de tamaño de fuente entre el estado "sin detección" y
+      "detectado" — solo cambia el texto y el color. tvEquipmentName fija
+      minLines/maxLines=2 para que su caja mida siempre lo mismo sin importar
+      si el contenido es una instrucción de una línea o un nombre de equipo.
+    -->
     <LinearLayout
         android:id="@+id/panelReading"
         android:layout_width="match_parent"
@@ -88,10 +96,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/lab_space_2"
-            android:text="@string/field_equipment"
+            android:text="@string/field_status"
             android:textAppearance="@style/TextAppearance.Lab.Label"
-            android:visibility="gone"
-            tools:visibility="visible" />
+            tools:text="@string/field_equipment" />
 
         <TextView
             android:id="@+id/tvEquipmentName"
@@ -99,20 +106,19 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:lineSpacingExtra="3sp"
+            android:minLines="2"
             android:maxLines="2"
             android:text="@string/aim_at_equipment"
-            android:textAppearance="@style/TextAppearance.Lab.BodySoft"
-            tools:text="Destilador por Arrastre de Vapor tipo Kjeldahl"
-            tools:textAppearance="@style/TextAppearance.Lab.Title" />
+            android:textAppearance="@style/TextAppearance.Lab.Title"
+            android:textColor="@color/ink_soft"
+            tools:text="Destilador por Arrastre de Vapor tipo Kjeldahl" />
 
         <LinearLayout
             android:id="@+id/rowConfidence"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/lab_space_4"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            tools:visibility="visible">
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -125,6 +131,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/lab_space_3"
+                android:text="@string/confidence_placeholder"
                 android:textAppearance="@style/TextAppearance.Lab.Readout"
                 tools:text="87.1 %" />
 

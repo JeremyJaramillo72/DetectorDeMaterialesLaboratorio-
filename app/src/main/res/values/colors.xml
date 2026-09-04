@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Base -->
-    <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="transparent">#00000000</color>
 
     <!-- ============================================================
-         IDENTIDAD "REGISTRO DE LABORATORIO"  (sistema vigente)
+         IDENTIDAD "REGISTRO DE LABORATORIO"
          Papel cálido + tinta grafito. La estructura la dan la
          tipografía, la alineación y las líneas de 1px; NO tarjetas.
          Un solo acento, reservado al estado real de detección.
@@ -19,7 +16,6 @@
            white      / ink   = 18.11:1   (botón primario)
          ============================================================ -->
     <color name="paper">#F4F2ED</color>
-    <color name="paper_raised">#FFFFFF</color>
     <color name="paper_sunken">#EAE7E0</color>
     <color name="ink">#14161A</color>
     <color name="ink_soft">#565B62</color>
@@ -30,86 +26,10 @@
     <color name="alert">#9A3412</color>
 
     <!-- Capa de cámara: se dibuja sobre imagen real impredecible, por eso NO usa
-         los colores del sistema claro sino su propio tratamiento de contraste. -->
-    <color name="overlay_stroke">#FFFFFFFF</color>
-    <color name="overlay_halo">#99000000</color>
-    <color name="overlay_label_bg">#EB14161A</color>
-
-    <!-- ============================================================
-         LEGACY — paleta oscura de la ronda anterior. Se conserva SOLO
-         porque chat y ficha técnica todavía no están migrados; se
-         elimina cuando esas pantallas pasen al sistema nuevo.
-         ============================================================ -->
-
-    <!-- ============================================================
-         SISTEMA DE DISEÑO — Obsidian & Electric Emerald (M3 roles)
-         Todo hex vive aquí una sola vez; themes.xml solo referencia
-         estos nombres. Cada valor de texto/ícono fue verificado con
-         la fórmula de contraste relativo WCAG 2.1 contra los fondos
-         donde realmente se usa (ver tabla de contraste en el reporte
-         final de la tarea). Los dos ajustados frente al hex original
-         del proyecto están marcados abajo.
-         ============================================================ -->
-
-    <!-- M3 role: background / surface / surface containers -->
-    <color name="obsidian_base">#070A11</color>          <!-- background -->
-    <color name="obsidian_surface">#0F172A</color>       <!-- surface -->
-    <color name="obsidian_card">#162032</color>           <!-- surfaceContainer (tarjetas, burbujas, badges) -->
-    <color name="obsidian_card_elevated">#1E2B42</color>  <!-- surfaceContainerHigh: SOLO chrome no textual (no colocar texto de color aquí, no pasa 4.5:1) -->
-
-    <!-- Bordes / contornos -->
-    <color name="glass_border">#2A3C58</color>            <!-- outline -->
-    <color name="glass_border_subtle">#1F2E45</color>     <!-- outlineVariant -->
-    <color name="glass_border_active">#00E676</color>
-    <color name="glass_surface">#CC0F1A2C</color>
-    <color name="glass_dock">#E60B1322</color>
-
-    <!-- M3 role: primary — marca UTEQ, estado "detección activa", acciones afirmativas -->
-    <color name="neon_emerald">#00E676</color>            <!-- primary (uso en texto/ícono/badge brillante sobre fondo oscuro; ratio 8.5–11.9:1) -->
-    <color name="uteq_primary_dark">#047857</color>        <!-- colorPrimary de botones sólidos (relleno grande + texto blanco; ratio 5.48:1) -->
-    <color name="uteq_primary">#059669</color>
-    <color name="uteq_accent">#00E676</color>
-    <color name="primary_container">#0B2E22</color>        <!-- fondo tintado oscuro (burbuja de usuario, etc.) -->
-    <color name="on_primary_container">#F8FAFC</color>     <!-- ratio 14.05:1 sobre primary_container -->
-
-    <!-- M3 role: secondary — estado de sistema/red (no confundir con "primary") -->
-    <color name="neon_cyan">#00E5FF</color>                <!-- secondary (ratio 9.2–12.9:1) -->
-    <color name="secondary_container">#062A33</color>
-    <color name="on_secondary_container">#00E5FF</color>   <!-- ratio 9.84:1 sobre secondary_container -->
-
-    <!-- M3 role: tertiary — categoría "Prácticas UTEQ" -->
-    <!-- Ajustado de #8B5CF6 → #996FF7: el original solo pasaba 3:1 (texto grande) sobre
-         surfaceContainer (#162032), donde realmente se usa como header de tarjeta en 14sp bold,
-         que NO califica como "texto grande" WCAG. #996FF7 sostiene ≥4.6:1 en ese fondo. -->
-    <color name="neon_violet">#996FF7</color>
-
-    <!-- M3 role: error — EPP / riesgo crítico -->
-    <!-- Ajustado de #F43F5E → #F54966 por el mismo motivo: 4.44:1 (insuficiente) → 4.68:1 sobre
-         surfaceContainer. -->
-    <color name="neon_rose">#F54966</color>
-
-    <!-- M3 role: warning (rol custom, M3 no lo define de forma nativa) — riesgos operativos -->
-    <color name="neon_amber">#F59E0B</color>               <!-- ratio 7.6–9.2:1, sin ajuste necesario -->
-
-    <!-- Cajas de Detección YOLO — SIN CAMBIOS (fuera de alcance, ver OverlayView.kt) -->
-    <color name="box_emerald">#00E676</color>
-    <color name="box_cyan">#00E5FF</color>
-    <color name="box_amber">#F59E0B</color>
-    <color name="box_purple">#8B5CF6</color>
-    <color name="box_text_bg">#D90A1526</color>
-    <color name="box_selected">#38BDF8</color>
-
-    <!-- M3 role: texto sobre superficies oscuras -->
-    <color name="text_primary">#F8FAFC</color>             <!-- onBackground / onSurface, ratio 13.6–18.9:1 -->
-    <color name="text_secondary">#94A3B8</color>            <!-- onSurfaceVariant, ratio 5.5–7.7:1 -->
-    <!-- Ajustado de #64748B → #79899F: el original caía a 3.4–4.2:1 (insuficiente) en los fondos
-         reales donde se usa (obsidian_base/obsidian_surface/obsidian_card). #79899F sostiene
-         ≥4.5:1 en los tres. No se usa sobre obsidian_card_elevated (ver nota arriba). -->
-    <color name="text_muted">#79899F</color>
-
-    <!-- UI, Tarjetas y Badges -->
-    <color name="card_dark">#162032</color>
-    <color name="card_border">#2A3C58</color>
-    <color name="badge_epp">#F54966</color>
-    <color name="badge_norm">#38BDF8</color>
+         los colores del sistema claro sino su propio tratamiento de contraste
+         (línea de tinta sobre halo blanco). Ver OverlayView.kt. -->
+    <color name="overlay_line">#FF14161A</color>
+    <color name="overlay_halo">#E6FFFFFF</color>
+    <color name="overlay_label_bg">#F214161A</color>
+    <color name="overlay_readout">#CCFFFFFF</color>
 </resources>
