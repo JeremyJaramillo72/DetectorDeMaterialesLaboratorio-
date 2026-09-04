@@ -43,13 +43,34 @@ class RagApiClient(private val context: Context) {
         equipmentDisplayName: String? = null
     ): ChatMessage = withContext(Dispatchers.IO) {
         val kbRepo = KnowledgeBaseRepository.getInstance(context)
-        val eq = if (scopedToEquipment && !equipmentId.isNullOrEmpty()) {
+        val scopedEq = if (scopedToEquipment && !equipmentId.isNullOrEmpty()) {
             kbRepo.getEquipmentById(equipmentId) ?: kbRepo.getEquipmentByClass(equipmentId)
         } else {
             null
         }
 
-        // Preguntas fuera de tema en modo equipo: rechazar antes de llamar a Gemini
+        // Modo general: resolver equipo por nombre (existe / no registrado)
+        var generalMatchedEq: EquipmentData? = null
+        if (!scopedToEquipment) {
+            when (val resolved = kbRepo.resolveEquipmentFromQuery(userMessage)) {
+                is KnowledgeBaseRepository.EquipmentQueryResult.Found -> {
+                    generalMatchedEq = resolved.equipment
+                }
+                is KnowledgeBaseRepository.EquipmentQueryResult.NotRegistered -> {
+                    return@withContext ChatMessage(
+                        text = "El equipo **\"${resolved.askedName}\"** no está registrado en el sistema del Laboratorio de Bromatología UTEQ.\n\n" +
+                            "Solo puedo dar información de equipos que existan en el catálogo. " +
+                            "Prueba con un nombre registrado o detectalo con la cámara.",
+                        isBot = true
+                    )
+                }
+                KnowledgeBaseRepository.EquipmentQueryResult.GeneralTopic -> Unit
+            }
+        }
+
+        val eq = scopedEq ?: generalMatchedEq
+
+        // Preguntas fuera de tema en modo equipo específico (ficha)
         if (scopedToEquipment) {
             val eqName = eq?.nombreComun ?: equipmentDisplayName ?: "el equipo detectado"
             if (kbRepo.isOffTopicEquipmentQuery(userMessage)) {
@@ -68,13 +89,14 @@ class RagApiClient(private val context: Context) {
                     userMessage = userMessage,
                     eq = eq,
                     scopedToEquipment = scopedToEquipment,
-                    equipmentDisplayName = equipmentDisplayName ?: eq?.nombreComun
+                    equipmentDisplayName = equipmentDisplayName ?: eq?.nombreComun,
+                    catalogSummary = if (!scopedToEquipment) kbRepo.buildEquipmentCatalogSummary() else null
                 )
                 if (!geminiResponse.isNullOrBlank()) {
                     return@withContext ChatMessage(
                         text = geminiResponse,
                         isBot = true,
-                        equipmentId = if (scopedToEquipment) eq?.id ?: equipmentId else null,
+                        equipmentId = eq?.id,
                         citations = eq?.fuentesReferencias ?: emptyList(),
                         eppRequired = eq?.eppRequerido ?: emptyList(),
                         risks = eq?.riesgosAsociados ?: emptyList()
@@ -130,12 +152,13 @@ class RagApiClient(private val context: Context) {
         userMessage: String,
         eq: EquipmentData?,
         scopedToEquipment: Boolean,
-        equipmentDisplayName: String?
+        equipmentDisplayName: String?,
+        catalogSummary: String? = null
     ): String? {
         val systemPrompt = if (scopedToEquipment) {
             buildScopedPrompt(userMessage, eq, equipmentDisplayName)
         } else {
-            buildGeneralPrompt(userMessage)
+            buildGeneralPrompt(userMessage, eq, catalogSummary)
         }
 
         val jsonPayload = JsonObject().apply {
@@ -148,6 +171,13 @@ class RagApiClient(private val context: Context) {
             contentObj.add("parts", partsArray)
             contentsArray.add(contentObj)
             add("contents", contentsArray)
+
+            // Evita respuestas cortadas a mitad de frase
+            val generationConfig = JsonObject().apply {
+                addProperty("temperature", 0.3)
+                addProperty("maxOutputTokens", 1024)
+            }
+            add("generationConfig", generationConfig)
         }
 
         val body = jsonPayload.toString().toRequestBody(jsonMediaType)
@@ -201,45 +231,67 @@ class RagApiClient(private val context: Context) {
         }
 
         return """
-            Eres un asistente de chat del Laboratorio de Bromatología UTEQ.
-            Habla como una IA conversacional (tipo WhatsApp/ChatGPT): natural, breve y útil.
+            Eres el asistente del Laboratorio de Bromatología UTEQ.
+            Responde DIRECTO AL GRANO, en español claro.
 
-            Estás ayudando SOLO con: "$eqName".
-
+            Equipo permitido: "$eqName"
             $contextInfo
 
-            Pregunta del estudiante:
-            "$userMessage"
+            Pregunta: "$userMessage"
 
-            REGLAS DE RESPUESTA (obligatorias):
-            1. Contesta DIRECTAMENTE la pregunta. Nada más.
-            2. NO lances la ficha técnica completa.
-            3. NO listes fabricante, función, principio, prácticas y fuentes si no te lo pidieron.
-            4. Si preguntan prevención/seguridad/EPP/riesgos: responde con medidas concretas en viñetas cortas.
-            5. Si preguntan procedimiento: solo los pasos.
-            6. Si preguntan qué es/para qué sirve: 2-4 oraciones máximo.
-            7. Tono cercano y claro para estudiantes. Español neutro.
-            8. Si la pregunta NO es sobre este equipo (mates, chistes, clima, cultura general, otro aparato, etc.),
-               responde EXACTAMENTE en este estilo:
-               "Solo puedo responder preguntas sobre el $eqName. Pregúntame por prevención, EPP, procedimiento, riesgos, función o prácticas UTEQ de este equipo."
-               No resuelvas la pregunta fuera de tema.
-            9. Máximo ~120-180 palabras, salvo que pidan el procedimiento completo.
+            REGLAS:
+            1. Contesta solo lo preguntado, completo (nunca cortes a mitad de frase).
+            2. Sin relleno, sin ficha técnica completa, sin listar todo.
+            3. Función/qué es: 1-3 oraciones cortas y cerradas.
+            4. EPP/riesgos/prevención: viñetas concretas.
+            5. Procedimiento: solo pasos numerados.
+            6. Si la pregunta no es de este equipo, di solo:
+               "Solo puedo responder preguntas sobre el $eqName."
+            7. Máximo ~80-120 palabras. Termina siempre la última oración.
         """.trimIndent()
     }
 
-    private fun buildGeneralPrompt(userMessage: String): String {
-        return """
-            Eres un asistente de chat del Laboratorio de Bromatología UTEQ.
-            Habla como una IA normal: conversacional, breve y directa.
+    private fun buildGeneralPrompt(
+        userMessage: String,
+        matchedEquipment: EquipmentData?,
+        catalogSummary: String?
+    ): String {
+        val matchedBlock = if (matchedEquipment != null) {
+            """
+            EQUIPO IDENTIFICADO EN LA PREGUNTA (usar estos datos):
+            - Nombre: ${matchedEquipment.nombreComun}
+            - Oficial: ${matchedEquipment.nombreOficial}
+            - Fabricante/Modelo: ${matchedEquipment.fabricante} - ${matchedEquipment.modelo}
+            - Función: ${matchedEquipment.funcionPrincipal}
+            - Principio: ${matchedEquipment.principioFuncionamiento}
+            - EPP: ${matchedEquipment.eppRequerido.joinToString(", ")}
+            - Riesgos: ${matchedEquipment.riesgosAsociados.joinToString(", ")}
+            - Procedimiento: ${matchedEquipment.procedimientoOperativoEstandar.joinToString(" | ")}
+            - Prácticas UTEQ: ${matchedEquipment.guiasPracticaUteq.joinToString("; ")}
+            """.trimIndent()
+        } else {
+            "No se identificó un equipo concreto en la pregunta (tema general del laboratorio)."
+        }
 
-            Pregunta:
-            "$userMessage"
+        return """
+            Eres el asistente general del Laboratorio de Bromatología UTEQ.
+            Conoces TODOS los equipos registrados del sistema.
+
+            CATÁLOGO DE EQUIPOS REGISTRADOS:
+            ${catalogSummary ?: "(catálogo no disponible)"}
+
+            $matchedBlock
+
+            Pregunta: "$userMessage"
 
             REGLAS:
-            1. Responde solo lo preguntado (bioseguridad general, EPP, prácticas, orientación).
-            2. No sueltes un manual completo.
-            3. Si piden un equipo concreto, indícales detectarlo en cámara y abrir "Consultar sobre este equipo".
-            4. Máximo ~120-180 palabras. Español claro.
+            1. Responde DIRECTO AL GRANO y completa las oraciones.
+            2. Si preguntan por un equipo del catálogo, responde con su información (función, EPP, riesgos, etc. según lo pedido).
+            3. Si preguntan por un equipo que NO está en el catálogo, responde exactamente:
+               "Ese equipo no está registrado en el sistema del Laboratorio de Bromatología UTEQ."
+               No inventes datos de equipos inexistentes.
+            4. Si es tema general (bioseguridad/EPP general), responde breve.
+            5. Máximo ~100-140 palabras.
         """.trimIndent()
     }
 

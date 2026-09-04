@@ -25,6 +25,7 @@ import androidx.core.content.ContextCompat
 import com.uteq.software.detector_de_materiales_laboratorio.data.KnowledgeBaseRepository
 import com.uteq.software.detector_de_materiales_laboratorio.databinding.ActivityMainBinding
 import com.uteq.software.detector_de_materiales_laboratorio.ml.DetectionTracker
+import com.uteq.software.detector_de_materiales_laboratorio.ml.EquipmentDetectionCache
 import com.uteq.software.detector_de_materiales_laboratorio.ml.YoloDetector
 import com.uteq.software.detector_de_materiales_laboratorio.model.DetectionResult
 import com.uteq.software.detector_de_materiales_laboratorio.ui.EquipmentBottomSheetDialog
@@ -39,10 +40,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var yoloDetector: YoloDetector
     private lateinit var kbRepository: KnowledgeBaseRepository
+    private lateinit var detectionCache: EquipmentDetectionCache
     private val detectionTracker = DetectionTracker(
-        holdMs = 1600L,
+        holdMs = 600L,
         switchVotesNeeded = 3,
-        classSwitchMargin = 0.12f
+        confirmVotesNeeded = 2,
+        classSwitchMargin = 0.18f,
+        minPublishConfidence = 0.60f
     )
 
     private var latestDetections: List<DetectionResult> = emptyList()
@@ -76,8 +80,11 @@ class MainActivity : AppCompatActivity() {
         setupCameraFrameClip()
 
         cameraExecutor = Executors.newSingleThreadExecutor()
-        yoloDetector = YoloDetector(this)
+        detectionCache = EquipmentDetectionCache(this)
+        yoloDetector = YoloDetector(this).also { it.detectionCache = detectionCache }
+        detectionTracker.detectionCache = detectionCache
         kbRepository = KnowledgeBaseRepository.getInstance(this)
+        warmEquipmentInfoCache()
 
         setupUI()
         updateModelBadge()
@@ -98,6 +105,13 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             binding.cameraFrame.clipToOutline = true
+        }
+    }
+
+    private fun warmEquipmentInfoCache() {
+        // Precarga fichas en memoria para apertura instantánea
+        kbRepository.getAllEquipments().forEach { eq ->
+            detectionCache.putEquipmentInfo(eq.id, eq)
         }
     }
 
@@ -137,8 +151,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showEquipmentDetails(yoloClass: String) {
-        val eq = kbRepository.getEquipmentByClass(yoloClass) ?: kbRepository.getEquipmentById(yoloClass)
+        val eq = detectionCache.getEquipmentInfo(yoloClass)
+            ?: kbRepository.getEquipmentByClass(yoloClass)
+            ?: kbRepository.getEquipmentById(yoloClass)
         if (eq != null) {
+            detectionCache.putEquipmentInfo(yoloClass, eq)
             val dialog = EquipmentBottomSheetDialog.newInstance(eq)
             dialog.show(supportFragmentManager, "EquipmentDetail")
         } else {
@@ -205,7 +222,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun processImageProxy(imageProxy: ImageProxy) {
         val now = System.currentTimeMillis()
-        if (now - lastInferenceTimeMs < INFERENCE_INTERVAL_MS) {
+        val interval = if (detectionCache.getCachedClassIndices().isNotEmpty()) {
+            CACHED_INFERENCE_INTERVAL_MS
+        } else {
+            INFERENCE_INTERVAL_MS
+        }
+        if (now - lastInferenceTimeMs < interval) {
             imageProxy.close()
             return
         }
@@ -232,13 +254,24 @@ class MainActivity : AppCompatActivity() {
             latestDetections = stable
             lastInferenceTimeMs = now
 
+            // Aprender solo detecciones muy seguras (evita cachear falsos positivos)
+            stable.firstOrNull()?.let { det ->
+                if (det.confidence >= EquipmentDetectionCache.MIN_LEARN_CONFIDENCE) {
+                    val eq = detectionCache.getEquipmentInfo(det.label)
+                        ?: kbRepository.getEquipmentByClass(det.label)
+                        ?: kbRepository.getEquipmentById(det.label)
+                    detectionCache.remember(det, eq)
+                }
+            }
+
             val frameWidth = bitmap.width
             val frameHeight = bitmap.height
+            val fromCache = stable.firstOrNull()?.let { detectionCache.isKnown(it.label) } == true
 
             runOnUiThread {
                 if (!isFinishing && !isDestroyed) {
                     binding.overlayView.setResults(stable, frameWidth, frameHeight)
-                    updateHUD(stable)
+                    updateHUD(stable, fromCache)
                 }
             }
         } catch (oom: OutOfMemoryError) {
@@ -254,7 +287,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateHUD(detections: List<DetectionResult>) {
+    private fun updateHUD(detections: List<DetectionResult>, fromCache: Boolean = false) {
         when {
             !yoloDetector.isModelLoaded() -> {
                 binding.tvStatus.text = "Falta el modelo: copia yolo11_bromatologia.tflite a assets/"
@@ -273,9 +306,17 @@ class MainActivity : AppCompatActivity() {
             else -> {
                 val top = detections.maxByOrNull { it.confidence } ?: return
                 val confPercent = (top.confidence * 100).toInt()
-                binding.tvStatus.text = "Equipo detectado • Toca el recuadro para ver detalles"
+                binding.tvStatus.text = if (fromCache) {
+                    "Detectado (caché) • Toca el recuadro para ver detalles"
+                } else {
+                    "Equipo detectado • Toca el recuadro para ver detalles"
+                }
                 binding.tvDockEquipmentName.text = top.displayName
-                binding.tvDockConfidence.text = "$confPercent% match"
+                binding.tvDockConfidence.text = if (fromCache) {
+                    "$confPercent% • cache"
+                } else {
+                    "$confPercent% match"
+                }
                 binding.tvDockConfidence.setBackgroundResource(R.drawable.bg_badge_model)
                 binding.tvDockConfidence.setTextColor(ContextCompat.getColor(this, R.color.neon_emerald))
             }
@@ -315,7 +356,9 @@ class MainActivity : AppCompatActivity() {
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
         private const val ANALYSIS_WIDTH = 640
         private const val ANALYSIS_HEIGHT = 480
-        /** ~6–7 FPS de análisis: más rápido sin saturar el teléfono */
+        /** ~6–7 FPS primera detección */
         private const val INFERENCE_INTERVAL_MS = 150L
+        /** ~10 FPS cuando ya hay equipos en caché */
+        private const val CACHED_INFERENCE_INTERVAL_MS = 100L
     }
 }

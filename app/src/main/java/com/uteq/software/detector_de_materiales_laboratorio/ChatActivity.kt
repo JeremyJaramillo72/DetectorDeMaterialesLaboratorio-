@@ -1,9 +1,16 @@
 package com.uteq.software.detector_de_materiales_laboratorio
 
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.speech.RecognizerIntent
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -37,6 +44,42 @@ class ChatActivity : AppCompatActivity() {
         const val EXTRA_SCOPED_TO_EQUIPMENT = "extra_scoped_to_equipment"
     }
 
+    private val voicePermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+            if (granted) {
+                startVoiceDictation()
+            } else {
+                Toast.makeText(
+                    this,
+                    "Se necesita permiso de micrófono para dictar el mensaje.",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+
+    private val voiceInputLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode != RESULT_OK) return@registerForActivityResult
+            val spoken = result.data
+                ?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                ?.firstOrNull()
+                ?.trim()
+                .orEmpty()
+
+            if (spoken.isEmpty()) {
+                Toast.makeText(this, "No se pudo transcribir. Intenta de nuevo.", Toast.LENGTH_SHORT)
+                    .show()
+                return@registerForActivityResult
+            }
+
+            // Solo llena el cuadro de texto; el usuario envía cuando quiera
+            val current = binding.etChatMessage.text?.toString().orEmpty().trim()
+            val merged = if (current.isEmpty()) spoken else "$current $spoken"
+            binding.etChatMessage.setText(merged)
+            binding.etChatMessage.setSelection(merged.length)
+            Toast.makeText(this, "Texto dictado listo. Revisa y envía.", Toast.LENGTH_SHORT).show()
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -56,7 +99,6 @@ class ChatActivity : AppCompatActivity() {
             ?: intent.getStringExtra(EXTRA_EQUIPMENT_CLASS)
         currentEquipmentName = intent.getStringExtra(EXTRA_EQUIPMENT_NAME)
 
-        // Si viene desde la ficha, forzar modo equipo aunque falte el flag
         if (!currentEquipmentId.isNullOrBlank() || !currentEquipmentName.isNullOrBlank()) {
             scopedToEquipment = true
             resolveEquipmentIdentity()
@@ -115,11 +157,11 @@ class ChatActivity : AppCompatActivity() {
         if (scopedToEquipment && !currentEquipmentName.isNullOrEmpty()) {
             binding.tvActiveEquipment.text = "Equipo activo: $currentEquipmentName"
             binding.layoutSelectedChip.visibility = View.VISIBLE
-            binding.etChatMessage.hint = "Pregunta solo sobre este equipo..."
+            binding.etChatMessage.hint = "Escribe o dicta sobre este equipo..."
         } else {
             binding.tvActiveEquipment.text = "Modo general • Laboratorio de Bromatología UTEQ"
             binding.layoutSelectedChip.visibility = View.VISIBLE
-            binding.etChatMessage.hint = "Consulta general del laboratorio..."
+            binding.etChatMessage.hint = "Escribe o dicta tu consulta..."
         }
     }
 
@@ -174,6 +216,10 @@ class ChatActivity : AppCompatActivity() {
             }
         }
 
+        binding.btnVoiceInput.setOnClickListener {
+            requestMicAndDictate()
+        }
+
         binding.etChatMessage.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEND) {
                 val text = binding.etChatMessage.text.toString().trim()
@@ -196,14 +242,49 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
+    private fun requestMicAndDictate() {
+        val granted = ContextCompat.checkSelfPermission(
+            this, Manifest.permission.RECORD_AUDIO
+        ) == PackageManager.PERMISSION_GRANTED
+
+        if (granted) {
+            startVoiceDictation()
+        } else {
+            voicePermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+        }
+    }
+
+    private fun startVoiceDictation() {
+        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+            putExtra(
+                RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+            )
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, "es-ES")
+            putExtra(RecognizerIntent.EXTRA_PROMPT, "Habla tu pregunta…")
+            putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
+        }
+
+        try {
+            voiceInputLauncher.launch(intent)
+        } catch (_: Exception) {
+            Toast.makeText(
+                this,
+                "Este dispositivo no tiene reconocimiento de voz disponible.",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
     private fun sendInitialWelcomeMessage() {
         val welcomeText = if (scopedToEquipment) {
             val eqName = currentEquipmentName ?: "este equipo"
-            "Listo, estoy enfocado en **$eqName**.\n\n" +
-                "Pregúntame lo que necesites: prevención, EPP, cómo usarlo, riesgos, etc. Te respondo directo."
+            "Listo. Solo respondo sobre **$eqName**.\n\n" +
+                "Pregunta directo (o usa el micrófono): función, EPP, riesgos, procedimiento."
         } else {
-            "Hola, soy el asistente general del lab de Bromatología UTEQ.\n\n" +
-                "Puedes preguntarme de bioseguridad o prácticas. Si quieres detalle de un equipo, detectalo y abre su ficha."
+            "Hola. Soy el asistente general del lab UTEQ.\n\n" +
+                "Conozco todos los equipos registrados. Pregunta por nombre (ej. microscopio trinocular) " +
+                "o usa el micrófono. Si el equipo no está en el sistema, te lo diré."
         }
         chatAdapter.addMessage(
             ChatMessage(

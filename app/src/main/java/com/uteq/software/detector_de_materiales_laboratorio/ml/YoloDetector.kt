@@ -22,8 +22,8 @@ class YoloDetector(
     private val modelFileName: String = "yolo11_bromatologia.tflite",
     private val fallbackModelName: String = "yolov8_bromatologia.tflite",
     private val labelFileName: String = "labels.txt",
-    private val confidenceThreshold: Float = 0.42f,
-    private val classMargin: Float = 0.10f,
+    private val confidenceThreshold: Float = 0.65f,
+    private val classMargin: Float = 0.18f,
     private val iouThreshold: Float = 0.50f
 ) {
 
@@ -33,6 +33,9 @@ class YoloDetector(
     private val labels = ArrayList<String>()
     private val numClasses: Int
         get() = if (labels.isNotEmpty()) labels.size else 8
+
+    /** Caché opcional: equipos ya vistos usan umbral más bajo */
+    var detectionCache: EquipmentDetectionCache? = null
 
     val inputSize = 640
 
@@ -200,8 +203,11 @@ class YoloDetector(
                 }
             }
             if (classIdx < 0 || classIdx >= labels.size) continue
-            if (best < confidenceThreshold) continue
-            if (best - second < classMargin && best < 0.70f) continue
+            val threshold = detectionCache?.confidenceThresholdFor(classIdx, confidenceThreshold)
+                ?: confidenceThreshold
+            if (best < threshold) continue
+            // Exigir margen claro entre 1.ª y 2.ª clase (anti falso positivo)
+            if (best - second < classMargin) continue
 
             val box = mapBox(output[0][col], output[1][col], output[2][col], output[3][col], imgW, imgH)
                 ?: continue
@@ -242,8 +248,10 @@ class YoloDetector(
                 }
             }
             if (classIdx < 0 || classIdx >= labels.size) continue
-            if (best < confidenceThreshold) continue
-            if (best - second < classMargin && best < 0.70f) continue
+            val threshold = detectionCache?.confidenceThresholdFor(classIdx, confidenceThreshold)
+                ?: confidenceThreshold
+            if (best < threshold) continue
+            if (best - second < classMargin) continue
 
             val box = mapBox(output[row][0], output[row][1], output[row][2], output[row][3], imgW, imgH)
                 ?: continue

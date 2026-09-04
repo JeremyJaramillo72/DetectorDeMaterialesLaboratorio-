@@ -206,7 +206,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@null"
-                android:hint="Escribe tu consulta sobre el equipo..."
+                android:hint="Escribe o dicta tu consulta..."
                 android:imeOptions="actionSend"
                 android:inputType="textCapSentences|textMultiLine"
                 android:maxLines="4"
@@ -215,6 +215,17 @@
                 android:textColor="@color/text_primary"
                 android:textColorHint="@color/text_muted"
                 android:textSize="14sp" />
+
+            <ImageButton
+                android:id="@+id/btnVoiceInput"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:layout_marginEnd="6dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Dictar mensaje"
+                android:padding="8dp"
+                android:src="@drawable/ic_mic"
+                app:tint="@color/neon_cyan" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/btnSendMessage"

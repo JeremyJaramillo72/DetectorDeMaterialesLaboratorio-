@@ -192,9 +192,9 @@ class KnowledgeBaseRepository private constructor(private val context: Context) 
             }
 
             q.contains("para que") || q.contains("que es") || q.contains("funcion") ||
-                q.contains("sirve") || q.contains("uso") -> {
-                "El **${eq.nombreComun}** sirve para esto:\n\n${eq.funcionPrincipal}\n\n" +
-                    "En resumen: ${eq.principioFuncionamiento.take(220)}"
+                q.contains("sirve") || q.contains("uso") || q.contains("principio") -> {
+                // Respuesta completa y directa (sin cortar a mitad de frase)
+                "El **${eq.nombreComun}** sirve para: ${eq.funcionPrincipal.trim()}"
             }
 
             else -> {
@@ -265,53 +265,213 @@ class KnowledgeBaseRepository private constructor(private val context: Context) 
             .replace('ó', 'o')
             .replace('ú', 'u')
 
-        val matched = findBestMatch(userQuery)
-        if (matched != null) {
-            return ChatMessage(
-                text = "Eso suena a **${matched.nombreComun}**. En modo general no te suelto toda la ficha.\n\n" +
-                    "Detectalo con la cámara y entra a **Ficha Técnica → Consultar sobre este equipo** para preguntarme con detalle.",
-                isBot = true
-            )
+        when (val resolved = resolveEquipmentFromQuery(userQuery)) {
+            is EquipmentQueryResult.Found -> {
+                val eq = resolved.equipment
+                val detail = buildDirectEquipmentAnswer(q, eq)
+                return ChatMessage(
+                    text = detail,
+                    isBot = true,
+                    equipmentId = eq.id,
+                    citations = eq.fuentesReferencias,
+                    eppRequired = eq.eppRequerido,
+                    risks = eq.riesgosAsociados
+                )
+            }
+            is EquipmentQueryResult.NotRegistered -> {
+                return ChatMessage(
+                    text = "El equipo **\"${resolved.askedName}\"** no está registrado en el sistema del Laboratorio de Bromatología UTEQ.\n\n" +
+                        "Equipos disponibles (ejemplos):\n" +
+                        listRegisteredEquipmentPreview() +
+                        "\nSi buscas uno de esos, escribe su nombre exacto o detectalo con la cámara.",
+                    isBot = true
+                )
+            }
+            EquipmentQueryResult.GeneralTopic -> Unit
         }
 
         val text = when {
             q.contains("epp") || q.contains("proteccion") || q.contains("guante") ->
-                "En el laboratorio de Bromatología UTEQ el EPP básico suele incluir mandil, gafas de seguridad, " +
-                    "guantes de nitrilo y zapato cerrado. Si vas a usar un equipo concreto, " +
-                    "abre su ficha para ver el EPP específico."
+                "EPP general del laboratorio: mandil, gafas de seguridad, guantes de nitrilo y zapato cerrado. " +
+                    "Si me nombras un equipo registrado, te doy el EPP específico."
 
             q.contains("seguridad") || q.contains("bioseguridad") || q.contains("riesgo") || q.contains("prevencion") ->
-                "Medidas generales: no comer ni beber en el lab, usar EPP, etiquetar reactivos, " +
-                    "conocer salidas de emergencia y nunca operar un equipo sin inducción. " +
-                    "Si me dices el equipo, te doy prevenciones puntuales desde su ficha."
+                "Bioseguridad general: no comer/beber en el lab, usar EPP, etiquetar reactivos, " +
+                    "conocer salidas de emergencia y no operar equipos sin inducción. " +
+                    "Si preguntas por un equipo registrado, te doy riesgos concretos."
+
+            q.contains("lista") || q.contains("que equipos") || q.contains("equipos hay") || q.contains("catalogo") ->
+                "Equipos registrados en el sistema:\n${listRegisteredEquipmentPreview(limit = 30)}"
 
             else ->
-                "Puedo orientarte de forma general sobre bioseguridad, EPP y prácticas UTEQ.\n\n" +
-                    "Si necesitas detalle de un equipo (prevención, pasos, riesgos), detectalo en cámara " +
-                    "y usa **Consultar sobre este equipo**."
+                "Puedo ayudarte con bioseguridad general o con cualquier equipo registrado del laboratorio.\n\n" +
+                    "Ejemplos: ${listRegisteredEquipmentPreview(limit = 6)}\n\n" +
+                    "Pregunta por nombre (ej. \"función del microscopio trinocular\")."
         }
 
         return ChatMessage(text = text, isBot = true)
     }
 
-    private fun findBestMatch(query: String): EquipmentData? {
-        val q = query.lowercase()
+    sealed class EquipmentQueryResult {
+        data class Found(val equipment: EquipmentData) : EquipmentQueryResult()
+        data class NotRegistered(val askedName: String) : EquipmentQueryResult()
+        data object GeneralTopic : EquipmentQueryResult()
+    }
+
+    /**
+     * Resuelve si la consulta habla de un equipo del catálogo, de uno desconocido, o es tema general.
+     */
+    fun resolveEquipmentFromQuery(query: String): EquipmentQueryResult {
+        val matched = findBestMatch(query)
+        if (matched != null) return EquipmentQueryResult.Found(matched)
+
+        val askedName = extractPossibleEquipmentName(query)
+        if (!askedName.isNullOrBlank() && looksLikeEquipmentRequest(query)) {
+            return EquipmentQueryResult.NotRegistered(askedName)
+        }
+
+        // Pide info de un "equipo X" pero no matcheó ninguno
+        if (looksLikeEquipmentRequest(query) && extractPossibleEquipmentName(query) != null) {
+            return EquipmentQueryResult.NotRegistered(extractPossibleEquipmentName(query)!!)
+        }
+
+        return EquipmentQueryResult.GeneralTopic
+    }
+
+    fun buildEquipmentCatalogSummary(limitPerField: Int = 120): String {
+        return getAllEquipments().joinToString("\n") { eq ->
+            "- ${eq.nombreComun} | id=${eq.id} | función=${eq.funcionPrincipal.take(limitPerField)}"
+        }
+    }
+
+    fun listRegisteredEquipmentNames(): List<String> =
+        getAllEquipments().map { it.nombreComun }.sorted()
+
+    private fun listRegisteredEquipmentPreview(limit: Int = 10): String {
+        val names = listRegisteredEquipmentNames()
+        val shown = names.take(limit).joinToString("\n") { "• $it" }
+        return if (names.size > limit) {
+            "$shown\n• … y ${names.size - limit} más"
+        } else {
+            shown
+        }
+    }
+
+    private fun buildDirectEquipmentAnswer(q: String, eq: EquipmentData): String {
+        return when {
+            q.contains("epp") || q.contains("guante") || q.contains("proteccion") -> {
+                buildString {
+                    append("EPP para **${eq.nombreComun}**:\n")
+                    eq.eppRequerido.forEach { append("• $it\n") }
+                    if (eq.eppRequerido.isEmpty()) append("• Mandil, gafas y guantes de nitrilo.")
+                }.trim()
+            }
+            q.contains("riesgo") || q.contains("prevencion") || q.contains("seguridad") || q.contains("cuidado") -> {
+                buildString {
+                    append("Riesgos / prevención de **${eq.nombreComun}**:\n")
+                    eq.riesgosAsociados.forEach { append("• $it\n") }
+                    if (eq.normasSeguridad.isNotEmpty()) {
+                        append("\nNormas:\n")
+                        eq.normasSeguridad.take(4).forEach { append("• $it\n") }
+                    }
+                }.trim()
+            }
+            q.contains("paso") || q.contains("procedimiento") || q.contains("como usar") || q.contains("operar") -> {
+                buildString {
+                    append("Procedimiento de **${eq.nombreComun}**:\n")
+                    eq.procedimientoOperativoEstandar.forEach { append("$it\n") }
+                }.trim()
+            }
+            q.contains("practica") || q.contains("uteq") -> {
+                buildString {
+                    append("Prácticas UTEQ de **${eq.nombreComun}**:\n")
+                    eq.guiasPracticaUteq.forEach { append("• $it\n") }
+                }.trim()
+            }
+            else -> {
+                "**${eq.nombreComun}** (${eq.fabricante} • ${eq.modelo})\n\n" +
+                    "Función: ${eq.funcionPrincipal}\n\n" +
+                    "Ubicación: ${eq.ubicacion}"
+            }
+        }
+    }
+
+    private fun looksLikeEquipmentRequest(query: String): Boolean {
+        val q = normalizeText(query)
+        val triggers = listOf(
+            "equipo", "informacion", "info", "sobre el", "sobre la", "del ", "de la ",
+            "funcion", "ficha", "dame", "necesito", "que es", "como funciona",
+            "microscop", "bomba", "destil", "estufa", "molino", "balanza", "phmetro",
+            "ph-metro", "viscos", "mufla", "campana", "cabina", "refract", "agitador",
+            "analizador", "extractor", "placa", "gradilla", "piseta", "cilindro", "bidon"
+        )
+        return triggers.any { q.contains(it) }
+    }
+
+    private fun extractPossibleEquipmentName(query: String): String? {
+        val cleaned = query.trim()
+        val patterns = listOf(
+            Regex("""(?i)(?:informaci[oó]n|info|datos|ficha|funci[oó]n|riesgos?|epp|procedimiento)\s+(?:sobre|de|del|de la)\s+(?:el |la |los |las )?(.+)$"""),
+            Regex("""(?i)sobre\s+(?:el |la |los |las )?(.+)$"""),
+            Regex("""(?i)(?:del|de la)\s+(.+)$"""),
+            Regex("""(?i)equipo\s+(.+)$"""),
+            Regex("""(?i)necesito.*?sobre\s+(?:el |la )?(.+)$""")
+        )
+        for (pattern in patterns) {
+            val match = pattern.find(cleaned)?.groupValues?.getOrNull(1)?.trim()
+            if (!match.isNullOrBlank() && match.length in 3..80) {
+                return match.trimEnd('.', '?', '!')
+            }
+        }
+        return null
+    }
+
+    private fun normalizeText(value: String): String {
+        return value.lowercase()
+            .replace('á', 'a')
+            .replace('é', 'e')
+            .replace('í', 'i')
+            .replace('ó', 'o')
+            .replace('ú', 'u')
+            .replace('ü', 'u')
+            .replace('ñ', 'n')
+    }
+
+    fun findBestMatch(query: String): EquipmentData? {
+        val q = normalizeText(query)
+        val queryWords = q.split(Regex("[^a-z0-9]+")).filter { it.length >= 3 }
         var bestMatch: EquipmentData? = null
         var maxScore = 0
 
         getAllEquipments().forEach { eq ->
             var score = 0
-            if (q.contains(eq.id.lowercase())) score += 5
-            if (q.contains(eq.claseYolo.lowercase())) score += 5
-            if (q.contains(eq.nombreComun.lowercase())) score += 4
-            if (q.contains(eq.fabricante.lowercase())) score += 2
-            if (q.contains(eq.modelo.lowercase())) score += 2
+            val name = normalizeText(eq.nombreComun)
+            val official = normalizeText(eq.nombreOficial)
+            val idWords = normalizeText(eq.id.replace('_', ' '))
+            val yolo = normalizeText(eq.claseYolo.replace('_', ' '))
+
+            if (q.contains(name)) score += 12
+            if (q.contains(official)) score += 10
+            if (q.contains(idWords)) score += 8
+            if (q.contains(yolo)) score += 8
+            if (q.contains(normalizeText(eq.fabricante)) && eq.fabricante.length > 3) score += 2
+            if (q.contains(normalizeText(eq.modelo)) && eq.modelo.length > 2) score += 2
+
+            val nameWords = name.split(Regex("[^a-z0-9]+")).filter { it.length >= 3 }
+            val overlap = nameWords.count { nw -> queryWords.any { qw -> qw.contains(nw) || nw.contains(qw) } }
+            score += overlap * 3
+
+            // Bonus si aparecen 2+ palabras clave del nombre
+            if (overlap >= 2) score += 4
+
             if (score > maxScore) {
                 maxScore = score
                 bestMatch = eq
             }
         }
-        return bestMatch
+
+        // Umbral mínimo para evitar falsos positivos
+        return if (maxScore >= 4) bestMatch else null
     }
 
     companion object {
