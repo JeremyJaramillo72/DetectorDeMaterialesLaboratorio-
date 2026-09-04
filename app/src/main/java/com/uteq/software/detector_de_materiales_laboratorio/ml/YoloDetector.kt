@@ -20,8 +20,8 @@ class YoloDetector(
     private val modelFileName: String = "yolo11_bromatologia.tflite",
     private val fallbackModelName: String = "yolov8_bromatologia.tflite",
     private val labelFileName: String = "labels.txt",
-    private val confidenceThreshold: Float = 0.65f, // Umbral calibrado al 65% para eliminar detecciones fantasma en pantallas y marcos
-    private val iouThreshold: Float = 0.45f        // Umbral IoU para suprimir cajas duplicadas
+    private val confidenceThreshold: Float = 0.48f, // Umbral equilibrado al 48% para detectar equipos reales
+    private val iouThreshold: Float = 0.50f        // Umbral IoU estándar para suprimir solapamientos
 ) {
 
     private val TAG = "YoloDetector"
@@ -181,6 +181,12 @@ class YoloDetector(
                         val w = if (isNormalized) wRaw * imgWidth else wRaw * imgWidth / inputSize
                         val h = if (isNormalized) hRaw * imgHeight else hRaw * imgHeight / inputSize
 
+                        // Descartar cajas que cubren toda la pantalla (artefactos de monitores o fondo)
+                        val areaRatio = (w * h) / (imgWidth * imgHeight)
+                        if ((w >= 0.88f * imgWidth && h >= 0.85f * imgHeight) || areaRatio >= 0.78f) {
+                            continue
+                        }
+
                         val left = max(0.0f, cx - w / 2.0f)
                         val top = max(0.0f, cy - h / 2.0f)
                         val right = min(imgWidth, cx + w / 2.0f)
@@ -240,6 +246,12 @@ class YoloDetector(
                         val w = if (isNormalized) wRaw * imgWidth else wRaw * imgWidth / inputSize
                         val h = if (isNormalized) hRaw * imgHeight else hRaw * imgHeight / inputSize
 
+                        // Descartar cajas que cubren toda la pantalla (artefactos de monitores o fondo)
+                        val areaRatio = (w * h) / (imgWidth * imgHeight)
+                        if ((w >= 0.88f * imgWidth && h >= 0.85f * imgHeight) || areaRatio >= 0.78f) {
+                            continue
+                        }
+
                         val left = max(0.0f, cx - w / 2.0f)
                         val top = max(0.0f, cy - h / 2.0f)
                         val right = min(imgWidth, cx + w / 2.0f)
@@ -265,8 +277,8 @@ class YoloDetector(
 
     /**
      * NMS Global / Agnóstico de Clase:
-     * Si 2 clases diferentes predicen cajas sobre el mismo objeto (IoU >= 0.40),
-     * se conserva ÚNICAMENTE la que tiene mayor confianza, eliminando falsos positivos cruzados.
+     * Suprime cajas duplicadas o contenedoras (cuando una caja encierra a otra o tienen IoU >= 0.50),
+     * garantizando que solo quede el objeto real enfocado.
      */
     private fun applyGlobalNMS(detections: List<DetectionResult>): List<DetectionResult> {
         if (detections.isEmpty()) return emptyList()
@@ -280,21 +292,37 @@ class YoloDetector(
         val best = pq.poll() ?: return emptyList()
         result.add(best)
 
-        // Si hay una detección dominante (ej: 84%), cualquier segunda detección debe tener al menos
-        // el 82% de esa confianza y no solaparse, evitando que el marco o cables creen cajas falsas
-        val minSecondaryConf = max(confidenceThreshold, best.confidence * 0.82f)
+        val minSecondaryConf = max(confidenceThreshold, best.confidence * 0.75f)
 
         while (pq.isNotEmpty()) {
             val next = pq.poll() ?: break
             if (next.confidence < minSecondaryConf) continue
 
-            val overlaps = result.any { calculateIoU(it.boundingBox, next.boundingBox) >= iouThreshold }
+            val overlaps = result.any { isDuplicateOrContained(it.boundingBox, next.boundingBox) }
             if (!overlaps) {
                 result.add(next)
                 if (result.size >= 2) break
             }
         }
         return result
+    }
+
+    private fun isDuplicateOrContained(a: RectF, b: RectF): Boolean {
+        val iou = calculateIoU(a, b)
+        if (iou >= iouThreshold) return true
+
+        // Comprobación de contención asimétrica (evita que un marco exterior encierre a un objeto interior)
+        val interLeft = max(a.left, b.left)
+        val interTop = max(a.top, b.top)
+        val interRight = min(a.right, b.right)
+        val interBottom = min(a.bottom, b.bottom)
+        val interArea = max(0f, interRight - interLeft) * max(0f, interBottom - interTop)
+
+        val areaA = (a.right - a.left) * (a.bottom - a.top)
+        val areaB = (b.right - b.left) * (b.bottom - b.top)
+        val minArea = min(areaA, areaB)
+
+        return (minArea > 0f && (interArea / minArea) >= 0.65f)
     }
 
     private fun calculateIoU(a: RectF, b: RectF): Float {
