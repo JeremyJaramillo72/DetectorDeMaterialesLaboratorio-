@@ -1,8 +1,8 @@
 Analizador de Fibra Cruda y Fracciones
 Bomba de Vacio por Recirculacion de Agua
-Destilacion de Nitrogeno y Proteinas
-Destilador de Agua Continuo Metalico
 Destilador por Arrastre de Vapor tipo Kjeldahl
+Destilador de Agua Continuo Metalico
+Destilacion de Nitrogeno y Proteinas
 Microcospio Trinocular
 Sistema de Tratamiento y Desionizacion deAgua
 Viscosimetro Brookfield Modelo DV-E

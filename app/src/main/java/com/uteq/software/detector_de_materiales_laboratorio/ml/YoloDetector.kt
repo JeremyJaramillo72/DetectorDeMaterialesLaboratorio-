@@ -20,8 +20,8 @@ class YoloDetector(
     private val modelFileName: String = "yolo11_bromatologia.tflite",
     private val fallbackModelName: String = "yolov8_bromatologia.tflite",
     private val labelFileName: String = "labels.txt",
-    private val confidenceThreshold: Float = 0.35f, // Umbral calibrado al 35% para máxima respuesta y precisión
-    private val iouThreshold: Float = 0.40f        // Umbral IoU para suprimir cajas duplicadas
+    private val confidenceThreshold: Float = 0.65f, // Umbral calibrado al 65% para eliminar detecciones fantasma en pantallas y marcos
+    private val iouThreshold: Float = 0.45f        // Umbral IoU para suprimir cajas duplicadas
 ) {
 
     private val TAG = "YoloDetector"
@@ -54,8 +54,8 @@ class YoloDetector(
             labels.addAll(
                 listOf(
                     "Analizador de Fibra Cruda y Fracciones", "Bomba de Vacio por Recirculacion de Agua",
-                    "Destilacion de Nitrogeno y Proteinas", "Destilador de Agua Continuo Metalico",
-                    "Destilador por Arrastre de Vapor tipo Kjeldahl", "Microcospio Trinocular",
+                    "Destilador por Arrastre de Vapor tipo Kjeldahl", "Destilador de Agua Continuo Metalico",
+                    "Destilacion de Nitrogeno y Proteinas", "Microcospio Trinocular",
                     "Sistema de Tratamiento y Desionizacion deAgua", "Viscosimetro Brookfield Modelo DV-E"
                 )
             )
@@ -271,22 +271,27 @@ class YoloDetector(
     private fun applyGlobalNMS(detections: List<DetectionResult>): List<DetectionResult> {
         if (detections.isEmpty()) return emptyList()
 
-        val result = ArrayList<DetectionResult>()
         val pq = PriorityQueue<DetectionResult>(detections.size) { a, b ->
             b.confidence.compareTo(a.confidence)
         }
         pq.addAll(detections)
 
-        while (pq.isNotEmpty()) {
-            val best = pq.poll() ?: break
-            result.add(best)
+        val result = ArrayList<DetectionResult>()
+        val best = pq.poll() ?: return emptyList()
+        result.add(best)
 
-            val it = pq.iterator()
-            while (it.hasNext()) {
-                val next = it.next()
-                if (calculateIoU(best.boundingBox, next.boundingBox) >= iouThreshold) {
-                    it.remove()
-                }
+        // Si hay una detección dominante (ej: 84%), cualquier segunda detección debe tener al menos
+        // el 82% de esa confianza y no solaparse, evitando que el marco o cables creen cajas falsas
+        val minSecondaryConf = max(confidenceThreshold, best.confidence * 0.82f)
+
+        while (pq.isNotEmpty()) {
+            val next = pq.poll() ?: break
+            if (next.confidence < minSecondaryConf) continue
+
+            val overlaps = result.any { calculateIoU(it.boundingBox, next.boundingBox) >= iouThreshold }
+            if (!overlaps) {
+                result.add(next)
+                if (result.size >= 2) break
             }
         }
         return result
