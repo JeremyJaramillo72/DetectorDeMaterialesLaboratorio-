@@ -1,102 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  Pantalla de cámara / detección — sistema "Registro de laboratorio".
+
+  Composición: la cámara es el contenido, no un recuadro decorado flotando en
+  una página. Ocupa todo el ancho y todo el alto disponible entre dos franjas
+  de papel: arriba la identificación de la app, abajo la lectura del equipo.
+  Sin HUD superpuesto, sin badges de estado, sin marcos de esquina, sin
+  metadata del modelo: lo único que se afirma es qué equipo se está viendo,
+  con cuánta confianza, y qué se puede hacer con él.
+-->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/obsidian_base"
+    android:background="@color/paper"
     tools:context=".MainActivity">
 
-    <!-- Header Superior -->
-    <LinearLayout
-        android:id="@+id/layoutTopHUD"
+    <!-- Franja de identificación. Una sola línea, sin adornos. -->
+    <TextView
+        android:id="@+id/tvBrand"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_top_panel"
-        android:orientation="vertical"
-        android:paddingHorizontal="20dp"
+        android:paddingStart="@dimen/lab_gutter"
         android:paddingTop="36dp"
-        android:paddingBottom="14dp"
-        app:layout_constraintTop_toTopOf="parent">
+        android:paddingEnd="@dimen/lab_gutter"
+        android:paddingBottom="@dimen/lab_space_3"
+        android:text="@string/brand_line"
+        android:textAppearance="@style/TextAppearance.Lab.Label"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+    <View
+        android:id="@+id/ruleTop"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/lab_rule"
+        android:background="@color/rule"
+        app:layout_constraintTop_toBottomOf="@id/tvBrand" />
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="🔬 UTEQ • Bromatología"
-                    android:textColor="@color/white"
-                    android:textSize="17sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tvLiveStatus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:text="● IA EN VIVO • DETECCIÓN ACTIVA"
-                    android:textColor="@color/neon_emerald"
-                    android:textSize="11sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/tvModelBadge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_badge_model"
-                android:paddingHorizontal="12dp"
-                android:paddingVertical="5dp"
-                android:text="YOLO11 • 8 Clases"
-                android:textColor="@color/neon_emerald"
-                android:textSize="11sp"
-                android:textStyle="bold" />
-
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/tvStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:text="Enfoca un equipo de laboratorio dentro del recuadro"
-            android:textColor="#E2E8F0"
-            android:textSize="12sp" />
-
-    </LinearLayout>
-
-    <!-- Recuadro verde: aquí SOLO se muestra la cámara -->
+    <!-- Visor: a sangre, sin esquinas redondeadas ni borde. -->
     <FrameLayout
         android:id="@+id/cameraFrame"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginHorizontal="22dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/bg_camera_frame"
-        android:clipChildren="true"
-        android:clipToPadding="true"
-        android:elevation="6dp"
-        app:layout_constraintBottom_toTopOf="@id/layoutBottomDock"
-        app:layout_constraintDimensionRatio="H,3:4"
+        android:background="@color/ink"
+        app:layout_constraintBottom_toTopOf="@id/ruleBottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layoutTopHUD"
-        app:layout_constraintVertical_bias="0.4">
+        app:layout_constraintTop_toBottomOf="@id/ruleTop">
 
         <androidx.camera.view.PreviewView
             android:id="@+id/viewFinder"
@@ -110,115 +61,98 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <View
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_gravity="top|start"
-            android:layout_margin="10dp"
-            android:background="@drawable/bg_scan_corner_tl" />
-
-        <View
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_gravity="top|end"
-            android:layout_margin="10dp"
-            android:background="@drawable/bg_scan_corner_tr" />
-
-        <View
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_gravity="bottom|start"
-            android:layout_margin="10dp"
-            android:background="@drawable/bg_scan_corner_bl" />
-
-        <View
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="10dp"
-            android:background="@drawable/bg_scan_corner_br" />
-
     </FrameLayout>
 
-    <!-- Panel Inferior -->
+    <View
+        android:id="@+id/ruleBottom"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/lab_rule"
+        android:background="@color/rule"
+        app:layout_constraintBottom_toTopOf="@id/panelReading" />
+
+    <!-- Lectura: qué equipo, con cuánta confianza, y las dos acciones posibles. -->
     <LinearLayout
-        android:id="@+id/layoutBottomDock"
+        android:id="@+id/panelReading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginBottom="24dp"
-        android:background="@drawable/bg_bottom_panel"
-        android:elevation="10dp"
+        android:background="@color/paper"
         android:orientation="vertical"
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="14dp"
+        android:paddingStart="@dimen/lab_gutter"
+        android:paddingTop="@dimen/lab_space_5"
+        android:paddingEnd="@dimen/lab_gutter"
+        android:paddingBottom="@dimen/lab_space_6"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <LinearLayout
-            android:id="@+id/layoutDetectionHeader"
+        <TextView
+            android:id="@+id/labelEquipment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/lab_space_2"
+            android:text="@string/field_equipment"
+            android:textAppearance="@style/TextAppearance.Lab.Label"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/tvEquipmentName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:ellipsize="end"
+            android:lineSpacingExtra="3sp"
+            android:maxLines="2"
+            android:text="@string/aim_at_equipment"
+            android:textAppearance="@style/TextAppearance.Lab.BodySoft"
+            tools:text="Destilador por Arrastre de Vapor tipo Kjeldahl"
+            tools:textAppearance="@style/TextAppearance.Lab.Title" />
+
+        <LinearLayout
+            android:id="@+id/rowConfidence"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/lab_space_4"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            tools:visibility="visible">
 
             <TextView
-                android:id="@+id/tvDockEquipmentName"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="🔍 Escaneando área de laboratorio..."
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvDockConfidence"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:background="@drawable/bg_badge_live"
-                android:paddingHorizontal="10dp"
-                android:paddingVertical="3dp"
-                android:text="En espera"
-                android:textColor="@color/neon_cyan"
-                android:textSize="11sp"
-                android:textStyle="bold" />
+                android:text="@string/field_confidence"
+                android:textAppearance="@style/TextAppearance.Lab.Label" />
+
+            <TextView
+                android:id="@+id/tvConfidence"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/lab_space_3"
+                android:textAppearance="@style/TextAppearance.Lab.Readout"
+                tools:text="87.1 %" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:gravity="center_vertical"
+            android:layout_marginTop="@dimen/lab_space_5"
             android:orientation="horizontal">
 
-            <androidx.appcompat.widget.AppCompatButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnQuickDetails"
+                style="@style/Widget.Lab.Button.Primary"
                 android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_marginEnd="8dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/bg_btn_details"
-                android:text="📄 Ficha Técnica"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="13sp"
-                android:textStyle="bold" />
+                android:enabled="false"
+                android:text="@string/action_sheet" />
 
-            <androidx.appcompat.widget.AppCompatButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnOpenChat"
+                style="@style/Widget.Lab.Button.Secondary"
                 android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_weight="1.2"
-                android:background="@drawable/bg_btn_chat"
-                android:text="💬 Asistente IA"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="13sp"
-                android:textStyle="bold" />
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/lab_space_3"
+                android:layout_weight="1"
+                android:text="@string/action_assistant" />
 
         </LinearLayout>
 

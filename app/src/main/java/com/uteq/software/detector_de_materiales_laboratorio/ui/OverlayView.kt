@@ -6,7 +6,12 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
 import android.graphics.Typeface
+import android.text.Layout
+import android.text.StaticLayout
+import android.text.TextPaint
+import android.text.TextUtils
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
 import com.uteq.software.detector_de_materiales_laboratorio.model.DetectionResult
@@ -14,6 +19,18 @@ import java.util.Locale
 import kotlin.math.max
 import kotlin.math.min
 
+/**
+ * Capa de anotación sobre el video en vivo.
+ *
+ * No usa la paleta clara de la app: se dibuja encima de escenas reales
+ * impredecibles (equipo blanco sobre pared blanca, o rincones en sombra), así
+ * que resuelve su propio contraste con doble trazo — línea de tinta sobre halo
+ * blanco — de modo que la marca sobrevive tanto a fondos claros como oscuros.
+ *
+ * La etiqueta es una pestaña sólida apoyada en el borde superior de la caja:
+ * el nombre puede ocupar dos líneas (los nombres de equipo son largos) y la
+ * confianza va debajo como lectura, no apretada en la misma línea.
+ */
 class OverlayView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -30,67 +47,49 @@ class OverlayView @JvmOverloads constructor(
     private var selectedDetection: DetectionResult? = null
     var onDetectionSelectedListener: ((DetectionResult) -> Unit)? = null
 
-    // Paleta de colores Neón de Grado Científico para visión computacional
-    private val CLASS_COLORS = intArrayOf(
-        Color.parseColor("#00E676"), // 0: Verde Neón / Esmeralda
-        Color.parseColor("#00E5FF"), // 1: Cyan Eléctrico
-        Color.parseColor("#FF9100"), // 2: Ámbar Neón
-        Color.parseColor("#A855F7"), // 3: Púrpura Neón
-        Color.parseColor("#FFD600"), // 4: Amarillo Neón
-        Color.parseColor("#F43F5E"), // 5: Coral Rosa Neón
-        Color.parseColor("#38BDF8"), // 6: Azul Hielo
-        Color.parseColor("#2DD4BF")  // 7: Turquesa Menta
+    private fun dp(value: Float) = TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_DIP, value, resources.displayMetrics
     )
 
-    // Bounding Box con trazo limpio
-    private val boxPaint = Paint().apply {
-        strokeWidth = 3.5f
+    private fun sp(value: Float) = TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_SP, value, resources.displayMetrics
+    )
+
+    private val cornerRadius = dp(2f)
+    private val labelPaddingH = dp(9f)
+    private val labelPaddingV = dp(7f)
+    private val lineGap = dp(3f)
+
+    /** Halo blanco: mantiene visible la línea de tinta sobre escenas oscuras. */
+    private val haloPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
-        isAntiAlias = true
+        strokeWidth = dp(5f)
+        color = Color.parseColor("#E6FFFFFF")
     }
 
-    // Corchetes tácticos de mira en las 4 esquinas (efecto AR de laboratorio)
-    private val cornerPaint = Paint().apply {
-        strokeWidth = 6.5f
+    /** Línea de tinta: el trazo real de la anotación. */
+    private val boxPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
-        strokeCap = Paint.Cap.ROUND
-        isAntiAlias = true
+        strokeWidth = dp(2f)
+        color = Color.parseColor("#FF14161A")
     }
 
-    // Fondo del badge de etiqueta tipo cápsula esmerilada
-    private val badgeBgPaint = Paint().apply {
+    private val labelBgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
-        color = Color.parseColor("#E6090E18")
-        isAntiAlias = true
+        color = Color.parseColor("#F214161A")
     }
 
-    // Borde brillante de la cápsula de etiqueta
-    private val badgeBorderPaint = Paint().apply {
-        style = Paint.Style.STROKE
-        strokeWidth = 1.8f
-        isAntiAlias = true
-    }
-
-    // Fondo del porcentaje de confianza (píldora sólida)
-    private val confPillPaint = Paint().apply {
-        style = Paint.Style.FILL
-        isAntiAlias = true
-    }
-
-    // Texto del nombre de clase
-    private val labelTextPaint = Paint().apply {
+    private val namePaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.WHITE
-        textSize = 34f
-        typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-        isAntiAlias = true
+        textSize = sp(13f)
+        typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
     }
 
-    // Texto del porcentaje (dentro de la píldora)
-    private val confTextPaint = Paint().apply {
-        color = Color.parseColor("#070A11")
-        textSize = 26f
-        typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-        isAntiAlias = true
+    private val readoutPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = Color.parseColor("#CCFFFFFF")
+        textSize = sp(12f)
+        letterSpacing = 0.06f
+        typeface = Typeface.create("sans-serif-condensed-medium", Typeface.NORMAL)
     }
 
     fun setResults(detectionResults: List<DetectionResult>, imgWidth: Int, imgHeight: Int) {
@@ -131,101 +130,69 @@ class OverlayView @JvmOverloads constructor(
             val bottom = min(viewHeight, (rawBox.bottom * scaleFactor) + postScaleHeightOffset)
             val mappedBox = RectF(left, top, right, bottom)
 
-            val colorIdx = (detection.classIndex).coerceAtLeast(0) % CLASS_COLORS.size
-            val color = CLASS_COLORS[colorIdx]
+            canvas.drawRoundRect(mappedBox, cornerRadius, cornerRadius, haloPaint)
+            canvas.drawRoundRect(mappedBox, cornerRadius, cornerRadius, boxPaint)
 
-            // 1. Dibujar el recuadro delimitador con bordes suaves redondeados
-            boxPaint.color = color
-            boxPaint.alpha = 210
-            canvas.drawRoundRect(mappedBox, 14f, 14f, boxPaint)
-
-            // 2. Dibujar los corchetes tácticos de mira en las 4 esquinas
-            cornerPaint.color = color
-            val cornerLen = min(32f, min(mappedBox.width() * 0.25f, mappedBox.height() * 0.25f))
-
-            // Esquina superior izquierda
-            canvas.drawLine(mappedBox.left, mappedBox.top + cornerLen, mappedBox.left, mappedBox.top, cornerPaint)
-            canvas.drawLine(mappedBox.left, mappedBox.top, mappedBox.left + cornerLen, mappedBox.top, cornerPaint)
-
-            // Esquina superior derecha
-            canvas.drawLine(mappedBox.right - cornerLen, mappedBox.top, mappedBox.right, mappedBox.top, cornerPaint)
-            canvas.drawLine(mappedBox.right, mappedBox.top, mappedBox.right, mappedBox.top + cornerLen, cornerPaint)
-
-            // Esquina inferior izquierda
-            canvas.drawLine(mappedBox.left, mappedBox.bottom - cornerLen, mappedBox.left, mappedBox.bottom, cornerPaint)
-            canvas.drawLine(mappedBox.left, mappedBox.bottom, mappedBox.left + cornerLen, mappedBox.bottom, cornerPaint)
-
-            // Esquina inferior derecha
-            canvas.drawLine(mappedBox.right - cornerLen, mappedBox.bottom, mappedBox.right, mappedBox.bottom, cornerPaint)
-            canvas.drawLine(mappedBox.right, mappedBox.bottom, mappedBox.right, mappedBox.bottom - cornerLen, cornerPaint)
-
-            // 3. Preparar textos de etiqueta y porcentaje
-            val confVal = detection.confidence * 100f
-            val confStr = if (confVal >= 99.95f) "100%" else String.format(Locale.US, "%.1f%%", confVal).replace(".0%", "%")
-
-            var displayName = detection.displayName
-            val maxAllowedWidth = viewWidth * 0.85f
-
-            val fontMetrics = labelTextPaint.fontMetrics
-            val textHeight = fontMetrics.descent - fontMetrics.ascent
-            val confMetrics = confTextPaint.fontMetrics
-            val confTextW = confTextPaint.measureText(confStr)
-            val confPillW = confTextW + 18f
-            val confPillH = textHeight * 0.78f
-
-            val paddingH = 14f
-            val paddingV = 8f
-            val gap = 10f
-
-            // Recortar con elipsis si el nombre es muy largo
-            while (displayName.length > 8 &&
-                (paddingH * 2 + labelTextPaint.measureText("$displayName…") + gap + confPillW > maxAllowedWidth)) {
-                displayName = displayName.dropLast(1).trimEnd()
-            }
-            val finalName = if (displayName != detection.displayName) "$displayName…" else displayName
-            val nameTextW = labelTextPaint.measureText(finalName)
-
-            val badgeWidth = paddingH + nameTextW + gap + confPillW + paddingH
-            val badgeHeight = textHeight + (paddingV * 2)
-
-            // 4. Posicionar la cápsula de etiqueta flotante encima de la caja
-            var badgeTop = mappedBox.top - badgeHeight - 6f
-            var badgeBottom = mappedBox.top - 6f
-
-            if (badgeTop < 10f) {
-                // Si choca con el tope, dibujarla dentro de la caja en la parte superior
-                badgeTop = mappedBox.top + 8f
-                badgeBottom = badgeTop + badgeHeight
-            }
-
-            val badgeLeft = max(8f, min(mappedBox.left, viewWidth - badgeWidth - 8f))
-            val badgeRight = badgeLeft + badgeWidth
-            val badgeRect = RectF(badgeLeft, badgeTop, badgeRight, badgeBottom)
-
-            // 5. Dibujar fondo de cápsula y borde neón sutil
-            canvas.drawRoundRect(badgeRect, 12f, 12f, badgeBgPaint)
-            badgeBorderPaint.color = color
-            badgeBorderPaint.alpha = 180
-            canvas.drawRoundRect(badgeRect, 12f, 12f, badgeBorderPaint)
-
-            // 6. Dibujar texto del nombre de equipo en blanco
-            val textY = badgeTop + paddingV - fontMetrics.ascent
-            canvas.drawText(finalName, badgeLeft + paddingH, textY, labelTextPaint)
-
-            // 7. Dibujar píldora de porcentaje con color de clase y texto oscuro
-            val pillLeft = badgeLeft + paddingH + nameTextW + gap
-            val pillTop = badgeTop + (badgeHeight - confPillH) / 2f
-            val pillRight = pillLeft + confPillW
-            val pillBottom = pillTop + confPillH
-            val pillRect = RectF(pillLeft, pillTop, pillRight, pillBottom)
-
-            confPillPaint.color = color
-            canvas.drawRoundRect(pillRect, 8f, 8f, confPillPaint)
-
-            val confTextX = pillLeft + 9f
-            val confTextY = pillTop + (confPillH - (confMetrics.descent - confMetrics.ascent)) / 2f - confMetrics.ascent
-            canvas.drawText(confStr, confTextX, confTextY, confTextPaint)
+            drawLabel(canvas, mappedBox, detection, viewWidth)
         }
+    }
+
+    private fun drawLabel(
+        canvas: Canvas,
+        box: RectF,
+        detection: DetectionResult,
+        viewWidth: Float
+    ) {
+        val sideMargin = dp(6f)
+        val maxTextWidth =
+            (min(viewWidth * 0.8f, viewWidth - sideMargin * 2) - labelPaddingH * 2).toInt()
+        if (maxTextWidth <= 0) return
+
+        val nameLayout = StaticLayout.Builder
+            .obtain(detection.displayName, 0, detection.displayName.length, namePaint, maxTextWidth)
+            .setAlignment(Layout.Alignment.ALIGN_NORMAL)
+            .setMaxLines(2)
+            .setEllipsize(TextUtils.TruncateAt.END)
+            .setIncludePad(false)
+            .setLineSpacing(dp(1f), 1f)
+            .build()
+
+        val readout = String.format(Locale.getDefault(), "%.1f %%", detection.confidence * 100f)
+        val readoutMetrics = readoutPaint.fontMetrics
+        val readoutHeight = readoutMetrics.descent - readoutMetrics.ascent
+
+        var widestLine = readoutPaint.measureText(readout)
+        for (i in 0 until nameLayout.lineCount) {
+            widestLine = max(widestLine, nameLayout.getLineWidth(i))
+        }
+
+        val labelWidth = widestLine + labelPaddingH * 2
+        val labelHeight = nameLayout.height + lineGap + readoutHeight + labelPaddingV * 2
+
+        // La pestaña se apoya en el borde superior de la caja; si no cabe arriba,
+        // se apoya por dentro para no salirse de la pantalla.
+        val labelLeft = max(sideMargin, min(box.left, viewWidth - labelWidth - sideMargin))
+        val fitsAbove = box.top - labelHeight >= sideMargin
+        val labelTop = if (fitsAbove) box.top - labelHeight else box.top + boxPaint.strokeWidth
+
+        canvas.drawRoundRect(
+            RectF(labelLeft, labelTop, labelLeft + labelWidth, labelTop + labelHeight),
+            cornerRadius,
+            cornerRadius,
+            labelBgPaint
+        )
+
+        canvas.save()
+        canvas.translate(labelLeft + labelPaddingH, labelTop + labelPaddingV)
+        nameLayout.draw(canvas)
+        canvas.restore()
+
+        canvas.drawText(
+            readout,
+            labelLeft + labelPaddingH,
+            labelTop + labelPaddingV + nameLayout.height + lineGap - readoutMetrics.ascent,
+            readoutPaint
+        )
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {

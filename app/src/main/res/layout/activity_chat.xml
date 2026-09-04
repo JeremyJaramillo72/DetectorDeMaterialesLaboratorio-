@@ -26,66 +26,86 @@
 
             <ImageButton
                 android:id="@+id/btnBack"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@drawable/bg_badge_live"
+                android:layout_width="@dimen/touch_target_min"
+                android:layout_height="@dimen/touch_target_min"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Regresar"
-                android:src="@android:drawable/ic_menu_revert"
-                app:tint="@color/neon_cyan" />
+                android:padding="12dp"
+                android:src="@drawable/ic_arrow_back"
+                app:tint="@color/text_primary" />
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
+                android:layout_marginStart="8dp"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:letterSpacing="0.01"
                     android:text="Asistente RAG Bromatología"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textAppearance="@style/TextAppearance.App.TitleMedium" />
 
-                <TextView
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:letterSpacing="0.03"
-                    android:text="⚡ Gemini 2.5 Flash • UTEQ"
-                    android:textColor="@color/neon_emerald"
-                    android:textSize="11sp"
-                    android:textStyle="bold" />
+                    android:layout_marginTop="2dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:layout_marginEnd="4dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_bolt"
+                        app:tint="@color/text_muted" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Gemini 2.5 Flash • UTEQ"
+                        android:textAppearance="@style/TextAppearance.App.LabelSmall.Muted"
+                        android:textColor="@color/text_muted" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_badge_model"
+                android:background="@drawable/bg_badge_secondary"
                 android:paddingHorizontal="10dp"
                 android:paddingVertical="4dp"
                 android:text="IA ONLINE"
-                android:textColor="@color/neon_emerald"
-                android:textSize="10sp"
-                android:textStyle="bold" />
+                android:textAppearance="@style/TextAppearance.App.LabelSmall.Muted"
+                android:textColor="@color/neon_cyan" />
 
         </LinearLayout>
 
     </LinearLayout>
 
-    <!-- Chip del Equipo Seleccionado Activo -->
+    <!-- Banner de contexto: equipo activo / modo general -->
     <LinearLayout
         android:id="@+id/layoutSelectedChip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#0D1625"
+        android:background="@color/obsidian_card"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingHorizontal="16dp"
-        android:paddingVertical="8dp"
+        android:paddingVertical="10dp"
         app:layout_constraintTop_toBottomOf="@id/layoutChatHeader">
+
+        <ImageView
+            android:layout_width="@dimen/icon_sm"
+            android:layout_height="@dimen/icon_sm"
+            android:layout_marginEnd="@dimen/space_sm"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_science"
+            app:tint="@color/neon_cyan" />
 
         <TextView
             android:id="@+id/tvActiveEquipment"
@@ -94,20 +114,23 @@
             android:layout_weight="1"
             android:ellipsize="end"
             android:maxLines="1"
+            android:textAppearance="@style/TextAppearance.App.LabelLarge"
             android:textColor="@color/neon_cyan"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            tools:text="🔬 Equipo Activo: Unidad de Destilación Kjeldahl" />
+            tools:text="Equipo Activo: Unidad de Destilación Kjeldahl" />
 
     </LinearLayout>
 
-    <!-- Chips de Preguntas Rápidas Estilizadas -->
+    <!-- Chips de Preguntas Rápidas -->
     <HorizontalScrollView
         android:id="@+id/scrollChips"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="12dp"
-        android:paddingVertical="8dp"
+        android:fadingEdgeLength="24dp"
+        android:paddingStart="12dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="28dp"
+        android:paddingBottom="8dp"
+        android:requiresFadingEdge="horizontal"
         android:scrollbars="none"
         app:layout_constraintTop_toBottomOf="@id/layoutSelectedChip">
 
@@ -116,52 +139,41 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <TextView
+            <com.google.android.material.chip.Chip
                 android:id="@+id/chipPPE"
+                style="@style/Widget.App.Chip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:background="@drawable/bg_chip_quick"
-                android:paddingHorizontal="14dp"
-                android:paddingVertical="8dp"
-                android:text="🦺 ¿Qué EPP necesito?"
-                android:textColor="@color/text_primary"
-                android:textSize="12sp" />
+                android:text="¿Qué EPP necesito?"
+                app:chipIcon="@drawable/ic_shield" />
 
-            <TextView
+            <com.google.android.material.chip.Chip
                 android:id="@+id/chipProcedure"
+                style="@style/Widget.App.Chip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:background="@drawable/bg_chip_quick"
-                android:paddingHorizontal="14dp"
-                android:paddingVertical="8dp"
-                android:text="📋 ¿Procedimiento paso a paso?"
-                android:textColor="@color/text_primary"
-                android:textSize="12sp" />
+                android:text="¿Procedimiento paso a paso?"
+                app:chipIcon="@drawable/ic_assignment" />
 
-            <TextView
+            <com.google.android.material.chip.Chip
                 android:id="@+id/chipPractices"
+                style="@style/Widget.App.Chip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:background="@drawable/bg_chip_quick"
-                android:paddingHorizontal="14dp"
-                android:paddingVertical="8dp"
-                android:text="🧪 ¿Qué prácticas UTEQ aplica?"
-                android:textColor="@color/text_primary"
-                android:textSize="12sp" />
+                android:text="¿Qué prácticas UTEQ aplica?"
+                app:chipIcon="@drawable/ic_flask" />
 
-            <TextView
+            <com.google.android.material.chip.Chip
                 android:id="@+id/chipRisks"
+                style="@style/Widget.App.Chip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_chip_quick"
-                android:paddingHorizontal="14dp"
-                android:paddingVertical="8dp"
-                android:text="⚠️ ¿Cuáles son los riesgos?"
-                android:textColor="@color/text_primary"
-                android:textSize="12sp" />
+                android:text="¿Cuáles son los riesgos?"
+                app:chipIcon="@drawable/ic_warning"
+                app:chipIconTint="@color/neon_amber" />
 
         </LinearLayout>
     </HorizontalScrollView>
@@ -235,7 +247,7 @@
                 android:contentDescription="Enviar mensaje"
                 app:elevation="4dp"
                 app:fabCustomSize="42dp"
-                app:srcCompat="@android:drawable/ic_menu_send"
+                app:srcCompat="@drawable/ic_send"
                 app:tint="@color/obsidian_base" />
 
         </LinearLayout>

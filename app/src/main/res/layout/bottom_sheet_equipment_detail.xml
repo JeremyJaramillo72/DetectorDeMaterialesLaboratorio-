@@ -26,18 +26,16 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="6dp"
-            android:background="@drawable/bg_badge_model"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/bg_badge_muted"
             android:paddingHorizontal="10dp"
-            android:paddingVertical="3dp">
+            android:paddingVertical="4dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="FICHA TÉCNICA OFICIAL • BROMATOLOGÍA UTEQ"
-                android:textColor="@color/neon_emerald"
-                android:textSize="10sp"
-                android:textStyle="bold" />
+                android:textAppearance="@style/TextAppearance.App.LabelSmall.Eyebrow" />
         </LinearLayout>
 
         <!-- Nombre Común del Equipo -->
@@ -45,10 +43,7 @@
             android:id="@+id/tvEquipmentName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:letterSpacing="0.01"
-            android:textColor="@color/text_primary"
-            android:textSize="21sp"
-            android:textStyle="bold"
+            android:textAppearance="@style/TextAppearance.App.HeadlineSmall"
             tools:text="Unidad de Destilación Kjeldahl" />
 
         <!-- Fabricante y Modelo Oficial -->
@@ -57,8 +52,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:textAppearance="@style/TextAppearance.App.BodySmall"
             android:textColor="@color/text_secondary"
-            android:textSize="13sp"
             tools:text="J.P. SELECTA • Pro-Nitro A (Cat. 4002430)" />
 
         <!-- TARJETA 1: Función y Principio Bromatológico -->
@@ -76,14 +71,21 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
+                <ImageView
+                    android:layout_width="@dimen/icon_sm"
+                    android:layout_height="@dimen/icon_sm"
+                    android:layout_marginEnd="@dimen/space_sm"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_science"
+                    app:tint="@color/neon_cyan" />
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="🔬 Propósito y Función Analítica"
-                    android:textColor="@color/neon_cyan"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:text="Propósito y Función Analítica"
+                    android:textAppearance="@style/TextAppearance.App.TitleSmall"
+                    android:textColor="@color/neon_cyan" />
             </LinearLayout>
 
             <TextView
@@ -92,8 +94,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:lineSpacingExtra="3dp"
-                android:textColor="@color/text_primary"
-                android:textSize="13sp"
+                android:textAppearance="@style/TextAppearance.App.BodyMedium"
                 tools:text="Destilación por arrastre de vapor para cuantificación de nitrógeno total y proteína cruda en alimentos." />
         </LinearLayout>
 
@@ -106,13 +107,28 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="🦺 Elementos de Protección Personal (EPP)"
-                android:textColor="@color/neon_rose"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="@dimen/icon_sm"
+                    android:layout_height="@dimen/icon_sm"
+                    android:layout_marginEnd="@dimen/space_sm"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_shield"
+                    app:tint="@color/neon_rose" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Elementos de Protección Personal (EPP)"
+                    android:textAppearance="@style/TextAppearance.App.TitleSmall"
+                    android:textColor="@color/neon_rose" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/tvEPP"
@@ -120,8 +136,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:lineSpacingExtra="3dp"
-                android:textColor="@color/text_primary"
-                android:textSize="13sp"
+                android:textAppearance="@style/TextAppearance.App.BodyMedium"
                 tools:text="• Mandil antifluidos blanco\n• Gafas de policarbonato con protección lateral\n• Guantes de nitrilo" />
         </LinearLayout>
 
@@ -134,13 +149,28 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="⚠️ Riesgos Operativos y Precauciones"
-                android:textColor="@color/neon_amber"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="@dimen/icon_sm"
+                    android:layout_height="@dimen/icon_sm"
+                    android:layout_marginEnd="@dimen/space_sm"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_warning"
+                    app:tint="@color/neon_amber" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Riesgos Operativos y Precauciones"
+                    android:textAppearance="@style/TextAppearance.App.TitleSmall"
+                    android:textColor="@color/neon_amber" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/tvRisks"
@@ -148,8 +178,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:lineSpacingExtra="3dp"
-                android:textColor="@color/text_primary"
-                android:textSize="13sp"
+                android:textAppearance="@style/TextAppearance.App.BodyMedium"
                 tools:text="• Quemaduras térmicas por vapor caliente\n• Contacto accidental con reactivos corrosivos (NaOH 40%)" />
         </LinearLayout>
 
@@ -162,13 +191,28 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="🧪 Guías de Práctica UTEQ y Normativas"
-                android:textColor="@color/neon_violet"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="@dimen/icon_sm"
+                    android:layout_height="@dimen/icon_sm"
+                    android:layout_marginEnd="@dimen/space_sm"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_flask"
+                    app:tint="@color/neon_violet" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Guías de Práctica UTEQ y Normativas"
+                    android:textAppearance="@style/TextAppearance.App.TitleSmall"
+                    android:textColor="@color/neon_violet" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/tvPractices"
@@ -176,23 +220,19 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:lineSpacingExtra="3dp"
-                android:textColor="@color/text_primary"
-                android:textSize="13sp"
+                android:textAppearance="@style/TextAppearance.App.BodyMedium"
                 tools:text="• Práctica N° 03: Determinación de Proteína Cruda en Balanceados (AOAC 984.13)" />
         </LinearLayout>
 
         <!-- Botón de Consulta al Asistente RAG -->
-        <androidx.appcompat.widget.AppCompatButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnConsultRAG"
+            style="@style/Widget.App.Button.Primary"
             android:layout_width="match_parent"
-            android:layout_height="52dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:background="@drawable/bg_btn_chat"
-            android:text="💬 Consultar sobre este equipo (RAG)"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            android:text="Consultar sobre este equipo (RAG)"
+            app:icon="@drawable/ic_chat_bubble" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

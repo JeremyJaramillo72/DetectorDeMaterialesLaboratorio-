@@ -5,12 +5,10 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Matrix
-import android.graphics.Outline
 import android.os.Bundle
 import android.util.Log
 import android.util.Size
 import android.view.View
-import android.view.ViewOutlineProvider
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -29,6 +27,7 @@ import com.uteq.software.detector_de_materiales_laboratorio.ml.EquipmentDetectio
 import com.uteq.software.detector_de_materiales_laboratorio.ml.YoloDetector
 import com.uteq.software.detector_de_materiales_laboratorio.model.DetectionResult
 import com.uteq.software.detector_de_materiales_laboratorio.ui.EquipmentBottomSheetDialog
+import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
@@ -77,7 +76,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setupCameraFrameClip()
 
         cameraExecutor = Executors.newSingleThreadExecutor()
         detectionCache = EquipmentDetectionCache(this)
@@ -87,24 +85,12 @@ class MainActivity : AppCompatActivity() {
         warmEquipmentInfoCache()
 
         setupUI()
-        updateModelBadge()
+        updateHUD(emptyList())
 
         if (allPermissionsGranted()) {
             startCamera()
         } else {
             requestPermissions()
-        }
-    }
-
-    private fun setupCameraFrameClip() {
-        binding.cameraFrame.post {
-            val radius = 18f * resources.displayMetrics.density
-            binding.cameraFrame.outlineProvider = object : ViewOutlineProvider() {
-                override fun getOutline(view: View, outline: Outline) {
-                    outline.setRoundRect(0, 0, view.width, view.height, radius)
-                }
-            }
-            binding.cameraFrame.clipToOutline = true
         }
     }
 
@@ -132,21 +118,10 @@ class MainActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(
                     this,
-                    "Apunta la cámara a un equipo dentro del recuadro verde.",
+                    getString(R.string.aim_at_equipment),
                     Toast.LENGTH_SHORT
                 ).show()
             }
-        }
-    }
-
-    private fun updateModelBadge() {
-        if (yoloDetector.isModelLoaded()) {
-            val modelName = yoloDetector.getLoadedModelName() ?: "YOLO"
-            binding.tvModelBadge.text = "$modelName • Activo"
-            binding.tvModelBadge.setTextColor(ContextCompat.getColor(this, R.color.uteq_accent))
-        } else {
-            binding.tvModelBadge.text = "Sin modelo .tflite"
-            binding.tvModelBadge.setTextColor(ContextCompat.getColor(this, R.color.badge_epp))
         }
     }
 
@@ -266,12 +241,11 @@ class MainActivity : AppCompatActivity() {
 
             val frameWidth = bitmap.width
             val frameHeight = bitmap.height
-            val fromCache = stable.firstOrNull()?.let { detectionCache.isKnown(it.label) } == true
 
             runOnUiThread {
                 if (!isFinishing && !isDestroyed) {
                     binding.overlayView.setResults(stable, frameWidth, frameHeight)
-                    updateHUD(stable, fromCache)
+                    updateHUD(stable)
                 }
             }
         } catch (oom: OutOfMemoryError) {
@@ -287,39 +261,51 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateHUD(detections: List<DetectionResult>, fromCache: Boolean = false) {
+    /**
+     * El panel de lectura solo afirma tres cosas: qué equipo hay delante, con
+     * cuánta confianza, y si se puede abrir su ficha. Sin estados decorativos.
+     */
+    private fun updateHUD(detections: List<DetectionResult>) {
         when {
-            !yoloDetector.isModelLoaded() -> {
-                binding.tvStatus.text = "Falta el modelo: copia yolo11_bromatologia.tflite a assets/"
-                binding.tvDockEquipmentName.text = "Modelo YOLO no cargado"
-                binding.tvDockConfidence.text = "Sin modelo"
-                binding.tvDockConfidence.setBackgroundResource(R.drawable.bg_chip_epp)
-                binding.tvDockConfidence.setTextColor(ContextCompat.getColor(this, R.color.badge_epp))
-            }
-            detections.isEmpty() -> {
-                binding.tvStatus.text = "Enfoca un equipo de laboratorio dentro del recuadro"
-                binding.tvDockEquipmentName.text = "Escaneando área de laboratorio..."
-                binding.tvDockConfidence.text = "En espera"
-                binding.tvDockConfidence.setBackgroundResource(R.drawable.bg_badge_live)
-                binding.tvDockConfidence.setTextColor(ContextCompat.getColor(this, R.color.neon_cyan))
-            }
+            !yoloDetector.isModelLoaded() ->
+                showReading(getString(R.string.model_missing), isAlert = true)
+
+            detections.isEmpty() ->
+                showReading(getString(R.string.aim_at_equipment))
+
             else -> {
                 val top = detections.maxByOrNull { it.confidence } ?: return
-                val confPercent = (top.confidence * 100).toInt()
-                binding.tvStatus.text = if (fromCache) {
-                    "Detectado (caché) • Toca el recuadro para ver detalles"
-                } else {
-                    "Equipo detectado • Toca el recuadro para ver detalles"
-                }
-                binding.tvDockEquipmentName.text = top.displayName
-                binding.tvDockConfidence.text = if (fromCache) {
-                    "$confPercent% • cache"
-                } else {
-                    "$confPercent% match"
-                }
-                binding.tvDockConfidence.setBackgroundResource(R.drawable.bg_badge_model)
-                binding.tvDockConfidence.setTextColor(ContextCompat.getColor(this, R.color.neon_emerald))
+                showReading(top.displayName, confidence = top.confidence)
             }
+        }
+    }
+
+    private fun showReading(
+        text: String,
+        confidence: Float? = null,
+        isAlert: Boolean = false
+    ) {
+        val hasEquipment = confidence != null
+
+        binding.labelEquipment.visibility = if (hasEquipment) View.VISIBLE else View.GONE
+        binding.rowConfidence.visibility = if (hasEquipment) View.VISIBLE else View.GONE
+        binding.btnQuickDetails.isEnabled = hasEquipment
+
+        binding.tvEquipmentName.text = text
+        binding.tvEquipmentName.setTextAppearance(
+            if (hasEquipment) {
+                R.style.TextAppearance_Lab_Title
+            } else {
+                R.style.TextAppearance_Lab_BodySoft
+            }
+        )
+        if (isAlert) {
+            binding.tvEquipmentName.setTextColor(ContextCompat.getColor(this, R.color.alert))
+        }
+
+        confidence?.let {
+            binding.tvConfidence.text =
+                String.format(Locale.getDefault(), "%.1f %%", it * 100f)
         }
     }
 

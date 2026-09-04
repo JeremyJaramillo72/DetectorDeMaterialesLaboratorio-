@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ============================================================
+         ESCALA TIPOGRÁFICA — sistema "Registro de laboratorio"
+         Tres registros con trabajos distintos:
+           1. Título     — nombre de lo que el usuario está viendo
+           2. Versalitas — etiqueta de campo (EQUIPO, CONFIANZA)
+           3. Lectura    — valores numéricos, condensada, como un instrumento
+         El contraste de peso viene de medium vs regular y de las
+         versalitas espaciadas; no de poner negrita en todo.
+         ============================================================ -->
+
+    <!-- Nombre del equipo detectado / título de pantalla -->
+    <style name="TextAppearance.Lab.Title" parent="android:TextAppearance">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">21sp</item>
+        <item name="android:letterSpacing">-0.015</item>
+        <item name="android:textColor">@color/ink</item>
+    </style>
+
+    <!-- Título de sección dentro de una pantalla -->
+    <style name="TextAppearance.Lab.Subtitle" parent="android:TextAppearance">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="android:textColor">@color/ink</item>
+    </style>
+
+    <!-- Texto corrido. El interlineado se aplica en el layout
+         (lineSpacingExtra no forma parte de TextAppearance). -->
+    <style name="TextAppearance.Lab.Body" parent="android:TextAppearance">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="android:textColor">@color/ink</item>
+    </style>
+
+    <!-- Texto secundario: instrucción, dato de apoyo -->
+    <style name="TextAppearance.Lab.BodySoft" parent="android:TextAppearance">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="android:textColor">@color/ink_soft</item>
+    </style>
+
+    <!-- Etiqueta de campo en versalitas: el elemento firma del sistema -->
+    <style name="TextAppearance.Lab.Label" parent="android:TextAppearance">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">10.5sp</item>
+        <item name="android:letterSpacing">0.14</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/ink_faint</item>
+    </style>
+
+    <!-- Lectura numérica, condensada, como pantalla de instrumento -->
+    <style name="TextAppearance.Lab.Readout" parent="android:TextAppearance">
+        <item name="android:fontFamily">sans-serif-condensed-medium</item>
+        <item name="android:textSize">19sp</item>
+        <item name="android:letterSpacing">0.01</item>
+        <item name="android:textColor">@color/ink</item>
+    </style>
+
+    <!-- Etiqueta de acción (botones) -->
+    <style name="TextAppearance.Lab.Action" parent="android:TextAppearance">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:letterSpacing">0.005</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+</resources>

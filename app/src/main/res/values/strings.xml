@@ -1,5 +1,15 @@
 <resources>
     <string name="app_name">Asistente Bromatología UTEQ</string>
+
+    <!-- Pantalla de cámara / detección -->
+    <string name="brand_line">Bromatología · UTEQ</string>
+    <string name="field_equipment">Equipo</string>
+    <string name="field_confidence">Confianza</string>
+    <string name="aim_at_equipment">Apunta la cámara a un equipo del laboratorio.</string>
+    <string name="action_sheet">Ficha técnica</string>
+    <string name="action_assistant">Asistente</string>
+    <string name="model_missing">No se encontró el modelo de detección en la app.</string>
+
     <string name="camera_permission_required">Se requiere permiso de cámara para la detección en tiempo real de los equipos.</string>
     <string name="detecting_equipments">Escaneando laboratorio…</string>
     <string name="technical_sheet">Ficha Técnica y Bioseguridad</string>

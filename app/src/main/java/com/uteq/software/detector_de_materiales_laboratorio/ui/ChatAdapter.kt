@@ -50,7 +50,7 @@ class ChatAdapter : RecyclerView.Adapter<ChatAdapter.ChatViewHolder>() {
             if (msg.isBot) {
                 binding.layoutBotMessage.visibility = View.VISIBLE
                 binding.layoutUserMessage.visibility = View.GONE
-                binding.tvBotMessage.text = msg.text
+                binding.tvBotMessage.text = MarkdownText.format(msg.text)
                 binding.tvBotTime.text = formattedTime
             } else {
                 binding.layoutBotMessage.visibility = View.GONE
