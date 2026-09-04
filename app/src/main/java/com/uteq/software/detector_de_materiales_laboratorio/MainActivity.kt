@@ -5,9 +5,12 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Matrix
+import android.graphics.Outline
 import android.os.Bundle
 import android.util.Log
 import android.util.Size
+import android.view.View
+import android.view.ViewOutlineProvider
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -70,6 +73,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setupCameraFrameClip()
 
         cameraExecutor = Executors.newSingleThreadExecutor()
         yoloDetector = YoloDetector(this)
@@ -82,6 +86,18 @@ class MainActivity : AppCompatActivity() {
             startCamera()
         } else {
             requestPermissions()
+        }
+    }
+
+    private fun setupCameraFrameClip() {
+        binding.cameraFrame.post {
+            val radius = 18f * resources.displayMetrics.density
+            binding.cameraFrame.outlineProvider = object : ViewOutlineProvider() {
+                override fun getOutline(view: View, outline: Outline) {
+                    outline.setRoundRect(0, 0, view.width, view.height, radius)
+                }
+            }
+            binding.cameraFrame.clipToOutline = true
         }
     }
 
