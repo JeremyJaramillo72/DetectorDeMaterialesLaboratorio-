@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tarjeta de equipo seleccionada en la franja: mismo relleno de tinta que
+     usan las acciones primarias (Widget.Lab.Button.Primary), para que
+     "seleccionado" hable el mismo idioma visual que "acción principal". -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="#33FFFFFF">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/ink" />
+            <corners android:radius="@dimen/lab_radius" />
+        </shape>
+    </item>
+</ripple>

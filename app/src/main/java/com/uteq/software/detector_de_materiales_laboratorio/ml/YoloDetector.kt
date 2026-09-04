@@ -294,6 +294,13 @@ class YoloDetector(
         )
     }
 
+    /**
+     * Suprime cajas duplicadas/contenidas del MISMO objeto (varios anchors
+     * disparando sobre la misma posición), pero conserva una caja por cada
+     * objeto físicamente distinto — el objetivo es "un objeto, una caja",
+     * no "una caja, punto". Sin tope artificial de cantidad: si la escena
+     * tiene 3 equipos genuinamente separados, deben sobrevivir los 3.
+     */
     private fun applyGlobalNms(detections: List<DetectionResult>): List<DetectionResult> {
         if (detections.isEmpty()) return emptyList()
 
@@ -302,8 +309,8 @@ class YoloDetector(
         }
         pq.addAll(detections)
 
-        val result = ArrayList<DetectionResult>(2)
-        while (pq.isNotEmpty() && result.size < 1) {
+        val result = ArrayList<DetectionResult>(detections.size)
+        while (pq.isNotEmpty()) {
             val best = pq.poll() ?: break
             val overlaps = result.any { isDuplicateOrContained(it.boundingBox, best.boundingBox) }
             if (!overlaps) result.add(best)

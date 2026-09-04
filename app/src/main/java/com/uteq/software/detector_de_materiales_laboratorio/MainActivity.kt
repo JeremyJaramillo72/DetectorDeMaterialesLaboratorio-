@@ -6,8 +6,11 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
 import android.util.Size
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -48,6 +51,8 @@ class MainActivity : AppCompatActivity() {
     )
 
     private var latestDetections: List<DetectionResult> = emptyList()
+    /** Label del equipo elegido por el usuario cuando hay varios a la vez. */
+    private var selectedLabel: String? = null
     private val isProcessing = AtomicBoolean(false)
     private var imageAnalyzer: ImageAnalysis? = null
     private var lastInferenceTimeMs = 0L
@@ -101,8 +106,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupUI() {
+        // Tocar un recuadro sobre la cámara selecciona ese equipo — igual que
+        // tocar su tarjeta en la franja. Ya no abre la ficha directamente: con
+        // varios equipos a la vez, seleccionar y consultar son pasos distintos.
         binding.overlayView.onDetectionSelectedListener = { detection ->
-            showEquipmentDetails(detection.label)
+            selectEquipment(detection.label)
         }
 
         binding.btnOpenChat.setOnClickListener {
@@ -111,9 +119,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.btnQuickDetails.setOnClickListener {
-            val topDetection = latestDetections.maxByOrNull { it.confidence }
-            if (topDetection != null) {
-                showEquipmentDetails(topDetection.label)
+            val label = selectedLabel
+            if (label != null) {
+                showEquipmentDetails(label)
             } else {
                 Toast.makeText(
                     this,
@@ -122,6 +130,13 @@ class MainActivity : AppCompatActivity() {
                 ).show()
             }
         }
+    }
+
+    /** Cambia el equipo seleccionado y refresca la UI con lo último detectado,
+     *  sin esperar al próximo frame de inferencia (toque instantáneo). */
+    private fun selectEquipment(label: String) {
+        selectedLabel = label
+        refreshSelection(latestDetections)
     }
 
     private fun showEquipmentDetails(yoloClass: String) {
@@ -228,8 +243,10 @@ class MainActivity : AppCompatActivity() {
             latestDetections = stable
             lastInferenceTimeMs = now
 
-            // Aprender solo detecciones muy seguras (evita cachear falsos positivos)
-            stable.firstOrNull()?.let { det ->
+            // Aprender solo detecciones muy seguras (evita cachear falsos positivos).
+            // Se recorren TODAS las detecciones estables del frame, no solo la
+            // primera — cada equipo visible aprende de forma independiente.
+            stable.forEach { det ->
                 if (det.confidence >= EquipmentDetectionCache.MIN_LEARN_CONFIDENCE) {
                     val eq = detectionCache.getEquipmentInfo(det.label)
                         ?: kbRepository.getEquipmentByClass(det.label)
@@ -261,26 +278,94 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * El panel de lectura solo afirma tres cosas: qué equipo hay delante, con
-     * cuánta confianza, y si se puede abrir su ficha. Sin estados decorativos.
-     *
-     * La altura del panel es fija en los tres estados: nunca se oculta ni se
-     * agrega una fila, y el nombre siempre usa la misma tipografía — solo
-     * cambian el texto y el color. Ver activity_main.xml.
+     * El panel de lectura siempre describe al equipo SELECCIONADO, no al de
+     * mayor confianza — con un solo equipo detectado ambos coinciden, así que
+     * el flujo de un solo equipo no cambia. Altura fija en todos los estados:
+     * nunca se oculta ni se agrega una fila, solo cambian texto y color.
      */
     private fun updateHUD(detections: List<DetectionResult>) {
-        when {
-            !yoloDetector.isModelLoaded() ->
-                showReading(getString(R.string.model_missing), isAlert = true)
+        if (!yoloDetector.isModelLoaded()) {
+            selectedLabel = null
+            showReading(getString(R.string.model_missing), isAlert = true)
+            updateEquipmentStrip(emptyList())
+            binding.overlayView.setSelectedLabel(null)
+            return
+        }
+        refreshSelection(detections)
+    }
 
-            detections.isEmpty() ->
-                showReading(getString(R.string.aim_at_equipment))
+    private fun refreshSelection(detections: List<DetectionResult>) {
+        if (detections.isEmpty()) {
+            selectedLabel = null
+            showReading(getString(R.string.aim_at_equipment))
+            updateEquipmentStrip(detections)
+            binding.overlayView.setSelectedLabel(null)
+            return
+        }
 
-            else -> {
-                val top = detections.maxByOrNull { it.confidence } ?: return
-                showReading(top.displayName, confidence = top.confidence)
+        // Si lo seleccionado ya no está en escena (o no había selección), se
+        // adopta automáticamente el de mayor confianza — mismo comportamiento
+        // de siempre cuando solo hay un equipo, ahora explícito para varios.
+        val selected = detections.find { it.label.equals(selectedLabel, ignoreCase = true) }
+            ?: detections.maxByOrNull { it.confidence }!!.also { selectedLabel = it.label }
+
+        showReading(selected.displayName, confidence = selected.confidence)
+        updateEquipmentStrip(detections)
+        binding.overlayView.setSelectedLabel(selectedLabel)
+    }
+
+    /**
+     * Franja de tarjetas: una por equipo detectado, para responder de un
+     * vistazo cuántos hay, cuál es cada uno y cuál está seleccionado. Altura
+     * de la franja fija (@dimen/lab_strip_height en el layout); esta función
+     * solo reutiliza/crea/quita tarjetas dentro de esa fila.
+     */
+    private fun updateEquipmentStrip(detections: List<DetectionResult>) {
+        val container = binding.stripEquipmentContainer
+        val padH = resources.getDimensionPixelSize(R.dimen.lab_space_3)
+        val padV = resources.getDimensionPixelSize(R.dimen.lab_space_2)
+        val cardMaxWidth = resources.getDimensionPixelSize(R.dimen.lab_card_max_width)
+        val cardMargin = resources.getDimensionPixelSize(R.dimen.lab_space_2)
+
+        val remaining = HashMap<String, TextView>()
+        for (i in 0 until container.childCount) {
+            val child = container.getChildAt(i) as TextView
+            remaining[child.tag as String] = child
+        }
+
+        detections.forEachIndexed { index, detection ->
+            val isSelected = detection.label.equals(selectedLabel, ignoreCase = true)
+
+            val card = remaining.remove(detection.label) ?: TextView(this).also { tv ->
+                tv.tag = detection.label
+                tv.maxLines = 1
+                tv.ellipsize = TextUtils.TruncateAt.END
+                tv.maxWidth = cardMaxWidth
+                tv.setPadding(padH, padV, padH, padV)
+                tv.setTextAppearance(R.style.TextAppearance_Lab_Chip)
+                val params = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply { marginEnd = cardMargin }
+                container.addView(tv, params)
+            }
+
+            card.text = detection.displayName
+            card.setOnClickListener { selectEquipment(detection.label) }
+            card.setBackgroundResource(
+                if (isSelected) R.drawable.bg_card_selected else R.drawable.bg_chip_outline
+            )
+            card.setTextColor(
+                ContextCompat.getColor(this, if (isSelected) R.color.white else R.color.ink)
+            )
+
+            if (container.indexOfChild(card) != index) {
+                container.removeView(card)
+                container.addView(card, index)
             }
         }
+
+        remaining.values.forEach { container.removeView(it) }
     }
 
     private fun showReading(

@@ -31,6 +31,12 @@ import kotlin.math.min
  * La etiqueta es una pestaña sólida apoyada en el borde superior de la caja:
  * el nombre puede ocupar dos líneas (los nombres de equipo son largos) y la
  * confianza va debajo como lectura, no apretada en la misma línea.
+ *
+ * Con dos o más equipos en pantalla, el seleccionado se dibuja a contraste
+ * total y el resto se atenúa (mismo trazo, menos opacidad) — nunca se ocultan,
+ * para que el usuario siga viendo cuántos hay y pueda tocar cualquiera para
+ * cambiar la selección. Con 0 o 1 equipo no hay atenuación: el trazo es
+ * idéntico al de antes de soportar selección múltiple.
  */
 class OverlayView @JvmOverloads constructor(
     context: Context,
@@ -45,8 +51,11 @@ class OverlayView @JvmOverloads constructor(
     private var postScaleWidthOffset: Float = 0.0f
     private var postScaleHeightOffset: Float = 0.0f
 
-    private var selectedDetection: DetectionResult? = null
+    private var selectedLabel: String? = null
     var onDetectionSelectedListener: ((DetectionResult) -> Unit)? = null
+
+    /** Atenuación aplicada a un equipo detectado que NO es el seleccionado. */
+    private val dimFactor = 0.4f
 
     private fun dp(value: Float) = TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_DIP, value, resources.displayMetrics
@@ -93,6 +102,13 @@ class OverlayView @JvmOverloads constructor(
         typeface = Typeface.create("sans-serif-condensed-medium", Typeface.NORMAL)
     }
 
+    // Alfa "a contraste total" de cada paint, para poder atenuar y restaurar.
+    private val haloAlpha = haloPaint.alpha
+    private val boxAlpha = boxPaint.alpha
+    private val labelBgAlpha = labelBgPaint.alpha
+    private val nameAlpha = namePaint.alpha
+    private val readoutAlpha = readoutPaint.alpha
+
     fun setResults(detectionResults: List<DetectionResult>, imgWidth: Int, imgHeight: Int) {
         results = detectionResults
         imageWidth = imgWidth
@@ -100,9 +116,16 @@ class OverlayView @JvmOverloads constructor(
         invalidate()
     }
 
+    /** Marca cuál de los equipos detectados está seleccionado (por label). */
+    fun setSelectedLabel(label: String?) {
+        if (selectedLabel == label) return
+        selectedLabel = label
+        invalidate()
+    }
+
     fun clear() {
         results = emptyList()
-        selectedDetection = null
+        selectedLabel = null
         invalidate()
     }
 
@@ -121,6 +144,10 @@ class OverlayView @JvmOverloads constructor(
             postScaleHeightOffset = (viewHeight - (imageHeight * scaleFactor)) / 2.0f
         }
 
+        // Con un solo equipo (o ninguno) no hay nada que distinguir: todo a
+        // contraste total, trazo idéntico al de antes de soportar selección.
+        val hasMultiple = results.size > 1
+
         for (detection in results) {
             val rawBox = detection.boundingBox
 
@@ -131,11 +158,25 @@ class OverlayView @JvmOverloads constructor(
             val bottom = min(viewHeight, (rawBox.bottom * scaleFactor) + postScaleHeightOffset)
             val mappedBox = RectF(left, top, right, bottom)
 
+            val isDimmed = hasMultiple && !detection.label.equals(selectedLabel, ignoreCase = true)
+            applyDim(isDimmed)
+
             canvas.drawRoundRect(mappedBox, cornerRadius, cornerRadius, haloPaint)
             canvas.drawRoundRect(mappedBox, cornerRadius, cornerRadius, boxPaint)
 
             drawLabel(canvas, mappedBox, detection, viewWidth)
         }
+
+        applyDim(false)
+    }
+
+    private fun applyDim(dimmed: Boolean) {
+        val factor = if (dimmed) dimFactor else 1f
+        haloPaint.alpha = (haloAlpha * factor).toInt()
+        boxPaint.alpha = (boxAlpha * factor).toInt()
+        labelBgPaint.alpha = (labelBgAlpha * factor).toInt()
+        namePaint.alpha = (nameAlpha * factor).toInt()
+        readoutPaint.alpha = (readoutAlpha * factor).toInt()
     }
 
     private fun drawLabel(
@@ -210,7 +251,7 @@ class OverlayView @JvmOverloads constructor(
                 val mappedBox = RectF(left, top, right, bottom)
 
                 if (mappedBox.contains(touchX, touchY) || expand(mappedBox, 48f).contains(touchX, touchY)) {
-                    selectedDetection = detection
+                    selectedLabel = detection.label
                     invalidate()
                     onDetectionSelectedListener?.invoke(detection)
                     return true

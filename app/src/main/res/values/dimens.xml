@@ -15,6 +15,10 @@
     <!-- Grosor de las líneas que estructuran la página -->
     <dimen name="lab_rule">1dp</dimen>
     <dimen name="lab_action_height">52dp</dimen>
+    <!-- Franja de equipos detectados: altura fija, independiente de cuántas
+         tarjetas contenga (0, 1 o varias) — evita el salto de altura. -->
+    <dimen name="lab_strip_height">60dp</dimen>
+    <dimen name="lab_card_max_width">180dp</dimen>
 
     <!-- Accesibilidad: objetivo táctil mínimo -->
     <dimen name="touch_target_min">48dp</dimen>

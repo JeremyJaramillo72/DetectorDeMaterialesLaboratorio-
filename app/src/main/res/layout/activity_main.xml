@@ -3,11 +3,11 @@
   Pantalla de cámara / detección — sistema "Registro de laboratorio".
 
   Composición: la cámara es el contenido, no un recuadro decorado flotando en
-  una página. Ocupa todo el ancho y todo el alto disponible entre dos franjas
-  de papel: arriba la identificación de la app, abajo la lectura del equipo.
-  Sin HUD superpuesto, sin badges de estado, sin marcos de esquina, sin
-  metadata del modelo: lo único que se afirma es qué equipo se está viendo,
-  con cuánta confianza, y qué se puede hacer con él.
+  una página. Debajo, la franja de equipos detectados (uno o varios) y el
+  panel de lectura del equipo seleccionado. Sin HUD superpuesto, sin badges de
+  estado, sin marcos de esquina, sin metadata del modelo: lo único que se
+  afirma es qué equipos se ven, cuál está seleccionado, con cuánta confianza,
+  y qué se puede hacer con él.
 -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -65,6 +65,38 @@
 
     <View
         android:id="@+id/ruleBottom"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/lab_rule"
+        android:background="@color/rule"
+        app:layout_constraintBottom_toTopOf="@id/stripEquipment" />
+
+    <!--
+      Franja de equipos detectados: uno o varios, cada uno una tarjeta de
+      contorno (mismo lenguaje que las sugerencias del chat). Tocar una la
+      selecciona (pasa a relleno de tinta) — igual que tocar su recuadro
+      sobre la cámara. Altura fija con @dimen/lab_strip_height: reservada
+      siempre, con o sin equipos, para no repetir el salto de altura.
+    -->
+    <HorizontalScrollView
+        android:id="@+id/stripEquipment"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/lab_strip_height"
+        android:paddingStart="@dimen/lab_gutter"
+        android:paddingEnd="@dimen/lab_gutter"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toTopOf="@id/ruleStrip">
+
+        <LinearLayout
+            android:id="@+id/stripEquipmentContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" />
+
+    </HorizontalScrollView>
+
+    <View
+        android:id="@+id/ruleStrip"
         android:layout_width="match_parent"
         android:layout_height="@dimen/lab_rule"
         android:background="@color/rule"
