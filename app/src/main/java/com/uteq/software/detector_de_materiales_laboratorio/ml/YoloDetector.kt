@@ -10,8 +10,10 @@ import java.io.FileInputStream
 import java.io.InputStreamReader
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+import java.nio.MappedByteBuffer
 import java.nio.channels.FileChannel
 import java.util.PriorityQueue
+import kotlin.math.exp
 import kotlin.math.max
 import kotlin.math.min
 
@@ -20,17 +22,27 @@ class YoloDetector(
     private val modelFileName: String = "yolo11_bromatologia.tflite",
     private val fallbackModelName: String = "yolov8_bromatologia.tflite",
     private val labelFileName: String = "labels.txt",
-    private val confidenceThreshold: Float = 0.48f, // Umbral equilibrado al 48% para detectar equipos reales
-    private val iouThreshold: Float = 0.50f        // Umbral IoU estándar para suprimir solapamientos
+    private val confidenceThreshold: Float = 0.42f,
+    private val classMargin: Float = 0.10f,
+    private val iouThreshold: Float = 0.50f
 ) {
 
     private val TAG = "YoloDetector"
     private var interpreter: Interpreter? = null
+    private var loadedModelName: String? = null
     private val labels = ArrayList<String>()
     private val numClasses: Int
         get() = if (labels.isNotEmpty()) labels.size else 8
 
     val inputSize = 640
+
+    private var inputBuffer: ByteBuffer? = null
+    private var pixelBuffer: IntArray? = null
+    private var outputArray: Array<Array<FloatArray>>? = null
+    private var isNCHW = false
+    private var transposedOutput = false
+    private var outputDim1 = 0
+    private var outputDim2 = 0
 
     init {
         loadLabels()
@@ -40,12 +52,9 @@ class YoloDetector(
     private fun loadLabels() {
         try {
             context.assets.open(labelFileName).use { inputStream ->
-                val reader = InputStreamReader(inputStream)
-                reader.readLines().forEach { line ->
+                InputStreamReader(inputStream).readLines().forEach { line ->
                     val cleanLine = line.trim()
-                    if (cleanLine.isNotEmpty()) {
-                        labels.add(cleanLine)
-                    }
+                    if (cleanLine.isNotEmpty()) labels.add(cleanLine)
                 }
             }
             Log.d(TAG, "Labels cargados (${labels.size}): $labels")
@@ -53,234 +62,231 @@ class YoloDetector(
             e.printStackTrace()
             labels.addAll(
                 listOf(
-                    "Analizador de Fibra Cruda y Fracciones", "Bomba de Vacio por Recirculacion de Agua",
-                    "Destilador por Arrastre de Vapor tipo Kjeldahl", "Destilador de Agua Continuo Metalico",
-                    "Destilacion de Nitrogeno y Proteinas", "Microcospio Trinocular",
-                    "Sistema de Tratamiento y Desionizacion deAgua", "Viscosimetro Brookfield Modelo DV-E"
+                    "Analizador de Fibra Cruda y Fracciones",
+                    "Bomba de Vacio por Recirculacion de Agua",
+                    "Destilador por Arrastre de Vapor tipo Kjeldahl",
+                    "Destilador de Agua Continuo Metalico",
+                    "Destilacion de Nitrogeno y Proteinas",
+                    "Microcospio Trinocular",
+                    "Sistema de Tratamiento y Desionizacion deAgua",
+                    "Viscosimetro Brookfield Modelo DV-E"
                 )
             )
         }
     }
 
     private fun initInterpreter() {
-        val candidates = listOf(modelFileName, fallbackModelName)
-        for (candidate in candidates) {
+        for (candidate in listOf(modelFileName, fallbackModelName)) {
             try {
-                val assetFileDescriptor = context.assets.openFd(candidate)
-                val fileInputStream = FileInputStream(assetFileDescriptor.fileDescriptor)
-                val fileChannel = fileInputStream.channel
-                val startOffset = assetFileDescriptor.startOffset
-                val declaredLength = assetFileDescriptor.declaredLength
-                val modelBuffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength)
-
+                val modelBuffer = loadModelFile(candidate)
                 val options = Interpreter.Options().apply {
-                    setNumThreads(4)
+                    setNumThreads(3)
                 }
                 val interp = Interpreter(modelBuffer, options)
                 interpreter = interp
+                loadedModelName = candidate
 
-                val inTensor = interp.getInputTensor(0)
-                val outTensor = interp.getOutputTensor(0)
-                Log.d(TAG, "✅ Modelo cargado: $candidate | InShape: ${inTensor.shape().contentToString()} | OutShape: ${outTensor.shape().contentToString()}")
+                val inShape = interp.getInputTensor(0).shape()
+                isNCHW = inShape.size == 4 && inShape[1] == 3
+
+                val outShape = interp.getOutputTensor(0).shape()
+                if (outShape.size == 3) {
+                    outputDim1 = outShape[1]
+                    outputDim2 = outShape[2]
+                    transposedOutput = outputDim1 <= outputDim2
+                    outputArray = Array(1) { Array(outputDim1) { FloatArray(outputDim2) } }
+                }
+
+                inputBuffer = ByteBuffer.allocateDirect(1 * 3 * inputSize * inputSize * 4).apply {
+                    order(ByteOrder.nativeOrder())
+                }
+                pixelBuffer = IntArray(inputSize * inputSize)
+
+                Log.d(
+                    TAG,
+                    "Modelo cargado: $candidate | In: ${inShape.contentToString()} | Out: ${outShape.contentToString()}"
+                )
                 return
             } catch (e: Exception) {
                 Log.w(TAG, "No se pudo cargar $candidate: ${e.message}")
             }
         }
-        Log.w(TAG, "⚠️ Ningún archivo de modelo encontrado en assets. Se utilizará modo demostración interactiva.")
+        Log.w(TAG, "Ningún modelo .tflite encontrado en assets")
         interpreter = null
+        loadedModelName = null
+    }
+
+    private fun loadModelFile(fileName: String): MappedByteBuffer {
+        val afd = context.assets.openFd(fileName)
+        FileInputStream(afd.fileDescriptor).use { fis ->
+            return fis.channel.map(FileChannel.MapMode.READ_ONLY, afd.startOffset, afd.declaredLength)
+        }
     }
 
     fun isModelLoaded(): Boolean = interpreter != null
-    fun getLoadedModelName(): String? = if (interpreter != null) modelFileName.removeSuffix(".tflite") else null
+
+    fun getLoadedModelName(): String? = loadedModelName
 
     fun detect(bitmap: Bitmap): List<DetectionResult> {
-        val interp = interpreter ?: return generateDemoDetections(bitmap.width, bitmap.height)
+        val interp = interpreter ?: return emptyList()
+        val buffer = inputBuffer ?: return emptyList()
+        val pixels = pixelBuffer ?: return emptyList()
+        val output = outputArray ?: return emptyList()
 
-        val inTensor = interp.getInputTensor(0)
-        val inShape = inTensor.shape()
-        val isNCHW = (inShape.size == 4 && inShape[1] == 3)
+        val resized = Bitmap.createScaledBitmap(bitmap, inputSize, inputSize, true)
+        try {
+            resized.getPixels(pixels, 0, inputSize, 0, 0, inputSize, inputSize)
+            buffer.rewind()
 
-        val resizedBitmap = Bitmap.createScaledBitmap(bitmap, inputSize, inputSize, true)
-        val inputBuffer = ByteBuffer.allocateDirect(1 * 3 * inputSize * inputSize * 4)
-        inputBuffer.order(ByteOrder.nativeOrder())
-
-        val intValues = IntArray(inputSize * inputSize)
-        resizedBitmap.getPixels(intValues, 0, inputSize, 0, 0, inputSize, inputSize)
-
-        if (isNCHW) {
-            // LiteRT PyTorch NCHW Format: RRR... GGG... BBB...
-            for (pixel in intValues) {
-                inputBuffer.putFloat(((pixel shr 16) and 0xFF) / 255.0f)
-            }
-            for (pixel in intValues) {
-                inputBuffer.putFloat(((pixel shr 8) and 0xFF) / 255.0f)
-            }
-            for (pixel in intValues) {
-                inputBuffer.putFloat((pixel and 0xFF) / 255.0f)
-            }
-        } else {
-            // Standard NHWC Format: RGB RGB RGB...
-            for (pixel in intValues) {
-                inputBuffer.putFloat(((pixel shr 16) and 0xFF) / 255.0f)
-                inputBuffer.putFloat(((pixel shr 8) and 0xFF) / 255.0f)
-                inputBuffer.putFloat((pixel and 0xFF) / 255.0f)
-            }
-        }
-
-        val outTensor = interp.getOutputTensor(0)
-        val shape = outTensor.shape() // Ej: [1, 24, 8400] o [1, 8400, 24]
-
-        val rawDetections = ArrayList<DetectionResult>()
-        val imgWidth = bitmap.width.toFloat()
-        val imgHeight = bitmap.height.toFloat()
-
-        if (shape.size == 3) {
-            val dim1 = shape[1]
-            val dim2 = shape[2]
-
-            if (dim1 <= dim2) {
-                // Formato [1, 24, 8400]
-                val outputArray = Array(1) { Array(dim1) { FloatArray(dim2) } }
-                try {
-                    inputBuffer.rewind()
-                    interp.run(inputBuffer, outputArray)
-                } catch (e: Exception) {
-                    Log.e(TAG, "Error en inferencia [1, C, N]: ${e.message}")
-                    return emptyList()
-                }
-
-                val output = outputArray[0]
-                val numAnchors = dim2
-                val numFeats = dim1
-
-                for (col in 0 until numAnchors) {
-                    var maxConfidence = 0.0f
-                    var classIdx = -1
-
-                    for (c in 0 until numClasses) {
-                        val featIdx = 4 + c
-                        if (featIdx < numFeats) {
-                            val conf = output[featIdx][col]
-                            if (conf > maxConfidence) {
-                                maxConfidence = conf
-                                classIdx = c
-                            }
-                        }
-                    }
-
-                    if (maxConfidence >= confidenceThreshold && classIdx in 0 until labels.size) {
-                        val cxRaw = output[0][col]
-                        val cyRaw = output[1][col]
-                        val wRaw = output[2][col]
-                        val hRaw = output[3][col]
-
-                        val isNormalized = (cxRaw <= 1.05f && cyRaw <= 1.05f && wRaw <= 1.05f && hRaw <= 1.05f)
-                        val cx = if (isNormalized) cxRaw * imgWidth else cxRaw * imgWidth / inputSize
-                        val cy = if (isNormalized) cyRaw * imgHeight else cyRaw * imgHeight / inputSize
-                        val w = if (isNormalized) wRaw * imgWidth else wRaw * imgWidth / inputSize
-                        val h = if (isNormalized) hRaw * imgHeight else hRaw * imgHeight / inputSize
-
-                        // Descartar cajas que cubren toda la pantalla (artefactos de monitores o fondo)
-                        val areaRatio = (w * h) / (imgWidth * imgHeight)
-                        if ((w >= 0.88f * imgWidth && h >= 0.85f * imgHeight) || areaRatio >= 0.78f) {
-                            continue
-                        }
-
-                        val left = max(0.0f, cx - w / 2.0f)
-                        val top = max(0.0f, cy - h / 2.0f)
-                        val right = min(imgWidth, cx + w / 2.0f)
-                        val bottom = min(imgHeight, cy + h / 2.0f)
-
-                        val label = labels[classIdx]
-                        rawDetections.add(
-                            DetectionResult(
-                                boundingBox = RectF(left, top, right, bottom),
-                                label = label,
-                                displayName = formatDisplayName(label),
-                                confidence = maxConfidence,
-                                classIndex = classIdx
-                            )
-                        )
-                    }
-                }
+            if (isNCHW) {
+                for (pixel in pixels) buffer.putFloat(((pixel shr 16) and 0xFF) / 255.0f)
+                for (pixel in pixels) buffer.putFloat(((pixel shr 8) and 0xFF) / 255.0f)
+                for (pixel in pixels) buffer.putFloat((pixel and 0xFF) / 255.0f)
             } else {
-                // Formato [1, 8400, 24]
-                val outputArray = Array(1) { Array(dim1) { FloatArray(dim2) } }
-                try {
-                    inputBuffer.rewind()
-                    interp.run(inputBuffer, outputArray)
-                } catch (e: Exception) {
-                    Log.e(TAG, "Error en inferencia [1, N, C]: ${e.message}")
-                    return emptyList()
-                }
-
-                val output = outputArray[0]
-                val numAnchors = dim1
-                val numFeats = dim2
-
-                for (row in 0 until numAnchors) {
-                    var maxConfidence = 0.0f
-                    var classIdx = -1
-
-                    for (c in 0 until numClasses) {
-                        val featIdx = 4 + c
-                        if (featIdx < numFeats) {
-                            val conf = output[row][featIdx]
-                            if (conf > maxConfidence) {
-                                maxConfidence = conf
-                                classIdx = c
-                            }
-                        }
-                    }
-
-                    if (maxConfidence >= confidenceThreshold && classIdx in 0 until labels.size) {
-                        val cxRaw = output[row][0]
-                        val cyRaw = output[row][1]
-                        val wRaw = output[row][2]
-                        val hRaw = output[row][3]
-
-                        val isNormalized = (cxRaw <= 1.05f && cyRaw <= 1.05f && wRaw <= 1.05f && hRaw <= 1.05f)
-                        val cx = if (isNormalized) cxRaw * imgWidth else cxRaw * imgWidth / inputSize
-                        val cy = if (isNormalized) cyRaw * imgHeight else cyRaw * imgHeight / inputSize
-                        val w = if (isNormalized) wRaw * imgWidth else wRaw * imgWidth / inputSize
-                        val h = if (isNormalized) hRaw * imgHeight else hRaw * imgHeight / inputSize
-
-                        // Descartar cajas que cubren toda la pantalla (artefactos de monitores o fondo)
-                        val areaRatio = (w * h) / (imgWidth * imgHeight)
-                        if ((w >= 0.88f * imgWidth && h >= 0.85f * imgHeight) || areaRatio >= 0.78f) {
-                            continue
-                        }
-
-                        val left = max(0.0f, cx - w / 2.0f)
-                        val top = max(0.0f, cy - h / 2.0f)
-                        val right = min(imgWidth, cx + w / 2.0f)
-                        val bottom = min(imgHeight, cy + h / 2.0f)
-
-                        val label = labels[classIdx]
-                        rawDetections.add(
-                            DetectionResult(
-                                boundingBox = RectF(left, top, right, bottom),
-                                label = label,
-                                displayName = formatDisplayName(label),
-                                confidence = maxConfidence,
-                                classIndex = classIdx
-                            )
-                        )
-                    }
+                for (pixel in pixels) {
+                    buffer.putFloat(((pixel shr 16) and 0xFF) / 255.0f)
+                    buffer.putFloat(((pixel shr 8) and 0xFF) / 255.0f)
+                    buffer.putFloat((pixel and 0xFF) / 255.0f)
                 }
             }
-        }
 
-        return applyGlobalNMS(rawDetections)
+            buffer.rewind()
+            try {
+                interp.run(buffer, output)
+            } catch (e: Exception) {
+                Log.e(TAG, "Error en inferencia: ${e.message}")
+                return emptyList()
+            }
+
+            val raw = ArrayList<DetectionResult>(16)
+            val imgW = bitmap.width.toFloat()
+            val imgH = bitmap.height.toFloat()
+            val data = output[0]
+
+            if (transposedOutput) {
+                parseTransposed(data, outputDim2, outputDim1, imgW, imgH, raw)
+            } else {
+                parseRows(data, outputDim1, outputDim2, imgW, imgH, raw)
+            }
+
+            return applyGlobalNms(raw)
+        } finally {
+            if (resized !== bitmap) resized.recycle()
+        }
     }
 
-    /**
-     * NMS Global / Agnóstico de Clase:
-     * Suprime cajas duplicadas o contenedoras (cuando una caja encierra a otra o tienen IoU >= 0.50),
-     * garantizando que solo quede el objeto real enfocado.
-     */
-    private fun applyGlobalNMS(detections: List<DetectionResult>): List<DetectionResult> {
+    private fun parseTransposed(
+        output: Array<FloatArray>,
+        numAnchors: Int,
+        numFeats: Int,
+        imgW: Float,
+        imgH: Float,
+        out: ArrayList<DetectionResult>
+    ) {
+        for (col in 0 until numAnchors) {
+            var best = 0f
+            var second = 0f
+            var classIdx = -1
+            for (c in 0 until numClasses) {
+                val featIdx = 4 + c
+                if (featIdx >= numFeats) break
+                val conf = asProb(output[featIdx][col])
+                if (conf > best) {
+                    second = best
+                    best = conf
+                    classIdx = c
+                } else if (conf > second) {
+                    second = conf
+                }
+            }
+            if (classIdx < 0 || classIdx >= labels.size) continue
+            if (best < confidenceThreshold) continue
+            if (best - second < classMargin && best < 0.70f) continue
+
+            val box = mapBox(output[0][col], output[1][col], output[2][col], output[3][col], imgW, imgH)
+                ?: continue
+            out.add(
+                DetectionResult(
+                    boundingBox = box,
+                    label = labels[classIdx],
+                    displayName = formatDisplayName(labels[classIdx]),
+                    confidence = best,
+                    classIndex = classIdx
+                )
+            )
+        }
+    }
+
+    private fun parseRows(
+        output: Array<FloatArray>,
+        numAnchors: Int,
+        numFeats: Int,
+        imgW: Float,
+        imgH: Float,
+        out: ArrayList<DetectionResult>
+    ) {
+        for (row in 0 until numAnchors) {
+            var best = 0f
+            var second = 0f
+            var classIdx = -1
+            for (c in 0 until numClasses) {
+                val featIdx = 4 + c
+                if (featIdx >= numFeats) break
+                val conf = asProb(output[row][featIdx])
+                if (conf > best) {
+                    second = best
+                    best = conf
+                    classIdx = c
+                } else if (conf > second) {
+                    second = conf
+                }
+            }
+            if (classIdx < 0 || classIdx >= labels.size) continue
+            if (best < confidenceThreshold) continue
+            if (best - second < classMargin && best < 0.70f) continue
+
+            val box = mapBox(output[row][0], output[row][1], output[row][2], output[row][3], imgW, imgH)
+                ?: continue
+            out.add(
+                DetectionResult(
+                    boundingBox = box,
+                    label = labels[classIdx],
+                    displayName = formatDisplayName(labels[classIdx]),
+                    confidence = best,
+                    classIndex = classIdx
+                )
+            )
+        }
+    }
+
+    /** Ultralytics TFLite puede devolver logits o probabilidades. */
+    private fun asProb(x: Float): Float {
+        return if (x in 0f..1f) x else (1f / (1f + exp(-x)))
+    }
+
+    private fun mapBox(
+        cxRaw: Float, cyRaw: Float, wRaw: Float, hRaw: Float,
+        imgW: Float, imgH: Float
+    ): RectF? {
+        val normalized = cxRaw <= 1.05f && cyRaw <= 1.05f && wRaw <= 1.05f && hRaw <= 1.05f
+        val cx = if (normalized) cxRaw * imgW else cxRaw * imgW / inputSize
+        val cy = if (normalized) cyRaw * imgH else cyRaw * imgH / inputSize
+        val w = if (normalized) wRaw * imgW else wRaw * imgW / inputSize
+        val h = if (normalized) hRaw * imgH else hRaw * imgH / inputSize
+
+        val areaRatio = (w * h) / (imgW * imgH)
+        if ((w >= 0.90f * imgW && h >= 0.88f * imgH) || areaRatio >= 0.82f) return null
+        if (w < 12f || h < 12f) return null
+
+        return RectF(
+            max(0f, cx - w / 2f),
+            max(0f, cy - h / 2f),
+            min(imgW, cx + w / 2f),
+            min(imgH, cy + h / 2f)
+        )
+    }
+
+    private fun applyGlobalNms(detections: List<DetectionResult>): List<DetectionResult> {
         if (detections.isEmpty()) return emptyList()
 
         val pq = PriorityQueue<DetectionResult>(detections.size) { a, b ->
@@ -288,80 +294,53 @@ class YoloDetector(
         }
         pq.addAll(detections)
 
-        val result = ArrayList<DetectionResult>()
-        val best = pq.poll() ?: return emptyList()
-        result.add(best)
-
-        val minSecondaryConf = max(confidenceThreshold, best.confidence * 0.75f)
-
-        while (pq.isNotEmpty()) {
-            val next = pq.poll() ?: break
-            if (next.confidence < minSecondaryConf) continue
-
-            val overlaps = result.any { isDuplicateOrContained(it.boundingBox, next.boundingBox) }
-            if (!overlaps) {
-                result.add(next)
-                if (result.size >= 2) break
-            }
+        val result = ArrayList<DetectionResult>(2)
+        while (pq.isNotEmpty() && result.size < 1) {
+            val best = pq.poll() ?: break
+            val overlaps = result.any { isDuplicateOrContained(it.boundingBox, best.boundingBox) }
+            if (!overlaps) result.add(best)
         }
         return result
     }
 
     private fun isDuplicateOrContained(a: RectF, b: RectF): Boolean {
-        val iou = calculateIoU(a, b)
-        if (iou >= iouThreshold) return true
-
-        // Comprobación de contención asimétrica (evita que un marco exterior encierre a un objeto interior)
+        if (calculateIoU(a, b) >= iouThreshold) return true
         val interLeft = max(a.left, b.left)
         val interTop = max(a.top, b.top)
         val interRight = min(a.right, b.right)
         val interBottom = min(a.bottom, b.bottom)
         val interArea = max(0f, interRight - interLeft) * max(0f, interBottom - interTop)
-
-        val areaA = (a.right - a.left) * (a.bottom - a.top)
-        val areaB = (b.right - b.left) * (b.bottom - b.top)
-        val minArea = min(areaA, areaB)
-
-        return (minArea > 0f && (interArea / minArea) >= 0.65f)
+        val minArea = min(
+            (a.right - a.left) * (a.bottom - a.top),
+            (b.right - b.left) * (b.bottom - b.top)
+        )
+        return minArea > 0f && interArea / minArea >= 0.65f
     }
 
     private fun calculateIoU(a: RectF, b: RectF): Float {
-        val intersectionLeft = max(a.left, b.left)
-        val intersectionTop = max(a.top, b.top)
-        val intersectionRight = min(a.right, b.right)
-        val intersectionBottom = min(a.bottom, b.bottom)
-
-        val intersectionArea = max(0f, intersectionRight - intersectionLeft) *
-                max(0f, intersectionBottom - intersectionTop)
-
-        val areaA = (a.right - a.left) * (a.bottom - a.top)
-        val areaB = (b.right - b.left) * (b.bottom - b.top)
-        val unionArea = areaA + areaB - intersectionArea
-
-        return if (unionArea > 0) intersectionArea / unionArea else 0f
+        val interLeft = max(a.left, b.left)
+        val interTop = max(a.top, b.top)
+        val interRight = min(a.right, b.right)
+        val interBottom = min(a.bottom, b.bottom)
+        val inter = max(0f, interRight - interLeft) * max(0f, interBottom - interTop)
+        val union = (a.right - a.left) * (a.bottom - a.top) +
+            (b.right - b.left) * (b.bottom - b.top) - inter
+        return if (union > 0) inter / union else 0f
     }
 
     private fun formatDisplayName(rawLabel: String): String {
-        return rawLabel.replace("_", " ").replace("MetalicoMetalico", "Metálico").trim()
-    }
-
-    private fun generateDemoDetections(width: Int, height: Int): List<DetectionResult> {
-        val w = width.toFloat()
-        val h = height.toFloat()
-        val box = RectF(w * 0.15f, h * 0.20f, w * 0.85f, h * 0.75f)
-        return listOf(
-            DetectionResult(
-                boundingBox = box,
-                label = "Destilador por Arrastre de Vapor tipo Kjeldahl",
-                displayName = "Destilador por Arrastre de Vapor tipo Kjeldahl",
-                confidence = 0.954f,
-                classIndex = 4
-            )
-        )
+        return rawLabel
+            .replace("Microcospio", "Microscopio")
+            .replace("deAgua", "de Agua")
+            .replace("MetalicoMetalico", "Metálico")
+            .trim()
     }
 
     fun close() {
         interpreter?.close()
         interpreter = null
+        inputBuffer = null
+        pixelBuffer = null
+        outputArray = null
     }
 }

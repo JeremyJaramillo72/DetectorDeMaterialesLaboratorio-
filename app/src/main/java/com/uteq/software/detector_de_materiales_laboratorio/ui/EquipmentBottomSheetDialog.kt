@@ -81,7 +81,9 @@ class EquipmentBottomSheetDialog : BottomSheetDialogFragment() {
             dismiss()
             val intent = Intent(requireContext(), ChatActivity::class.java).apply {
                 putExtra(ChatActivity.EXTRA_EQUIPMENT_ID, eq.id)
+                putExtra(ChatActivity.EXTRA_EQUIPMENT_CLASS, eq.claseYolo)
                 putExtra(ChatActivity.EXTRA_EQUIPMENT_NAME, eq.nombreComun)
+                putExtra(ChatActivity.EXTRA_SCOPED_TO_EQUIPMENT, true)
             }
             startActivity(intent)
         }

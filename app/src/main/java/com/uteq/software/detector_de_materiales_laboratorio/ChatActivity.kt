@@ -1,8 +1,13 @@
 package com.uteq.software.detector_de_materiales_laboratorio
 
 import android.os.Bundle
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.uteq.software.detector_de_materiales_laboratorio.data.KnowledgeBaseRepository
@@ -21,64 +26,142 @@ class ChatActivity : AppCompatActivity() {
 
     private var currentEquipmentId: String? = null
     private var currentEquipmentName: String? = null
+    private var scopedToEquipment: Boolean = false
+    private var baseInputBottomPadding = 0
+    private var baseHeaderTopPadding = 0
 
     companion object {
         const val EXTRA_EQUIPMENT_ID = "extra_equipment_id"
+        const val EXTRA_EQUIPMENT_CLASS = "extra_equipment_class"
         const val EXTRA_EQUIPMENT_NAME = "extra_equipment_name"
+        const val EXTRA_SCOPED_TO_EQUIPMENT = "extra_scoped_to_equipment"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        baseInputBottomPadding = binding.layoutInputDock.paddingBottom
+        baseHeaderTopPadding = binding.layoutChatHeader.paddingTop
+        setupKeyboardInsets()
 
         ragApiClient = RagApiClient(this)
         kbRepository = KnowledgeBaseRepository.getInstance(this)
 
+        scopedToEquipment = intent.getBooleanExtra(EXTRA_SCOPED_TO_EQUIPMENT, false)
         currentEquipmentId = intent.getStringExtra(EXTRA_EQUIPMENT_ID)
+            ?: intent.getStringExtra(EXTRA_EQUIPMENT_CLASS)
         currentEquipmentName = intent.getStringExtra(EXTRA_EQUIPMENT_NAME)
+
+        // Si viene desde la ficha, forzar modo equipo aunque falte el flag
+        if (!currentEquipmentId.isNullOrBlank() || !currentEquipmentName.isNullOrBlank()) {
+            scopedToEquipment = true
+            resolveEquipmentIdentity()
+        } else {
+            scopedToEquipment = false
+            currentEquipmentId = null
+            currentEquipmentName = null
+        }
 
         setupToolbar()
         setupRecyclerView()
         setupChips()
         setupListeners()
-
-        // Mensaje inicial de bienvenida
         sendInitialWelcomeMessage()
     }
 
-    private fun setupToolbar() {
-        binding.btnBack.setOnClickListener {
-            finish()
+    private fun resolveEquipmentIdentity() {
+        val eq = currentEquipmentId?.let {
+            kbRepository.getEquipmentById(it) ?: kbRepository.getEquipmentByClass(it)
+        } ?: currentEquipmentName?.let { name ->
+            kbRepository.getAllEquipments().firstOrNull {
+                it.nombreComun.equals(name, ignoreCase = true) ||
+                    it.nombreOficial.equals(name, ignoreCase = true)
+            }
         }
 
-        if (!currentEquipmentName.isNullOrEmpty()) {
-            binding.tvActiveEquipment.text = "🔬 Equipo Activo: $currentEquipmentName"
+        if (eq != null) {
+            currentEquipmentId = eq.id
+            currentEquipmentName = eq.nombreComun
+        }
+    }
+
+    private fun setupKeyboardInsets() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
+
+            binding.layoutChatHeader.updatePadding(top = baseHeaderTopPadding + systemBars.top)
+            binding.layoutInputDock.updatePadding(
+                bottom = baseInputBottomPadding + maxOf(ime.bottom, systemBars.bottom)
+            )
+
+            if (ime.bottom > 0 && chatAdapter.itemCount > 0) {
+                binding.rvChatMessages.post {
+                    binding.rvChatMessages.scrollToPosition(chatAdapter.itemCount - 1)
+                }
+            }
+            insets
+        }
+        ViewCompat.requestApplyInsets(binding.root)
+    }
+
+    private fun setupToolbar() {
+        binding.btnBack.setOnClickListener { finish() }
+
+        if (scopedToEquipment && !currentEquipmentName.isNullOrEmpty()) {
+            binding.tvActiveEquipment.text = "Equipo activo: $currentEquipmentName"
+            binding.layoutSelectedChip.visibility = View.VISIBLE
+            binding.etChatMessage.hint = "Pregunta solo sobre este equipo..."
         } else {
-            binding.tvActiveEquipment.text = "🔬 Laboratorio de Bromatología UTEQ (General)"
+            binding.tvActiveEquipment.text = "Modo general • Laboratorio de Bromatología UTEQ"
+            binding.layoutSelectedChip.visibility = View.VISIBLE
+            binding.etChatMessage.hint = "Consulta general del laboratorio..."
         }
     }
 
     private fun setupRecyclerView() {
-        val layoutManager = LinearLayoutManager(this).apply {
+        binding.rvChatMessages.layoutManager = LinearLayoutManager(this).apply {
             stackFromEnd = true
         }
-        binding.rvChatMessages.layoutManager = layoutManager
         binding.rvChatMessages.adapter = chatAdapter
     }
 
     private fun setupChips() {
-        binding.chipPPE.setOnClickListener {
-            sendMessage("¿Qué Elementos de Protección Personal (EPP) necesito para operar este equipo?")
-        }
-        binding.chipProcedure.setOnClickListener {
-            sendMessage("¿Cuál es el procedimiento operativo estándar paso a paso?")
-        }
-        binding.chipPractices.setOnClickListener {
-            sendMessage("¿Qué prácticas académicas de la UTEQ utilizan este equipo?")
-        }
-        binding.chipRisks.setOnClickListener {
-            sendMessage("¿Cuáles son los riesgos asociados y normas de bioseguridad?")
+        if (scopedToEquipment) {
+            binding.chipPPE.setOnClickListener {
+                sendMessage("¿Qué Elementos de Protección Personal (EPP) necesito para operar este equipo?")
+            }
+            binding.chipProcedure.setOnClickListener {
+                sendMessage("¿Cuál es el procedimiento operativo estándar paso a paso de este equipo?")
+            }
+            binding.chipPractices.setOnClickListener {
+                sendMessage("¿Qué prácticas académicas de la UTEQ utilizan específicamente este equipo?")
+            }
+            binding.chipRisks.setOnClickListener {
+                sendMessage("¿Cuáles son los riesgos asociados y normas de bioseguridad de este equipo?")
+            }
+        } else {
+            binding.chipPPE.text = "EPP general de laboratorio"
+            binding.chipProcedure.text = "Normas de bioseguridad"
+            binding.chipPractices.text = "Prácticas UTEQ"
+            binding.chipRisks.text = "Consultas generales"
+
+            binding.chipPPE.setOnClickListener {
+                sendMessage("¿Cuáles son los EPP generales obligatorios en el Laboratorio de Bromatología UTEQ?")
+            }
+            binding.chipProcedure.setOnClickListener {
+                sendMessage("¿Cuáles son las normas generales de bioseguridad del laboratorio de Bromatología?")
+            }
+            binding.chipPractices.setOnClickListener {
+                sendMessage("¿Qué prácticas académicas se realizan en el Laboratorio de Bromatología UTEQ?")
+            }
+            binding.chipRisks.setOnClickListener {
+                sendMessage("Dame una orientación general sobre seguridad y buenas prácticas en el laboratorio.")
+            }
         }
     }
 
@@ -103,23 +186,46 @@ class ChatActivity : AppCompatActivity() {
                 false
             }
         }
+
+        binding.etChatMessage.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus && chatAdapter.itemCount > 0) {
+                binding.rvChatMessages.postDelayed({
+                    binding.rvChatMessages.smoothScrollToPosition(chatAdapter.itemCount - 1)
+                }, 200)
+            }
+        }
     }
 
     private fun sendInitialWelcomeMessage() {
-        val eqName = currentEquipmentName ?: "los equipos del Laboratorio de Bromatología"
-        val welcomeText = "👋 ¡Hola! Soy el **Asistente Inteligente de Bromatología UTEQ**.\n\nEstoy conectado con la base de manuales, normas de seguridad y guías oficiales de práctica sobre **$eqName**.\n\n¿En qué te puedo ayudar hoy? Puedes seleccionar una de las opciones rápidas arriba o escribir tu consulta."
-        chatAdapter.addMessage(ChatMessage(text = welcomeText, isBot = true, equipmentId = currentEquipmentId))
+        val welcomeText = if (scopedToEquipment) {
+            val eqName = currentEquipmentName ?: "este equipo"
+            "Listo, estoy enfocado en **$eqName**.\n\n" +
+                "Pregúntame lo que necesites: prevención, EPP, cómo usarlo, riesgos, etc. Te respondo directo."
+        } else {
+            "Hola, soy el asistente general del lab de Bromatología UTEQ.\n\n" +
+                "Puedes preguntarme de bioseguridad o prácticas. Si quieres detalle de un equipo, detectalo y abre su ficha."
+        }
+        chatAdapter.addMessage(
+            ChatMessage(
+                text = welcomeText,
+                isBot = true,
+                equipmentId = if (scopedToEquipment) currentEquipmentId else null
+            )
+        )
     }
 
     private fun sendMessage(text: String) {
-        // Añadir mensaje del usuario
-        val userMsg = ChatMessage(text = text, isBot = false)
-        chatAdapter.addMessage(userMsg)
+        chatAdapter.addMessage(ChatMessage(text = text, isBot = false))
         binding.rvChatMessages.smoothScrollToPosition(chatAdapter.itemCount - 1)
 
-        // Consultar al backend RAG
         lifecycleScope.launch {
-            val responseMsg = ragApiClient.sendMessage(text, currentEquipmentId)
+            val equipmentIdForRequest = if (scopedToEquipment) currentEquipmentId else null
+            val responseMsg = ragApiClient.sendMessage(
+                userMessage = text,
+                equipmentId = equipmentIdForRequest,
+                scopedToEquipment = scopedToEquipment,
+                equipmentDisplayName = if (scopedToEquipment) currentEquipmentName else null
+            )
             chatAdapter.addMessage(responseMsg)
             binding.rvChatMessages.smoothScrollToPosition(chatAdapter.itemCount - 1)
         }

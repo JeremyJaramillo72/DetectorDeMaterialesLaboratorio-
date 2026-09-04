@@ -241,7 +241,7 @@ class OverlayView @JvmOverloads constructor(
                 val bottom = (rawBox.bottom * scaleFactor) + postScaleHeightOffset
                 val mappedBox = RectF(left, top, right, bottom)
 
-                if (mappedBox.contains(touchX, touchY)) {
+                if (mappedBox.contains(touchX, touchY) || expand(mappedBox, 48f).contains(touchX, touchY)) {
                     selectedDetection = detection
                     invalidate()
                     onDetectionSelectedListener?.invoke(detection)
@@ -250,5 +250,9 @@ class OverlayView @JvmOverloads constructor(
             }
         }
         return super.onTouchEvent(event)
+    }
+
+    private fun expand(rect: RectF, pad: Float): RectF {
+        return RectF(rect.left - pad, rect.top - pad, rect.right + pad, rect.bottom + pad)
     }
 }

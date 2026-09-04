@@ -92,75 +92,206 @@ class KnowledgeBaseRepository private constructor(private val context: Context) 
     }
 
     fun generateOfflineRagResponse(userQuery: String, equipmentId: String?): ChatMessage {
-        val targetEquipment = if (!equipmentId.isNullOrEmpty()) {
+        val eq = if (!equipmentId.isNullOrEmpty()) {
             getEquipmentById(equipmentId) ?: getEquipmentByClass(equipmentId)
         } else {
-            findBestMatch(userQuery)
-        } ?: getAllEquipments().firstOrNull()
+            null
+        }
 
-        if (targetEquipment == null) {
+        if (eq == null) {
             return ChatMessage(
-                text = "No se encontró información técnica para este equipo en la base de datos de Bromatología.",
+                text = "No encontré la ficha de ese equipo. Vuelve a detectarlo y abre Consultar sobre este equipo.",
                 isBot = true
             )
         }
 
         val q = userQuery.lowercase()
-        val sb = StringBuilder()
+            .replace('á', 'a')
+            .replace('é', 'e')
+            .replace('í', 'i')
+            .replace('ó', 'o')
+            .replace('ú', 'u')
 
-        sb.append("🔬 **${targetEquipment.nombreOficial}**\n")
-        sb.append("🏭 Fabricante: ${targetEquipment.fabricante} (${targetEquipment.modelo})\n\n")
-
-        val epp = targetEquipment.eppRequerido
-        val risks = targetEquipment.riesgosAsociados
-        val citations = targetEquipment.fuentesReferencias
-
-        when {
-            q.contains("epp") || q.contains("seguridad") || q.contains("proteccion") || q.contains("riesgo") || q.contains("peligro") -> {
-                sb.append("🦺 **Elementos de Protección Personal (EPP) Obligatorios:**\n")
-                epp.forEach { sb.append("• $it\n") }
-                sb.append("\n⚠️ **Riesgos Asociados y Bioseguridad:**\n")
-                risks.forEach { sb.append("• $it\n") }
-                if (targetEquipment.normasSeguridad.isNotEmpty()) {
-                    sb.append("\n📌 **Normas de Operación Segura:**\n")
-                    targetEquipment.normasSeguridad.forEach { sb.append("• $it\n") }
-                }
-            }
-            q.contains("paso") || q.contains("procedimiento") || q.contains("como usar") || q.contains("operar") || q.contains("practica") || q.contains("ensayo") -> {
-                sb.append("📋 **Procedimiento Operativo Paso a Paso:**\n")
-                targetEquipment.procedimientoOperativoEstandar.forEach { sb.append("$it\n") }
-                if (targetEquipment.guiasPracticaUteq.isNotEmpty()) {
-                    sb.append("\n🧪 **Guías de Práctica UTEQ:**\n")
-                    targetEquipment.guiasPracticaUteq.forEach { sb.append("• $it\n") }
-                }
-            }
-            q.contains("componente") || q.contains("parte") || q.contains("estructura") -> {
-                sb.append("⚙️ **Componentes Principales del Equipo:**\n")
-                targetEquipment.componentesPrincipales.forEach { sb.append("• $it\n") }
-            }
-            else -> {
-                sb.append("📌 **Función en Bromatología:**\n${targetEquipment.funcionPrincipal}\n\n")
-                sb.append("🔬 **Principio de Funcionamiento:**\n${targetEquipment.principioFuncionamiento}\n\n")
-                if (targetEquipment.guiasPracticaUteq.isNotEmpty()) {
-                    sb.append("🧪 **Prácticas UTEQ Relacionadas:**\n")
-                    targetEquipment.guiasPracticaUteq.forEach { sb.append("• $it\n") }
-                }
-            }
+        if (isOffTopicEquipmentQueryNormalized(q)) {
+            return ChatMessage(
+                text = "Solo puedo responder preguntas sobre el **${eq.nombreComun}**.\n\n" +
+                    "Pregúntame por prevención, EPP, procedimiento, riesgos, función o prácticas UTEQ de este equipo.",
+                isBot = true,
+                equipmentId = eq.id
+            )
         }
 
-        if (citations.isNotEmpty()) {
-            sb.append("\n📚 **Fuentes Oficiales Consultadas:**\n")
-            citations.forEach { sb.append("• $it\n") }
+        val text = when {
+            q.contains("epp") || q.contains("guante") || q.contains("gafa") || q.contains("mandil") ||
+                q.contains("proteccion personal") -> {
+                buildString {
+                    append("Para operar el **${eq.nombreComun}**, usa este EPP:\n")
+                    eq.eppRequerido.forEach { append("• $it\n") }
+                    if (eq.eppRequerido.isEmpty()) {
+                        append("• Mandil de laboratorio, gafas de seguridad y guantes de nitrilo.")
+                    }
+                }.trim()
+            }
+
+            q.contains("prevencion") || q.contains("precaucion") || q.contains("medida") ||
+                q.contains("cuidado") || q.contains("seguridad") || q.contains("riesgo") ||
+                q.contains("peligro") || q.contains("evitar") -> {
+                buildString {
+                    append("Al usar el **${eq.nombreComun}**, ten en cuenta estas medidas de prevención:\n\n")
+                    if (eq.riesgosAsociados.isNotEmpty()) {
+                        eq.riesgosAsociados.forEach { append("• $it\n") }
+                    }
+                    if (eq.normasSeguridad.isNotEmpty()) {
+                        append("\nTambién sigue estas normas:\n")
+                        eq.normasSeguridad.take(4).forEach { append("• $it\n") }
+                    }
+                    if (eq.eppRequerido.isNotEmpty()) {
+                        append("\nEPP recomendado: ")
+                        append(eq.eppRequerido.take(3).joinToString("; "))
+                        append(".")
+                    }
+                    if (eq.riesgosAsociados.isEmpty() && eq.normasSeguridad.isEmpty()) {
+                        append("• Verifica conexiones y nivel de agua antes de encender.\n")
+                        append("• No dejes el equipo sin supervisión.\n")
+                        append("• Usa EPP básico de laboratorio.")
+                    }
+                }.trim()
+            }
+
+            q.contains("paso") || q.contains("procedimiento") || q.contains("como usar") ||
+                q.contains("como se usa") || q.contains("operar") || q.contains("encender") -> {
+                buildString {
+                    append("Así se opera el **${eq.nombreComun}**, paso a paso:\n\n")
+                    if (eq.procedimientoOperativoEstandar.isNotEmpty()) {
+                        eq.procedimientoOperativoEstandar.forEach { append("$it\n") }
+                    } else {
+                        append("1. Revisa el estado del equipo y el EPP.\n")
+                        append("2. Prepara la muestra/ensayo según la práctica UTEQ.\n")
+                        append("3. Opera el equipo siguiendo el manual del fabricante.\n")
+                        append("4. Apaga y limpia al finalizar.")
+                    }
+                }.trim()
+            }
+
+            q.contains("practica") || q.contains("uteq") || q.contains("guia") -> {
+                buildString {
+                    append("Prácticas UTEQ relacionadas con el **${eq.nombreComun}**:\n")
+                    if (eq.guiasPracticaUteq.isNotEmpty()) {
+                        eq.guiasPracticaUteq.forEach { append("• $it\n") }
+                    } else {
+                        append("• Consulta la guía de prácticas del laboratorio de Bromatología.")
+                    }
+                }.trim()
+            }
+
+            q.contains("componente") || q.contains("parte") || q.contains("estructura") -> {
+                buildString {
+                    append("Los componentes principales del **${eq.nombreComun}** son:\n")
+                    eq.componentesPrincipales.forEach { append("• $it\n") }
+                }.trim()
+            }
+
+            q.contains("para que") || q.contains("que es") || q.contains("funcion") ||
+                q.contains("sirve") || q.contains("uso") -> {
+                "El **${eq.nombreComun}** sirve para esto:\n\n${eq.funcionPrincipal}\n\n" +
+                    "En resumen: ${eq.principioFuncionamiento.take(220)}"
+            }
+
+            else -> {
+                "Solo puedo responder preguntas sobre el **${eq.nombreComun}**.\n\n" +
+                    "Prueba con: prevención, EPP, procedimiento, riesgos, función o prácticas UTEQ."
+            }
         }
 
         return ChatMessage(
-            text = sb.toString().trim(),
+            text = text,
             isBot = true,
-            equipmentId = targetEquipment.id,
-            citations = citations,
-            eppRequired = epp,
-            risks = risks
+            equipmentId = eq.id,
+            citations = emptyList(),
+            eppRequired = if (q.contains("epp") || q.contains("prevencion") || q.contains("seguridad")) {
+                eq.eppRequerido
+            } else {
+                emptyList()
+            },
+            risks = if (q.contains("riesgo") || q.contains("prevencion") || q.contains("seguridad")) {
+                eq.riesgosAsociados
+            } else {
+                emptyList()
+            }
         )
+    }
+
+    fun isOffTopicEquipmentQuery(userQuery: String): Boolean {
+        val q = userQuery.lowercase()
+            .replace('á', 'a')
+            .replace('é', 'e')
+            .replace('í', 'i')
+            .replace('ó', 'o')
+            .replace('ú', 'u')
+        return isOffTopicEquipmentQueryNormalized(q)
+    }
+
+    private fun isOffTopicEquipmentQueryNormalized(q: String): Boolean {
+        val onTopicKeywords = listOf(
+            "equipo", "bomba", "vacio", "kjeldahl", "fibra", "destil", "phmetro",
+            "estufa", "molino", "refract", "calorimetr", "campana", "cabina", "viscos", "microscop",
+            "epp", "guante", "gafa", "mandil", "proteccion", "prevencion", "precaucion",
+            "cuidado", "seguridad", "riesgo", "peligro", "evitar", "paso", "procedimiento",
+            "operar", "encender", "funcion", "sirve", "principio", "componente",
+            "practica", "uteq", "guia", "norma", "bioseguridad", "muestra", "laboratorio",
+            "filtracion", "secado", "reactivo", "vapor", "mantenimiento", "limpiar", "apagar",
+            "como se usa", "como usar", "para que", "que es", "medida", "precauciones"
+        )
+        if (onTopicKeywords.any { q.contains(it) }) return false
+
+        val offTopicPatterns = listOf(
+            Regex("""\d+\s*[x×*+\-/]\s*\d+"""),
+            Regex("""\bcuanto\s+es\b"""),
+            Regex("""\bcuanto\s+vale\b"""),
+            Regex("""\bsuma\b|\bresta\b|\bmultiplic"""),
+            Regex("""\bclima\b|\bchiste\b|\bmusica\b|\bfutbol\b|\breceta\b|\btraduc""")
+        )
+        if (offTopicPatterns.any { it.containsMatchIn(q) }) return true
+
+        val words = q.split(Regex("\\s+")).filter { it.length > 1 }
+        return words.isNotEmpty() && onTopicKeywords.none { q.contains(it) }
+    }
+
+    fun generateOfflineGeneralResponse(userQuery: String): ChatMessage {
+        val q = userQuery.lowercase()
+            .replace('á', 'a')
+            .replace('é', 'e')
+            .replace('í', 'i')
+            .replace('ó', 'o')
+            .replace('ú', 'u')
+
+        val matched = findBestMatch(userQuery)
+        if (matched != null) {
+            return ChatMessage(
+                text = "Eso suena a **${matched.nombreComun}**. En modo general no te suelto toda la ficha.\n\n" +
+                    "Detectalo con la cámara y entra a **Ficha Técnica → Consultar sobre este equipo** para preguntarme con detalle.",
+                isBot = true
+            )
+        }
+
+        val text = when {
+            q.contains("epp") || q.contains("proteccion") || q.contains("guante") ->
+                "En el laboratorio de Bromatología UTEQ el EPP básico suele incluir mandil, gafas de seguridad, " +
+                    "guantes de nitrilo y zapato cerrado. Si vas a usar un equipo concreto, " +
+                    "abre su ficha para ver el EPP específico."
+
+            q.contains("seguridad") || q.contains("bioseguridad") || q.contains("riesgo") || q.contains("prevencion") ->
+                "Medidas generales: no comer ni beber en el lab, usar EPP, etiquetar reactivos, " +
+                    "conocer salidas de emergencia y nunca operar un equipo sin inducción. " +
+                    "Si me dices el equipo, te doy prevenciones puntuales desde su ficha."
+
+            else ->
+                "Puedo orientarte de forma general sobre bioseguridad, EPP y prácticas UTEQ.\n\n" +
+                    "Si necesitas detalle de un equipo (prevención, pasos, riesgos), detectalo en cámara " +
+                    "y usa **Consultar sobre este equipo**."
+        }
+
+        return ChatMessage(text = text, isBot = true)
     }
 
     private fun findBestMatch(query: String): EquipmentData? {

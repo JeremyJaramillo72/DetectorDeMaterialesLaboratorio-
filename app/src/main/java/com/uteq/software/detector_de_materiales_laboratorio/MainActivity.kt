@@ -21,6 +21,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import com.uteq.software.detector_de_materiales_laboratorio.data.KnowledgeBaseRepository
 import com.uteq.software.detector_de_materiales_laboratorio.databinding.ActivityMainBinding
+import com.uteq.software.detector_de_materiales_laboratorio.ml.DetectionTracker
 import com.uteq.software.detector_de_materiales_laboratorio.ml.YoloDetector
 import com.uteq.software.detector_de_materiales_laboratorio.model.DetectionResult
 import com.uteq.software.detector_de_materiales_laboratorio.ui.EquipmentBottomSheetDialog
@@ -35,6 +36,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var yoloDetector: YoloDetector
     private lateinit var kbRepository: KnowledgeBaseRepository
+    private val detectionTracker = DetectionTracker(
+        holdMs = 1600L,
+        switchVotesNeeded = 3,
+        classSwitchMargin = 0.12f
+    )
 
     private var latestDetections: List<DetectionResult> = emptyList()
     private val isProcessing = AtomicBoolean(false)
@@ -85,14 +91,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.btnOpenChat.setOnClickListener {
-            val topDetection = latestDetections.maxByOrNull { it.confidence }
-            val intent = Intent(this, ChatActivity::class.java).apply {
-                if (topDetection != null) {
-                    putExtra(ChatActivity.EXTRA_EQUIPMENT_ID, topDetection.label)
-                    putExtra(ChatActivity.EXTRA_EQUIPMENT_NAME, topDetection.displayName)
-                }
-            }
-            startActivity(intent)
+            // Asistente IA general: sin equipo forzado
+            startActivity(Intent(this, ChatActivity::class.java))
         }
 
         binding.btnQuickDetails.setOnClickListener {
@@ -112,7 +112,7 @@ class MainActivity : AppCompatActivity() {
     private fun updateModelBadge() {
         if (yoloDetector.isModelLoaded()) {
             val modelName = yoloDetector.getLoadedModelName() ?: "YOLO"
-            binding.tvModelBadge.text = "$modelName • ${yoloDetector.inputSize}px • Activo"
+            binding.tvModelBadge.text = "$modelName • Activo"
             binding.tvModelBadge.setTextColor(ContextCompat.getColor(this, R.color.uteq_accent))
         } else {
             binding.tvModelBadge.text = "Sin modelo .tflite"
@@ -171,24 +171,19 @@ class MainActivity : AppCompatActivity() {
                 }
 
             imageAnalyzer = analyzer
-            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
             try {
                 cameraProvider.unbindAll()
                 cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview, analyzer
+                    this, CameraSelector.DEFAULT_BACK_CAMERA, preview, analyzer
                 )
             } catch (exc: Exception) {
-                Log.e(TAG, "Fallo al vincular la cámara con el ciclo de vida", exc)
+                Log.e(TAG, "Fallo al vincular la cámara", exc)
                 runOnUiThread {
-                    Toast.makeText(
-                        this,
-                        "No se pudo iniciar la cámara: ${exc.message}",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    Toast.makeText(this, "No se pudo iniciar la cámara: ${exc.message}", Toast.LENGTH_LONG)
+                        .show()
                 }
             }
-
         }, ContextCompat.getMainExecutor(this))
     }
 
@@ -211,8 +206,14 @@ class MainActivity : AppCompatActivity() {
             rawBitmap = imageProxy.toBitmap()
             bitmap = rotateBitmapIfNeeded(rawBitmap, imageProxy.imageInfo.rotationDegrees)
 
-            val detections = yoloDetector.detect(bitmap)
-            latestDetections = detections
+            val rawDetections = yoloDetector.detect(bitmap)
+            val stable = detectionTracker.update(
+                incoming = rawDetections,
+                frameWidth = bitmap.width,
+                frameHeight = bitmap.height,
+                nowMs = now
+            )
+            latestDetections = stable
             lastInferenceTimeMs = now
 
             val frameWidth = bitmap.width
@@ -220,24 +221,17 @@ class MainActivity : AppCompatActivity() {
 
             runOnUiThread {
                 if (!isFinishing && !isDestroyed) {
-                    binding.overlayView.setResults(detections, frameWidth, frameHeight)
-                    updateHUD(detections)
+                    binding.overlayView.setResults(stable, frameWidth, frameHeight)
+                    updateHUD(stable)
                 }
             }
         } catch (oom: OutOfMemoryError) {
-            Log.e(TAG, "Memoria agotada procesando frame de cámara", oom)
+            Log.e(TAG, "Memoria agotada procesando frame", oom)
             System.gc()
-            runOnUiThread {
-                if (!isFinishing && !isDestroyed) {
-                    binding.tvStatus.text = "Memoria baja: reduce resolución o cierra otras apps"
-                }
-            }
         } catch (e: Exception) {
             Log.e(TAG, "Error en processImageProxy: ${e.message}", e)
         } finally {
-            if (bitmap != null && bitmap !== rawBitmap) {
-                bitmap.recycle()
-            }
+            if (bitmap != null && bitmap !== rawBitmap) bitmap.recycle()
             rawBitmap?.recycle()
             isProcessing.set(false)
             imageProxy.close()
@@ -248,28 +242,26 @@ class MainActivity : AppCompatActivity() {
         when {
             !yoloDetector.isModelLoaded() -> {
                 binding.tvStatus.text = "Falta el modelo: copia yolo11_bromatologia.tflite a assets/"
-                binding.tvDockEquipmentName.text = "⚠️ Modelo YOLO no cargado"
+                binding.tvDockEquipmentName.text = "Modelo YOLO no cargado"
                 binding.tvDockConfidence.text = "Sin modelo"
                 binding.tvDockConfidence.setBackgroundResource(R.drawable.bg_chip_epp)
                 binding.tvDockConfidence.setTextColor(ContextCompat.getColor(this, R.color.badge_epp))
             }
             detections.isEmpty() -> {
                 binding.tvStatus.text = "Enfoca un equipo de laboratorio dentro del recuadro"
-                binding.tvDockEquipmentName.text = "🔍 Escaneando área de laboratorio..."
+                binding.tvDockEquipmentName.text = "Escaneando área de laboratorio..."
                 binding.tvDockConfidence.text = "En espera"
                 binding.tvDockConfidence.setBackgroundResource(R.drawable.bg_badge_live)
                 binding.tvDockConfidence.setTextColor(ContextCompat.getColor(this, R.color.neon_cyan))
             }
             else -> {
-                val topDetection = detections.maxByOrNull { it.confidence }
-                if (topDetection != null) {
-                    val confPercent = (topDetection.confidence * 100).toInt()
-                    binding.tvStatus.text = "✅ Equipo detectado • Toca el recuadro para ver detalles"
-                    binding.tvDockEquipmentName.text = "🎯 ${topDetection.displayName}"
-                    binding.tvDockConfidence.text = "$confPercent% match"
-                    binding.tvDockConfidence.setBackgroundResource(R.drawable.bg_badge_model)
-                    binding.tvDockConfidence.setTextColor(ContextCompat.getColor(this, R.color.neon_emerald))
-                }
+                val top = detections.maxByOrNull { it.confidence } ?: return
+                val confPercent = (top.confidence * 100).toInt()
+                binding.tvStatus.text = "Equipo detectado • Toca el recuadro para ver detalles"
+                binding.tvDockEquipmentName.text = top.displayName
+                binding.tvDockConfidence.text = "$confPercent% match"
+                binding.tvDockConfidence.setBackgroundResource(R.drawable.bg_badge_model)
+                binding.tvDockConfidence.setTextColor(ContextCompat.getColor(this, R.color.neon_emerald))
             }
         }
     }
@@ -297,6 +289,7 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         imageAnalyzer?.clearAnalyzer()
         imageAnalyzer = null
+        detectionTracker.clear()
         super.onDestroy()
         cameraExecutor.shutdown()
         yoloDetector.close()
@@ -306,6 +299,7 @@ class MainActivity : AppCompatActivity() {
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
         private const val ANALYSIS_WIDTH = 640
         private const val ANALYSIS_HEIGHT = 480
-        private const val INFERENCE_INTERVAL_MS = 300L
+        /** ~6–7 FPS de análisis: más rápido sin saturar el teléfono */
+        private const val INFERENCE_INTERVAL_MS = 150L
     }
 }

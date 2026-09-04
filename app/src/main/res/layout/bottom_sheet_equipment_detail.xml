@@ -188,7 +188,7 @@
             android:layout_height="52dp"
             android:layout_marginTop="20dp"
             android:background="@drawable/bg_btn_chat"
-            android:text="💬 Consultar Asistente RAG (Gemini)"
+            android:text="💬 Consultar sobre este equipo (RAG)"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="14sp"

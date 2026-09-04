@@ -3,7 +3,9 @@ package com.uteq.software.detector_de_materiales_laboratorio.network
 import android.content.Context
 import android.util.Log
 import com.google.gson.Gson
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import com.uteq.software.detector_de_materiales_laboratorio.BuildConfig
 import com.uteq.software.detector_de_materiales_laboratorio.data.KnowledgeBaseRepository
 import com.uteq.software.detector_de_materiales_laboratorio.model.ChatMessage
 import com.uteq.software.detector_de_materiales_laboratorio.model.EquipmentData
@@ -27,47 +29,67 @@ class RagApiClient(private val context: Context) {
     private val gson = Gson()
     private val jsonMediaType = "application/json; charset=utf-8".toMediaType()
 
-    // Configuración oficial de Google Gemini 2.5 Flash (leída de local.properties para seguridad)
-    private val geminiApiKey = com.uteq.software.detector_de_materiales_laboratorio.BuildConfig.GEMINI_API_KEY
+    private val geminiApiKey = BuildConfig.GEMINI_API_KEY
     private val geminiModel = "gemini-2.5-flash"
     private val geminiApiUrl: String
         get() = "https://generativelanguage.googleapis.com/v1beta/models/$geminiModel:generateContent?key=$geminiApiKey"
 
-    // Dirección del backend local (opcional)
     var serverBaseUrl: String = "http://10.0.2.2:8000"
 
-    suspend fun sendMessage(userMessage: String, equipmentId: String?): ChatMessage = withContext(Dispatchers.IO) {
+    suspend fun sendMessage(
+        userMessage: String,
+        equipmentId: String?,
+        scopedToEquipment: Boolean = !equipmentId.isNullOrBlank(),
+        equipmentDisplayName: String? = null
+    ): ChatMessage = withContext(Dispatchers.IO) {
         val kbRepo = KnowledgeBaseRepository.getInstance(context)
-        val eq = if (!equipmentId.isNullOrEmpty()) {
+        val eq = if (scopedToEquipment && !equipmentId.isNullOrEmpty()) {
             kbRepo.getEquipmentById(equipmentId) ?: kbRepo.getEquipmentByClass(equipmentId)
         } else {
-            kbRepo.getAllEquipments().firstOrNull()
+            null
         }
 
-        // 1. Intento Directo con Google Gemini 2.5 Flash (RAG en la nube sin necesidad de PC)
+        // Preguntas fuera de tema en modo equipo: rechazar antes de llamar a Gemini
+        if (scopedToEquipment) {
+            val eqName = eq?.nombreComun ?: equipmentDisplayName ?: "el equipo detectado"
+            if (kbRepo.isOffTopicEquipmentQuery(userMessage)) {
+                return@withContext ChatMessage(
+                    text = "Solo puedo responder preguntas sobre el **$eqName**.\n\n" +
+                        "Pregúntame por prevención, EPP, procedimiento, riesgos, función o prácticas UTEQ de este equipo.",
+                    isBot = true,
+                    equipmentId = eq?.id ?: equipmentId
+                )
+            }
+        }
+
         if (geminiApiKey.isNotBlank()) {
             try {
-                val geminiResponse = callGeminiDirectly(userMessage, eq)
+                val geminiResponse = callGeminiDirectly(
+                    userMessage = userMessage,
+                    eq = eq,
+                    scopedToEquipment = scopedToEquipment,
+                    equipmentDisplayName = equipmentDisplayName ?: eq?.nombreComun
+                )
                 if (!geminiResponse.isNullOrBlank()) {
                     return@withContext ChatMessage(
                         text = geminiResponse,
                         isBot = true,
-                        equipmentId = eq?.id ?: equipmentId,
+                        equipmentId = if (scopedToEquipment) eq?.id ?: equipmentId else null,
                         citations = eq?.fuentesReferencias ?: emptyList(),
                         eppRequired = eq?.eppRequerido ?: emptyList(),
                         risks = eq?.riesgosAsociados ?: emptyList()
                     )
                 }
             } catch (e: Exception) {
-                Log.w(TAG, "Fallo al consultar Gemini directamente: ${e.message}. Probando servidor local...")
+                Log.w(TAG, "Fallo Gemini: ${e.message}. Probando servidor local...")
             }
         }
 
-        // 2. Intento con Backend Python Local (si está corriendo)
         try {
             val payload = mapOf(
                 "message" to userMessage,
-                "equipment_id" to equipmentId
+                "equipment_id" to if (scopedToEquipment) equipmentId else null,
+                "scoped" to scopedToEquipment
             )
             val requestBody = gson.toJson(payload).toRequestBody(jsonMediaType)
             val request = Request.Builder()
@@ -77,12 +99,16 @@ class RagApiClient(private val context: Context) {
 
             client.newCall(request).execute().use { response ->
                 if (response.isSuccessful) {
-                    val bodyString = response.body?.string() ?: ""
+                    val bodyString = response.body?.string().orEmpty()
                     val apiResponse = gson.fromJson(bodyString, RagChatApiResponse::class.java)
                     return@withContext ChatMessage(
                         text = apiResponse.response,
                         isBot = true,
-                        equipmentId = apiResponse.equipmentId ?: equipmentId,
+                        equipmentId = if (scopedToEquipment) {
+                            apiResponse.equipmentId ?: equipmentId
+                        } else {
+                            null
+                        },
                         citations = apiResponse.citations ?: emptyList(),
                         eppRequired = apiResponse.eppRequired ?: emptyList(),
                         risks = apiResponse.risks ?: emptyList()
@@ -90,53 +116,32 @@ class RagApiClient(private val context: Context) {
                 }
             }
         } catch (e: Exception) {
-            Log.w(TAG, "Backend local no disponible: ${e.message}. Activando RAG Offline local...")
+            Log.w(TAG, "Backend local no disponible: ${e.message}")
         }
 
-        // 3. Fallback Offline Local Garantizado (100% sin internet)
-        return@withContext kbRepo.generateOfflineRagResponse(userMessage, equipmentId)
+        return@withContext if (scopedToEquipment) {
+            kbRepo.generateOfflineRagResponse(userMessage, equipmentId)
+        } else {
+            kbRepo.generateOfflineGeneralResponse(userMessage)
+        }
     }
 
-    private fun callGeminiDirectly(userMessage: String, eq: EquipmentData?): String? {
-        val contextInfo = if (eq != null) {
-            """
-            DATOS TÉCNICOS DEL EQUIPO:
-            - Nombre Oficial: ${eq.nombreOficial} (${eq.nombreComun})
-            - Fabricante y Modelo: ${eq.fabricante} - ${eq.modelo}
-            - Ubicación en el Laboratorio: ${eq.ubicacion}
-            - Función Principal: ${eq.funcionPrincipal}
-            - Principio de Funcionamiento: ${eq.principioFuncionamiento}
-            - Componentes: ${eq.componentesPrincipales.joinToString(", ")}
-            - Procedimiento Operativo: ${eq.procedimientoOperativoEstandar.joinToString(" | ")}
-            - EPP Obligatorio: ${eq.eppRequerido.joinToString(", ")}
-            - Riesgos y Normas de Bioseguridad: ${eq.riesgosAsociados.joinToString(", ")}
-            - Prácticas UTEQ: ${eq.guiasPracticaUteq.joinToString("; ")}
-            - Normas Oficiales: ${eq.fuentesReferencias.joinToString("; ")}
-            """.trimIndent()
+    private fun callGeminiDirectly(
+        userMessage: String,
+        eq: EquipmentData?,
+        scopedToEquipment: Boolean,
+        equipmentDisplayName: String?
+    ): String? {
+        val systemPrompt = if (scopedToEquipment) {
+            buildScopedPrompt(userMessage, eq, equipmentDisplayName)
         } else {
-            "Laboratorio de Bromatología - UTEQ (Información General de Alimentos y Seguridad)."
+            buildGeneralPrompt(userMessage)
         }
 
-        val systemPrompt = """
-            Eres el Asistente Experto en Bromatología y Bioseguridad del Laboratorio de la Universidad Técnica Estatal de Quevedo (UTEQ).
-            Responde la siguiente consulta basándote en la información técnica oficial del equipo:
-            
-            $contextInfo
-            
-            PREGUNTA DEL ESTUDIANTE:
-            $userMessage
-            
-            INSTRUCCIONES DE RESPUESTA:
-            1. Sé claro, profesional y académicamente riguroso.
-            2. Si preguntan por procedimiento, explica los pasos en orden.
-            3. Si preguntan por seguridad o riesgos, resalta el EPP obligatorio y precauciones críticas.
-            4. Menciona las normas técnicas oficiales (AOAC, INEN, ISO) relevantes.
-        """.trimIndent()
-
         val jsonPayload = JsonObject().apply {
-            val contentsArray = com.google.gson.JsonArray()
+            val contentsArray = JsonArray()
             val contentObj = JsonObject()
-            val partsArray = com.google.gson.JsonArray()
+            val partsArray = JsonArray()
             val partObj = JsonObject()
             partObj.addProperty("text", systemPrompt)
             partsArray.add(partObj)
@@ -157,8 +162,7 @@ class RagApiClient(private val context: Context) {
                 val rootJson = gson.fromJson(jsonString, JsonObject::class.java)
                 val candidates = rootJson.getAsJsonArray("candidates")
                 if (candidates != null && candidates.size() > 0) {
-                    val candidate = candidates[0].asJsonObject
-                    val content = candidate.getAsJsonObject("content")
+                    val content = candidates[0].asJsonObject.getAsJsonObject("content")
                     val parts = content?.getAsJsonArray("parts")
                     if (parts != null && parts.size() > 0) {
                         return parts[0].asJsonObject.get("text")?.asString
@@ -169,6 +173,74 @@ class RagApiClient(private val context: Context) {
             }
         }
         return null
+    }
+
+    private fun buildScopedPrompt(
+        userMessage: String,
+        eq: EquipmentData?,
+        equipmentDisplayName: String?
+    ): String {
+        val eqName = eq?.nombreComun ?: equipmentDisplayName ?: "el equipo detectado"
+        val contextInfo = if (eq != null) {
+            """
+            CONTEXTO INTERNO (usa solo lo necesario para responder; NO lo copies completo):
+            Equipo: ${eq.nombreOficial} (${eq.nombreComun})
+            Fabricante/Modelo: ${eq.fabricante} - ${eq.modelo}
+            Función: ${eq.funcionPrincipal}
+            Principio: ${eq.principioFuncionamiento}
+            Componentes: ${eq.componentesPrincipales.joinToString(", ")}
+            Procedimiento: ${eq.procedimientoOperativoEstandar.joinToString(" | ")}
+            EPP: ${eq.eppRequerido.joinToString(", ")}
+            Riesgos/prevención: ${eq.riesgosAsociados.joinToString(", ")}
+            Normas de seguridad: ${eq.normasSeguridad.joinToString(", ")}
+            Prácticas UTEQ: ${eq.guiasPracticaUteq.joinToString("; ")}
+            Fuentes: ${eq.fuentesReferencias.joinToString("; ")}
+            """.trimIndent()
+        } else {
+            "Equipo objetivo: $eqName."
+        }
+
+        return """
+            Eres un asistente de chat del Laboratorio de Bromatología UTEQ.
+            Habla como una IA conversacional (tipo WhatsApp/ChatGPT): natural, breve y útil.
+
+            Estás ayudando SOLO con: "$eqName".
+
+            $contextInfo
+
+            Pregunta del estudiante:
+            "$userMessage"
+
+            REGLAS DE RESPUESTA (obligatorias):
+            1. Contesta DIRECTAMENTE la pregunta. Nada más.
+            2. NO lances la ficha técnica completa.
+            3. NO listes fabricante, función, principio, prácticas y fuentes si no te lo pidieron.
+            4. Si preguntan prevención/seguridad/EPP/riesgos: responde con medidas concretas en viñetas cortas.
+            5. Si preguntan procedimiento: solo los pasos.
+            6. Si preguntan qué es/para qué sirve: 2-4 oraciones máximo.
+            7. Tono cercano y claro para estudiantes. Español neutro.
+            8. Si la pregunta NO es sobre este equipo (mates, chistes, clima, cultura general, otro aparato, etc.),
+               responde EXACTAMENTE en este estilo:
+               "Solo puedo responder preguntas sobre el $eqName. Pregúntame por prevención, EPP, procedimiento, riesgos, función o prácticas UTEQ de este equipo."
+               No resuelvas la pregunta fuera de tema.
+            9. Máximo ~120-180 palabras, salvo que pidan el procedimiento completo.
+        """.trimIndent()
+    }
+
+    private fun buildGeneralPrompt(userMessage: String): String {
+        return """
+            Eres un asistente de chat del Laboratorio de Bromatología UTEQ.
+            Habla como una IA normal: conversacional, breve y directa.
+
+            Pregunta:
+            "$userMessage"
+
+            REGLAS:
+            1. Responde solo lo preguntado (bioseguridad general, EPP, prácticas, orientación).
+            2. No sueltes un manual completo.
+            3. Si piden un equipo concreto, indícales detectarlo en cámara y abrir "Consultar sobre este equipo".
+            4. Máximo ~120-180 palabras. Español claro.
+        """.trimIndent()
     }
 
     private data class RagChatApiResponse(
