@@ -40,7 +40,8 @@ class RagApiClient(private val context: Context) {
         userMessage: String,
         equipmentId: String?,
         scopedToEquipment: Boolean = !equipmentId.isNullOrBlank(),
-        equipmentDisplayName: String? = null
+        equipmentDisplayName: String? = null,
+        history: List<ChatMessage> = emptyList()
     ): ChatMessage = withContext(Dispatchers.IO) {
         val kbRepo = KnowledgeBaseRepository.getInstance(context)
         val scopedEq = if (scopedToEquipment && !equipmentId.isNullOrEmpty()) {
@@ -64,7 +65,15 @@ class RagApiClient(private val context: Context) {
                         isBot = true
                     )
                 }
-                KnowledgeBaseRepository.EquipmentQueryResult.GeneralTopic -> Unit
+                KnowledgeBaseRepository.EquipmentQueryResult.GeneralTopic -> {
+                    // El mensaje actual no nombra ningún equipo — pero puede ser
+                    // una referencia a uno mencionado antes ("¿y para qué sirve?").
+                    // Se busca en los turnos de USUARIO recientes, del más nuevo
+                    // al más viejo, y se usa el primero que matchee.
+                    generalMatchedEq = history.asReversed()
+                        .filter { !it.isBot }
+                        .firstNotNullOfOrNull { kbRepo.findBestMatch(it.text) }
+                }
             }
         }
 
@@ -90,7 +99,8 @@ class RagApiClient(private val context: Context) {
                     eq = eq,
                     scopedToEquipment = scopedToEquipment,
                     equipmentDisplayName = equipmentDisplayName ?: eq?.nombreComun,
-                    catalogSummary = if (!scopedToEquipment) kbRepo.buildEquipmentCatalogSummary() else null
+                    catalogSummary = if (!scopedToEquipment) kbRepo.buildEquipmentCatalogSummary() else null,
+                    history = history
                 )
                 if (!geminiResponse.isNullOrBlank()) {
                     return@withContext ChatMessage(
@@ -153,12 +163,13 @@ class RagApiClient(private val context: Context) {
         eq: EquipmentData?,
         scopedToEquipment: Boolean,
         equipmentDisplayName: String?,
-        catalogSummary: String? = null
+        catalogSummary: String? = null,
+        history: List<ChatMessage> = emptyList()
     ): String? {
         val systemPrompt = if (scopedToEquipment) {
-            buildScopedPrompt(userMessage, eq, equipmentDisplayName)
+            buildScopedPrompt(userMessage, eq, equipmentDisplayName, history)
         } else {
-            buildGeneralPrompt(userMessage, eq, catalogSummary)
+            buildGeneralPrompt(userMessage, eq, catalogSummary, history)
         }
 
         val jsonPayload = JsonObject().apply {
@@ -205,10 +216,30 @@ class RagApiClient(private val context: Context) {
         return null
     }
 
+    /**
+     * Últimos turnos de la conversación, para que el modelo resuelva
+     * referencias como "¿y para qué sirve?" sin que el usuario repita el
+     * nombre del equipo. Se limita a los últimos 6 mensajes (3 intercambios)
+     * para no inflar el prompt. Vacío si no hay historial (primer mensaje).
+     */
+    private fun formatHistory(history: List<ChatMessage>): String {
+        if (history.isEmpty()) return ""
+        val recent = history.takeLast(6)
+        val turns = recent.joinToString("\n") { msg ->
+            "${if (msg.isBot) "Asistente" else "Usuario"}: ${msg.text}"
+        }
+        return """
+
+            CONVERSACIÓN RECIENTE (para entender referencias como "eso", "y para qué sirve", etc.):
+            $turns
+        """.trimIndent()
+    }
+
     private fun buildScopedPrompt(
         userMessage: String,
         eq: EquipmentData?,
-        equipmentDisplayName: String?
+        equipmentDisplayName: String?,
+        history: List<ChatMessage> = emptyList()
     ): String {
         val eqName = eq?.nombreComun ?: equipmentDisplayName ?: "el equipo detectado"
         val contextInfo = if (eq != null) {
@@ -236,25 +267,30 @@ class RagApiClient(private val context: Context) {
 
             Equipo permitido: "$eqName"
             $contextInfo
+            ${formatHistory(history)}
 
             Pregunta: "$userMessage"
 
             REGLAS:
-            1. Contesta solo lo preguntado, completo (nunca cortes a mitad de frase).
-            2. Sin relleno, sin ficha técnica completa, sin listar todo.
-            3. Función/qué es: 1-3 oraciones cortas y cerradas.
-            4. EPP/riesgos/prevención: viñetas concretas.
-            5. Procedimiento: solo pasos numerados.
-            6. Si la pregunta no es de este equipo, di solo:
+            1. Si la pregunta usa una referencia a algo dicho antes ("eso", "y para qué sirve",
+               "cómo se usa"), resuélvela con la CONVERSACIÓN RECIENTE de arriba — no pidas
+               que se repita lo ya dicho.
+            2. Contesta solo lo preguntado, completo (nunca cortes a mitad de frase).
+            3. Sin relleno, sin ficha técnica completa, sin listar todo.
+            4. Función/qué es: 1-3 oraciones cortas y cerradas.
+            5. EPP/riesgos/prevención: viñetas concretas.
+            6. Procedimiento: solo pasos numerados.
+            7. Si la pregunta no es de este equipo, di solo:
                "Solo puedo responder preguntas sobre el $eqName."
-            7. Máximo ~80-120 palabras. Termina siempre la última oración.
+            8. Máximo ~80-120 palabras. Termina siempre la última oración.
         """.trimIndent()
     }
 
     private fun buildGeneralPrompt(
         userMessage: String,
         matchedEquipment: EquipmentData?,
-        catalogSummary: String?
+        catalogSummary: String?,
+        history: List<ChatMessage> = emptyList()
     ): String {
         val matchedBlock = if (matchedEquipment != null) {
             """
@@ -281,17 +317,22 @@ class RagApiClient(private val context: Context) {
             ${catalogSummary ?: "(catálogo no disponible)"}
 
             $matchedBlock
+            ${formatHistory(history)}
 
             Pregunta: "$userMessage"
 
             REGLAS:
-            1. Responde DIRECTO AL GRANO y completa las oraciones.
-            2. Si preguntan por un equipo del catálogo, responde con su información (función, EPP, riesgos, etc. según lo pedido).
-            3. Si preguntan por un equipo que NO está en el catálogo, responde exactamente:
+            1. Si la pregunta usa una referencia a algo dicho antes ("eso", "y para qué sirve",
+               "cómo se usa") y no nombra un equipo nuevo, asume que sigue hablando del equipo de
+               la CONVERSACIÓN RECIENTE (o del EQUIPO IDENTIFICADO de arriba) — no pidas que se
+               repita el nombre.
+            2. Responde DIRECTO AL GRANO y completa las oraciones.
+            3. Si preguntan por un equipo del catálogo, responde con su información (función, EPP, riesgos, etc. según lo pedido).
+            4. Si preguntan por un equipo que NO está en el catálogo, responde exactamente:
                "Ese equipo no está registrado en el sistema del Laboratorio de Bromatología UTEQ."
                No inventes datos de equipos inexistentes.
-            4. Si es tema general (bioseguridad/EPP general), responde breve.
-            5. Máximo ~100-140 palabras.
+            5. Si es tema general (bioseguridad/EPP general), responde breve.
+            6. Máximo ~100-140 palabras.
         """.trimIndent()
     }
 

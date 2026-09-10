@@ -20,18 +20,29 @@
     <string name="field_practices">Prácticas UTEQ</string>
     <string name="action_consult">Consultar sobre este equipo</string>
 
-    <!-- Asistente -->
+    <!-- Asistente (chat de texto) -->
     <string name="chat_title">Asistente</string>
     <string name="field_context">Contexto</string>
     <string name="context_general">Modo general · todos los equipos registrados</string>
     <string name="chat_hint_scoped">Escribe tu consulta sobre este equipo…</string>
     <string name="chat_hint_general">Escribe tu consulta…</string>
+    <string name="action_talk_to_assistant">Hablar con el asistente</string>
+    <string name="voice_processing">Pensando…</string>
 
-    <!-- Voz -->
+    <!-- Silenciador de anuncios de equipo (pantalla de cámara) -->
     <string name="voice_mute_on_desc">Silenciar anuncios de voz</string>
     <string name="voice_mute_off_desc">Activar anuncios de voz</string>
-    <string name="voice_mode_on_desc">Desactivar modo voz</string>
-    <string name="voice_mode_off_desc">Activar modo voz</string>
-    <string name="voice_processing">Pensando…</string>
+
+    <!-- Conversación por voz (VoiceConversationActivity) -->
     <string name="voice_recognition_failed">No entendí, ¿puedes repetir?</string>
+    <string name="voice_end_conversation">Finalizar conversación</string>
+    <string name="voice_state_listening">Escuchando…</string>
+    <string name="voice_state_processing">Pensando…</string>
+    <string name="voice_state_speaking">Respondiendo…</string>
+    <string name="voice_state_speaking_hint">Toca para interrumpir</string>
+    <string name="voice_state_permission_needed">Se necesita acceso al micrófono para hablar con el asistente.</string>
+    <string name="voice_grant_permission">Dar permiso</string>
+    <string name="voice_state_unavailable">Este dispositivo no tiene reconocimiento de voz disponible.</string>
+    <string name="voice_state_error_network">Sin conexión. Toca para reintentar.</string>
+    <string name="voice_state_error_generic">Algo falló. Toca para reintentar.</string>
 </resources>

@@ -22,8 +22,6 @@ import com.uteq.software.detector_de_materiales_laboratorio.databinding.Activity
 import com.uteq.software.detector_de_materiales_laboratorio.model.ChatMessage
 import com.uteq.software.detector_de_materiales_laboratorio.network.RagApiClient
 import com.uteq.software.detector_de_materiales_laboratorio.ui.ChatAdapter
-import com.uteq.software.detector_de_materiales_laboratorio.ui.MarkdownText
-import com.uteq.software.detector_de_materiales_laboratorio.voice.ChatVoiceController
 import kotlinx.coroutines.launch
 
 class ChatActivity : AppCompatActivity() {
@@ -32,7 +30,6 @@ class ChatActivity : AppCompatActivity() {
     private val chatAdapter = ChatAdapter()
     private lateinit var ragApiClient: RagApiClient
     private lateinit var kbRepository: KnowledgeBaseRepository
-    private lateinit var chatVoiceController: ChatVoiceController
 
     private var currentEquipmentId: String? = null
     private var currentEquipmentName: String? = null
@@ -40,21 +37,30 @@ class ChatActivity : AppCompatActivity() {
     private var baseInputBottomPadding = 0
     private var baseHeaderTopPadding = 0
 
-    /**
-     * Modo voz: al dictar, el mensaje se envía solo (sin paso manual de
-     * revisar y presionar enviar) y la respuesta se lee en voz alta. El modo
-     * texto de siempre sigue intacto cuando esto está apagado — el mismo
-     * micrófono, el mismo [sendMessage], la misma conversación; solo cambia
-     * qué pasa automáticamente después de cada paso.
-     */
-    private var voiceModeEnabled = false
-
     companion object {
         const val EXTRA_EQUIPMENT_ID = "extra_equipment_id"
         const val EXTRA_EQUIPMENT_CLASS = "extra_equipment_class"
         const val EXTRA_EQUIPMENT_NAME = "extra_equipment_name"
         const val EXTRA_SCOPED_TO_EQUIPMENT = "extra_scoped_to_equipment"
     }
+
+    /**
+     * "Hablar con el asistente" abre una pantalla completamente aparte
+     * (VoiceConversationActivity) — no es un modo dentro de este chat. Se le
+     * pasa el historial actual como contexto inicial, y al volver se anexan
+     * los turnos nuevos que se hablaron allá, para que sea UNA sola
+     * conversación aunque haya cambiado de modalidad a mitad de camino.
+     */
+    private val voiceConversationLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            @Suppress("DEPRECATION", "UNCHECKED_CAST")
+            val newTurns = result.data?.getSerializableExtra(VoiceConversationActivity.EXTRA_NEW_TURNS)
+                as? ArrayList<ChatMessage>
+            newTurns?.forEach { chatAdapter.addMessage(it) }
+            if (!newTurns.isNullOrEmpty()) {
+                binding.rvChatMessages.smoothScrollToPosition(chatAdapter.itemCount - 1)
+            }
+        }
 
     private val voicePermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
@@ -71,12 +77,7 @@ class ChatActivity : AppCompatActivity() {
 
     private val voiceInputLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode != RESULT_OK) {
-                if (voiceModeEnabled) {
-                    chatVoiceController.speak(getString(R.string.voice_recognition_failed))
-                }
-                return@registerForActivityResult
-            }
+            if (result.resultCode != RESULT_OK) return@registerForActivityResult
             val spoken = result.data
                 ?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
                 ?.firstOrNull()
@@ -84,26 +85,19 @@ class ChatActivity : AppCompatActivity() {
                 .orEmpty()
 
             if (spoken.isEmpty()) {
-                if (voiceModeEnabled) {
-                    chatVoiceController.speak(getString(R.string.voice_recognition_failed))
-                } else {
-                    Toast.makeText(this, "No se pudo transcribir. Intenta de nuevo.", Toast.LENGTH_SHORT)
-                        .show()
-                }
+                Toast.makeText(this, "No se pudo transcribir. Intenta de nuevo.", Toast.LENGTH_SHORT)
+                    .show()
                 return@registerForActivityResult
             }
 
-            if (voiceModeEnabled) {
-                // Conversación hablada: se envía directo, sin paso de revisión manual.
-                sendMessage(spoken)
-            } else {
-                // Modo texto: solo llena el cuadro; el usuario envía cuando quiera.
-                val current = binding.etChatMessage.text?.toString().orEmpty().trim()
-                val merged = if (current.isEmpty()) spoken else "$current $spoken"
-                binding.etChatMessage.setText(merged)
-                binding.etChatMessage.setSelection(merged.length)
-                Toast.makeText(this, "Texto dictado listo. Revisa y envía.", Toast.LENGTH_SHORT).show()
-            }
+            // Solo llena el cuadro de texto; el usuario envía cuando quiera.
+            // Este micrófono es para dictar en el chat tradicional — la
+            // conversación hablada continua vive en VoiceConversationActivity.
+            val current = binding.etChatMessage.text?.toString().orEmpty().trim()
+            val merged = if (current.isEmpty()) spoken else "$current $spoken"
+            binding.etChatMessage.setText(merged)
+            binding.etChatMessage.setSelection(merged.length)
+            Toast.makeText(this, "Texto dictado listo. Revisa y envía.", Toast.LENGTH_SHORT).show()
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -119,7 +113,6 @@ class ChatActivity : AppCompatActivity() {
 
         ragApiClient = RagApiClient(this)
         kbRepository = KnowledgeBaseRepository.getInstance(this)
-        chatVoiceController = ChatVoiceController(this)
 
         scopedToEquipment = intent.getBooleanExtra(EXTRA_SCOPED_TO_EQUIPMENT, false)
         currentEquipmentId = intent.getStringExtra(EXTRA_EQUIPMENT_ID)
@@ -136,7 +129,6 @@ class ChatActivity : AppCompatActivity() {
         }
 
         setupToolbar()
-        setupVoiceMode()
         setupRecyclerView()
         setupChips()
         setupListeners()
@@ -144,32 +136,17 @@ class ChatActivity : AppCompatActivity() {
     }
 
     /**
-     * El toggle de modo voz vive junto al título: siempre visible, siempre
-     * en el mismo lugar. El estado se comunica con color (mismo lenguaje que
-     * el silenciador de la pantalla de cámara), no con un ícono distinto.
+     * Entrada a la conversación por voz: una pantalla completamente aparte,
+     * no un modo dentro de este chat (ver [voiceConversationLauncher]).
      */
-    private fun setupVoiceMode() {
-        updateVoiceModeIcon()
-        binding.btnVoiceMode.setOnClickListener {
-            voiceModeEnabled = !voiceModeEnabled
-            if (!voiceModeEnabled) chatVoiceController.stop()
-            updateVoiceModeIcon()
+    private fun openVoiceConversation() {
+        val intent = Intent(this, VoiceConversationActivity::class.java).apply {
+            putExtra(EXTRA_SCOPED_TO_EQUIPMENT, scopedToEquipment)
+            putExtra(EXTRA_EQUIPMENT_ID, currentEquipmentId)
+            putExtra(EXTRA_EQUIPMENT_NAME, currentEquipmentName)
+            putExtra(VoiceConversationActivity.EXTRA_HISTORY, ArrayList(chatAdapter.getMessages()))
         }
-
-        chatVoiceController.onSpeakingStateChanged = { speaking ->
-            binding.btnVoiceInput.setColorFilter(
-                ContextCompat.getColor(this, if (speaking) R.color.accent else R.color.ink_soft)
-            )
-        }
-    }
-
-    private fun updateVoiceModeIcon() {
-        binding.btnVoiceMode.contentDescription = getString(
-            if (voiceModeEnabled) R.string.voice_mode_on_desc else R.string.voice_mode_off_desc
-        )
-        binding.btnVoiceMode.setColorFilter(
-            ContextCompat.getColor(this, if (voiceModeEnabled) R.color.accent else R.color.ink_soft)
-        )
+        voiceConversationLauncher.launch(intent)
     }
 
     private fun resolveEquipmentIdentity() {
@@ -210,6 +187,7 @@ class ChatActivity : AppCompatActivity() {
 
     private fun setupToolbar() {
         binding.btnBack.setOnClickListener { finish() }
+        binding.btnTalkToAssistant.setOnClickListener { openVoiceConversation() }
 
         if (scopedToEquipment && !currentEquipmentName.isNullOrEmpty()) {
             binding.tvActiveEquipment.text = currentEquipmentName
@@ -272,12 +250,6 @@ class ChatActivity : AppCompatActivity() {
         }
 
         binding.btnVoiceInput.setOnClickListener {
-            // Si el asistente sigue hablando, tocar el micrófono la corta
-            // primero — igual que interrumpir a alguien para hablar — y evita
-            // que el dictado capte el audio de la respuesta anterior.
-            if (chatVoiceController.isSpeaking) {
-                chatVoiceController.stop()
-            }
             requestMicAndDictate()
         }
 
@@ -357,6 +329,7 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun sendMessage(text: String) {
+        val historySnapshot = chatAdapter.getMessages()
         chatAdapter.addMessage(ChatMessage(text = text, isBot = false))
         binding.rvChatMessages.smoothScrollToPosition(chatAdapter.itemCount - 1)
         binding.tvProcessing.visibility = View.VISIBLE
@@ -367,25 +340,12 @@ class ChatActivity : AppCompatActivity() {
                 userMessage = text,
                 equipmentId = equipmentIdForRequest,
                 scopedToEquipment = scopedToEquipment,
-                equipmentDisplayName = if (scopedToEquipment) currentEquipmentName else null
+                equipmentDisplayName = if (scopedToEquipment) currentEquipmentName else null,
+                history = historySnapshot
             )
             binding.tvProcessing.visibility = View.GONE
             chatAdapter.addMessage(responseMsg)
             binding.rvChatMessages.smoothScrollToPosition(chatAdapter.itemCount - 1)
-
-            if (voiceModeEnabled) {
-                chatVoiceController.speak(MarkdownText.stripForSpeech(responseMsg.text))
-            }
         }
-    }
-
-    override fun onStop() {
-        super.onStop()
-        chatVoiceController.stop()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        chatVoiceController.shutdown()
     }
 }

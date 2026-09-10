@@ -45,6 +45,13 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
+        <activity
+            android:name=".VoiceConversationActivity"
+            android:exported="false"
+            android:parentActivityName=".ChatActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
     </application>
 
 </manifest>

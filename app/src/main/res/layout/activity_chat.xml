@@ -48,14 +48,14 @@
             android:textAppearance="@style/TextAppearance.Lab.Subtitle" />
 
         <ImageButton
-            android:id="@+id/btnVoiceMode"
+            android:id="@+id/btnTalkToAssistant"
             android:layout_width="@dimen/touch_target_min"
             android:layout_height="@dimen/touch_target_min"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/voice_mode_off_desc"
+            android:contentDescription="@string/action_talk_to_assistant"
             android:padding="12dp"
             android:src="@drawable/ic_headset"
-            app:tint="@color/ink_soft" />
+            app:tint="@color/ink" />
 
     </LinearLayout>
 

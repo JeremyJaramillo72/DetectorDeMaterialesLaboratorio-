@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Conversación por voz — pantalla propia, no un modo del chat de texto.
+
+  Sin burbujas, sin historial, sin caja de texto: el centro de la pantalla es
+  el anillo (VoiceOrbView) que representa al asistente, con una sola línea de
+  estado debajo. El contexto (qué equipo, si aplica) se reduce a una
+  etiqueta arriba — mismo patrón del resto del sistema — y nada más compite
+  por atención con la conversación en sí.
+-->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/paper">
+
+    <ImageButton
+        android:id="@+id/btnEndConversation"
+        android:layout_width="@dimen/touch_target_min"
+        android:layout_height="@dimen/touch_target_min"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="@dimen/lab_space_2"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/voice_end_conversation"
+        android:padding="12dp"
+        android:src="@drawable/ic_arrow_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/ink" />
+
+    <!-- Contexto: qué equipo, si la conversación viene de una ficha técnica. -->
+    <LinearLayout
+        android:id="@+id/layoutVoiceContext"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/btnEndConversation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/btnEndConversation"
+        tools:visibility="visible">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/field_equipment"
+            android:textAppearance="@style/TextAppearance.Lab.Label" />
+
+        <TextView
+            android:id="@+id/tvVoiceContextName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textAppearance="@style/TextAppearance.Lab.BodySoft"
+            tools:text="Destilador por Arrastre de Vapor tipo Kjeldahl" />
+
+    </LinearLayout>
+
+    <com.uteq.software.detector_de_materiales_laboratorio.ui.VoiceOrbView
+        android:id="@+id/voiceOrb"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
+        android:layout_marginTop="72dp"
+        android:importantForAccessibility="no"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.28" />
+
+    <TextView
+        android:id="@+id/tvVoiceState"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/lab_space_5"
+        android:text="@string/voice_state_listening"
+        android:textAppearance="@style/TextAppearance.Lab.Label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/voiceOrb" />
+
+    <!-- Transcripción parcial en vivo: transitoria, no es un historial. -->
+    <TextView
+        android:id="@+id/tvVoiceTranscript"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/lab_space_2"
+        android:gravity="center_horizontal"
+        android:paddingHorizontal="@dimen/lab_space_6"
+        android:textAppearance="@style/TextAppearance.Lab.BodySoft"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvVoiceState"
+        tools:text="¿y cómo se utiliza?" />
+
+    <!-- Estados de error/permiso: acción explícita, oculto en operación normal. -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnVoiceAction"
+        style="@style/Widget.Lab.Button.Primary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/lab_space_6"
+        android:layout_marginBottom="@dimen/lab_space_6"
+        android:text="@string/voice_grant_permission"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

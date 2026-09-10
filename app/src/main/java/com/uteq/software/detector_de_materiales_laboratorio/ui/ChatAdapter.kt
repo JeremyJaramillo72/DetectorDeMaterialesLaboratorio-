@@ -26,6 +26,10 @@ class ChatAdapter : RecyclerView.Adapter<ChatAdapter.ChatViewHolder>() {
         notifyDataSetChanged()
     }
 
+    /** Copia del historial actual — usada como contexto conversacional al
+     *  llamar al RAG y al entrar al modo de voz. */
+    fun getMessages(): List<ChatMessage> = messages.toList()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatViewHolder {
         val binding = ItemChatMessageBinding.inflate(
             LayoutInflater.from(parent.context),
