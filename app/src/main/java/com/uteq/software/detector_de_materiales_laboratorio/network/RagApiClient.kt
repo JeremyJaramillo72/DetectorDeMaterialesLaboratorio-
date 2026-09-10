@@ -50,7 +50,7 @@ class RagApiClient(private val context: Context) {
             null
         }
 
-        // Modo general: resolver equipo por nombre (existe / no registrado)
+        // Modo general: resolver equipo por nombre si coincide con el catálogo
         var generalMatchedEq: EquipmentData? = null
         if (!scopedToEquipment) {
             when (val resolved = kbRepo.resolveEquipmentFromQuery(userMessage)) {
@@ -58,18 +58,10 @@ class RagApiClient(private val context: Context) {
                     generalMatchedEq = resolved.equipment
                 }
                 is KnowledgeBaseRepository.EquipmentQueryResult.NotRegistered -> {
-                    return@withContext ChatMessage(
-                        text = "El equipo **\"${resolved.askedName}\"** no está registrado en el sistema del Laboratorio de Bromatología UTEQ.\n\n" +
-                            "Solo puedo dar información de equipos que existan en el catálogo. " +
-                            "Prueba con un nombre registrado o detectalo con la cámara.",
-                        isBot = true
-                    )
+                    // No bloqueamos: permitimos que Gemini busque en internet
+                    generalMatchedEq = null
                 }
                 KnowledgeBaseRepository.EquipmentQueryResult.GeneralTopic -> {
-                    // El mensaje actual no nombra ningún equipo — pero puede ser
-                    // una referencia a uno mencionado antes ("¿y para qué sirve?").
-                    // Se busca en los turnos de USUARIO recientes, del más nuevo
-                    // al más viejo, y se usa el primero que matchee.
                     generalMatchedEq = history.asReversed()
                         .filter { !it.isBot }
                         .firstNotNullOfOrNull { kbRepo.findBestMatch(it.text) }
@@ -79,22 +71,9 @@ class RagApiClient(private val context: Context) {
 
         val eq = scopedEq ?: generalMatchedEq
 
-        // Preguntas fuera de tema en modo equipo específico (ficha)
-        if (scopedToEquipment) {
-            val eqName = eq?.nombreComun ?: equipmentDisplayName ?: "el equipo detectado"
-            if (kbRepo.isOffTopicEquipmentQuery(userMessage)) {
-                return@withContext ChatMessage(
-                    text = "Solo puedo responder preguntas sobre el **$eqName**.\n\n" +
-                        "Pregúntame por prevención, EPP, procedimiento, riesgos, función o prácticas UTEQ de este equipo.",
-                    isBot = true,
-                    equipmentId = eq?.id ?: equipmentId
-                )
-            }
-        }
-
         if (geminiApiKey.isNotBlank()) {
             try {
-                val geminiResponse = callGeminiDirectly(
+                val geminiResult = callGeminiDirectly(
                     userMessage = userMessage,
                     eq = eq,
                     scopedToEquipment = scopedToEquipment,
@@ -102,12 +81,16 @@ class RagApiClient(private val context: Context) {
                     catalogSummary = if (!scopedToEquipment) kbRepo.buildEquipmentCatalogSummary() else null,
                     history = history
                 )
-                if (!geminiResponse.isNullOrBlank()) {
+                if (geminiResult != null && geminiResult.text.isNotBlank()) {
+                    val combinedCitations = mutableListOf<String>()
+                    eq?.fuentesReferencias?.let { combinedCitations.addAll(it) }
+                    combinedCitations.addAll(geminiResult.webCitations)
+
                     return@withContext ChatMessage(
-                        text = geminiResponse,
+                        text = geminiResult.text,
                         isBot = true,
                         equipmentId = eq?.id,
-                        citations = eq?.fuentesReferencias ?: emptyList(),
+                        citations = combinedCitations.distinct(),
                         eppRequired = eq?.eppRequerido ?: emptyList(),
                         risks = eq?.riesgosAsociados ?: emptyList()
                     )
@@ -158,6 +141,11 @@ class RagApiClient(private val context: Context) {
         }
     }
 
+    data class GeminiResponseResult(
+        val text: String,
+        val webCitations: List<String> = emptyList()
+    )
+
     private fun callGeminiDirectly(
         userMessage: String,
         eq: EquipmentData?,
@@ -165,7 +153,7 @@ class RagApiClient(private val context: Context) {
         equipmentDisplayName: String?,
         catalogSummary: String? = null,
         history: List<ChatMessage> = emptyList()
-    ): String? {
+    ): GeminiResponseResult? {
         val systemPrompt = if (scopedToEquipment) {
             buildScopedPrompt(userMessage, eq, equipmentDisplayName, history)
         } else {
@@ -183,9 +171,16 @@ class RagApiClient(private val context: Context) {
             contentsArray.add(contentObj)
             add("contents", contentsArray)
 
+            // Activación de Búsqueda Rápida en Google (Google Search Grounding)
+            val toolsArray = JsonArray()
+            val toolObj = JsonObject()
+            toolObj.add("google_search", JsonObject())
+            toolsArray.add(toolObj)
+            add("tools", toolsArray)
+
             // Evita respuestas cortadas a mitad de frase
             val generationConfig = JsonObject().apply {
-                addProperty("temperature", 0.3)
+                addProperty("temperature", 0.4)
                 addProperty("maxOutputTokens", 1024)
             }
             add("generationConfig", generationConfig)
@@ -203,11 +198,49 @@ class RagApiClient(private val context: Context) {
                 val rootJson = gson.fromJson(jsonString, JsonObject::class.java)
                 val candidates = rootJson.getAsJsonArray("candidates")
                 if (candidates != null && candidates.size() > 0) {
-                    val content = candidates[0].asJsonObject.getAsJsonObject("content")
+                    val candidateObj = candidates[0].asJsonObject
+                    val content = candidateObj.getAsJsonObject("content")
                     val parts = content?.getAsJsonArray("parts")
-                    if (parts != null && parts.size() > 0) {
-                        return parts[0].asJsonObject.get("text")?.asString
+                    val textBuilder = StringBuilder()
+                    if (parts != null) {
+                        for (i in 0 until parts.size()) {
+                            val partText = parts[i].asJsonObject.get("text")?.asString
+                            if (!partText.isNullOrBlank()) {
+                                textBuilder.append(partText)
+                            }
+                        }
                     }
+
+                    val finalAnswer = textBuilder.toString().trim()
+                    if (finalAnswer.isBlank()) return null
+
+                    // Extraer fuentes web si la búsqueda en Google aportó citas
+                    val webCitations = mutableListOf<String>()
+                    val groundingMetadata = candidateObj.getAsJsonObject("groundingMetadata")
+                    if (groundingMetadata != null && groundingMetadata.has("groundingChunks")) {
+                        val chunks = groundingMetadata.getAsJsonArray("groundingChunks")
+                        if (chunks != null) {
+                            for (elem in chunks) {
+                                val web = elem.asJsonObject.getAsJsonObject("web")
+                                if (web != null) {
+                                    val title = web.get("title")?.asString.orEmpty()
+                                    val uri = web.get("uri")?.asString.orEmpty()
+                                    if (uri.isNotBlank()) {
+                                        if (title.isNotBlank()) {
+                                            webCitations.add("$title ($uri)")
+                                        } else {
+                                            webCitations.add(uri)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    return GeminiResponseResult(
+                        text = finalAnswer,
+                        webCitations = webCitations.distinct()
+                    )
                 }
             } else {
                 Log.e(TAG, "Gemini API Error: HTTP ${response.code}")
@@ -241,48 +274,43 @@ class RagApiClient(private val context: Context) {
         equipmentDisplayName: String?,
         history: List<ChatMessage> = emptyList()
     ): String {
-        val eqName = eq?.nombreComun ?: equipmentDisplayName ?: "el equipo detectado"
+        val eqName = eq?.nombreComun ?: equipmentDisplayName ?: "el equipo enfocado"
         val contextInfo = if (eq != null) {
             """
-            CONTEXTO INTERNO (usa solo lo necesario para responder; NO lo copies completo):
+            CONTEXTO INSTITUCIONAL UTEQ (equipo enfocado en pantalla):
             Equipo: ${eq.nombreOficial} (${eq.nombreComun})
             Fabricante/Modelo: ${eq.fabricante} - ${eq.modelo}
+            Precio Comercial Estimado: ${eq.precioAproximado ?: "No especificado"}
             Función: ${eq.funcionPrincipal}
             Principio: ${eq.principioFuncionamiento}
             Componentes: ${eq.componentesPrincipales.joinToString(", ")}
-            Procedimiento: ${eq.procedimientoOperativoEstandar.joinToString(" | ")}
-            EPP: ${eq.eppRequerido.joinToString(", ")}
-            Riesgos/prevención: ${eq.riesgosAsociados.joinToString(", ")}
-            Normas de seguridad: ${eq.normasSeguridad.joinToString(", ")}
+            Procedimiento Oficial UTEQ: ${eq.procedimientoOperativoEstandar.joinToString(" | ")}
+            EPP Obligatorio: ${eq.eppRequerido.joinToString(", ")}
+            Riesgos/Prevención: ${eq.riesgosAsociados.joinToString(", ")}
+            Normas de Seguridad: ${eq.normasSeguridad.joinToString(", ")}
             Prácticas UTEQ: ${eq.guiasPracticaUteq.joinToString("; ")}
-            Fuentes: ${eq.fuentesReferencias.joinToString("; ")}
+            Fuentes Oficiales: ${eq.fuentesReferencias.joinToString("; ")}
             """.trimIndent()
         } else {
-            "Equipo objetivo: $eqName."
+            "Equipo enfocado: $eqName."
         }
 
         return """
-            Eres el asistente del Laboratorio de Bromatología UTEQ.
-            Responde DIRECTO AL GRANO, en español claro.
+            Eres el Asistente Experto en Bromatología y Ciencias de Laboratorio de la Universidad Técnica Estatal de Quevedo (UTEQ).
+            Responde en español claro, profesional y directo al grano.
 
-            Equipo permitido: "$eqName"
             $contextInfo
             ${formatHistory(history)}
 
-            Pregunta: "$userMessage"
+            Pregunta del usuario: "$userMessage"
 
-            REGLAS:
-            1. Si la pregunta usa una referencia a algo dicho antes ("eso", "y para qué sirve",
-               "cómo se usa"), resuélvela con la CONVERSACIÓN RECIENTE de arriba — no pidas
-               que se repita lo ya dicho.
-            2. Contesta solo lo preguntado, completo (nunca cortes a mitad de frase).
-            3. Sin relleno, sin ficha técnica completa, sin listar todo.
-            4. Función/qué es: 1-3 oraciones cortas y cerradas.
-            5. EPP/riesgos/prevención: viñetas concretas.
-            6. Procedimiento: solo pasos numerados.
-            7. Si la pregunta no es de este equipo, di solo:
-               "Solo puedo responder preguntas sobre el $eqName."
-            8. Máximo ~80-120 palabras. Termina siempre la última oración.
+            DIRECTRICES CLAVE:
+            1. Si la pregunta es sobre el equipo enfocado ($eqName), prioriza siempre la información técnica, EPP, riesgos y procedimiento oficial de la UTEQ provisto arriba.
+            2. REGLA ESTRICTA DE PRECIO: Si preguntan por el precio o costo, toma EXACTAMENTE el valor de la ficha técnica provisto en "Precio Comercial Estimado". Exprésalo de forma precisa con la fórmula "cuesta [monto] dólares..." (por ejemplo: "cuesta 800 dólares, con un rango estimado de 650 a 950 dólares"). NUNCA uses emojis (como 💰 ni ningún otro) ni signos como $, asteriscos o paréntesis para el precio, ya que la respuesta se reproduce por voz.
+            3. Si la pregunta involucra reactivos, cálculos químicos, normas internacionales, fundamentos científicos que no consten en la ficha local o temas complementarios, UTILIZA LA BÚSQUEDA EN INTERNET (Google Search) para fundamentar y responder con precisión.
+            4. Resuelve referencias relativas ("¿cómo se usa eso?", "¿qué reactivos necesita?") usando la CONVERSACIÓN RECIENTE.
+            5. Estilo adecuado para chat y para voz (TTS): alrededor de 70 a 130 palabras, oraciones completas, sin emojis ni signos confusos ni enlaces URL en el texto hablado.
+            6. Nunca te niegues a responder consultas científicas, técnicas o de laboratorio.
         """.trimIndent()
     }
 
@@ -294,10 +322,11 @@ class RagApiClient(private val context: Context) {
     ): String {
         val matchedBlock = if (matchedEquipment != null) {
             """
-            EQUIPO IDENTIFICADO EN LA PREGUNTA (usar estos datos):
+            EQUIPO IDENTIFICADO EN EL CATÁLOGO LOCAL UTEQ:
             - Nombre: ${matchedEquipment.nombreComun}
             - Oficial: ${matchedEquipment.nombreOficial}
             - Fabricante/Modelo: ${matchedEquipment.fabricante} - ${matchedEquipment.modelo}
+            - Precio Comercial Estimado: ${matchedEquipment.precioAproximado ?: "No especificado"}
             - Función: ${matchedEquipment.funcionPrincipal}
             - Principio: ${matchedEquipment.principioFuncionamiento}
             - EPP: ${matchedEquipment.eppRequerido.joinToString(", ")}
@@ -306,33 +335,28 @@ class RagApiClient(private val context: Context) {
             - Prácticas UTEQ: ${matchedEquipment.guiasPracticaUteq.joinToString("; ")}
             """.trimIndent()
         } else {
-            "No se identificó un equipo concreto en la pregunta (tema general del laboratorio)."
+            "La consulta no refiere a un equipo específico del catálogo local (o es una consulta sobre reactivos, química, procedimientos o equipos generales)."
         }
 
         return """
-            Eres el asistente general del Laboratorio de Bromatología UTEQ.
-            Conoces TODOS los equipos registrados del sistema.
+            Eres el Asistente Inteligente del Laboratorio de Bromatología y Ciencias de la Universidad Técnica Estatal de Quevedo (UTEQ).
+            Responde en español con rigor académico, amabilidad y claridad.
 
-            CATÁLOGO DE EQUIPOS REGISTRADOS:
+            CATÁLOGO DE EQUIPOS REGISTRADOS EN BROMATOLOGÍA UTEQ:
             ${catalogSummary ?: "(catálogo no disponible)"}
 
             $matchedBlock
             ${formatHistory(history)}
 
-            Pregunta: "$userMessage"
+            Pregunta del usuario: "$userMessage"
 
-            REGLAS:
-            1. Si la pregunta usa una referencia a algo dicho antes ("eso", "y para qué sirve",
-               "cómo se usa") y no nombra un equipo nuevo, asume que sigue hablando del equipo de
-               la CONVERSACIÓN RECIENTE (o del EQUIPO IDENTIFICADO de arriba) — no pidas que se
-               repita el nombre.
-            2. Responde DIRECTO AL GRANO y completa las oraciones.
-            3. Si preguntan por un equipo del catálogo, responde con su información (función, EPP, riesgos, etc. según lo pedido).
-            4. Si preguntan por un equipo que NO está en el catálogo, responde exactamente:
-               "Ese equipo no está registrado en el sistema del Laboratorio de Bromatología UTEQ."
-               No inventes datos de equipos inexistentes.
-            5. Si es tema general (bioseguridad/EPP general), responde breve.
-            6. Máximo ~100-140 palabras.
+            DIRECTRICES CLAVE:
+            1. Si la pregunta se refiere a un equipo del inventario local de Bromatología UTEQ, prioriza los datos institucionales provistos arriba.
+            2. REGLA ESTRICTA DE PRECIO: Si preguntan por el precio o costo de un equipo registrado, toma EXACTAMENTE el valor de la ficha técnica provisto en "Precio Comercial Estimado". Di con exactitud "cuesta [monto] dólares..." (por ejemplo: "cuesta 800 dólares, con un rango estimado de 650 a 950 dólares"). NUNCA uses emojis (como 💰 ni ningún otro) ni signos como $, asteriscos o paréntesis para el precio, para que el motor de voz lo pronuncie perfecto.
+            3. Si la pregunta es sobre un equipo que NO está registrado en la UTEQ, técnicas químicas, cálculo de concentraciones, normas (AOAC, Codex, ISO), reactivos o cualquier duda científica abierta, UTILIZA LA BÚSQUEDA EN INTERNET (Google Search) para brindar una respuesta rigurosa y actualizada. Si es un equipo no disponible físicamente en la sede de Bromatología UTEQ, menciónalo con naturalidad y explica su funcionamiento y uso en laboratorio.
+            4. Resuelve pronombres y referencias ("eso", "¿y cuánto cuesta?") con la CONVERSACIÓN RECIENTE.
+            5. Estilo adecuado para chat y voz: conciso, profesional y fluido (aprox. 80-130 palabras, oraciones completas, sin emojis ni URLs crudas dentro del texto).
+            6. No limites al estudiante; responde cualquier consulta de ciencias, laboratorio o bromatología con la mayor utilidad posible.
         """.trimIndent()
     }
 

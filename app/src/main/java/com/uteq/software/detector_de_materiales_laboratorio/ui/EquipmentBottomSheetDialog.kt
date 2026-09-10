@@ -54,6 +54,12 @@ class EquipmentBottomSheetDialog : BottomSheetDialogFragment() {
 
         binding.tvEquipmentName.text = eq.nombreComun
         binding.tvEquipmentOfficial.text = "${eq.fabricante} • ${eq.modelo}"
+        if (!eq.precioAproximado.isNullOrBlank()) {
+            binding.tvEquipmentPrice.visibility = View.VISIBLE
+            binding.tvEquipmentPrice.text = "Precio aprox.: ${eq.precioAproximado}"
+        } else {
+            binding.tvEquipmentPrice.visibility = View.GONE
+        }
         binding.tvFunction.text = eq.funcionPrincipal
 
         // EPP

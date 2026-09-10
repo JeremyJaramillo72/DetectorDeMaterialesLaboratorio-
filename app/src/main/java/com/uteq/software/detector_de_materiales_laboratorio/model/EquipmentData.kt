@@ -27,5 +27,6 @@ data class EquipmentData(
     @SerializedName("epp_requerido") val eppRequerido: List<String> = emptyList(),
     @SerializedName("riesgos_asociados") val riesgosAsociados: List<String> = emptyList(),
     @SerializedName("normas_seguridad") val normasSeguridad: List<String> = emptyList(),
-    @SerializedName("fuentes_referencias") val fuentesReferencias: List<String> = emptyList()
+    @SerializedName("fuentes_referencias") val fuentesReferencias: List<String> = emptyList(),
+    @SerializedName("precio_aproximado") val precioAproximado: String? = null
 ) : Serializable

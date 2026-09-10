@@ -30,6 +30,8 @@ EQUIPOS = [
         "ubicacion": "Mesa analítica de digestión y destilación Kjeldahl",
         "alimentacion": "230 V ~ 50/60 Hz, 1800 W",
         "servicios": "Suministro continuo de agua desionizada para calderín y agua fría de red para refrigerante (1.5 - 2.0 L/min a 15-20 °C)",
+        "precio_aproximado": "$5,500 USD (Rango estimado: $4,800 - $6,500 USD)",
+        "precio_aproximado": "$5,500 USD (Rango estimado: $4,800 - $6,500 USD)",
         "imagen": "destilacion_arrastre_vapor.jpg",
         "principio": (
             "El principio del método Kjeldahl por arrastre de vapor consiste en la volatilización forzada de amoníaco libre a partir de una muestra orgánica previamente mineralizada y digerida por vía húmeda con ácido sulfúrico concentrado.\n\n"
@@ -103,6 +105,8 @@ EQUIPOS = [
         "ubicacion": "Mesa analítica de análisis proximal de alimentos",
         "alimentacion": "230 V ~ 50/60 Hz, 1500 W",
         "servicios": "Conexión a bomba de vacío recirculante y circuito de refrigeración de agua (2 L/min)",
+        "precio_aproximado": "$5,800 USD (Rango estimado: $5,200 - $7,000 USD)",
+        "precio_aproximado": "$5,800 USD (Rango estimado: $5,200 - $7,000 USD)",
         "imagen": "analizador_fibra_cruda_fracciones.jpg",
         "principio": (
             "El analizador de fibra DOSI-FIBER permite la determinación cuantitativa gravimétrica de la fracción no digestible de los alimentos de origen vegetal mediante digestión ácida y alcalina sucesiva (Método oficial Weende) y el fraccionamiento de la pared celular vegetal por solubilidad diferencial en detergentes (Método de Van Soest).\n\n"
@@ -175,6 +179,8 @@ EQUIPOS = [
         "ubicacion": "Mesa de reología y análisis físico de alimentos",
         "alimentacion": "115 / 230 V ~ 50/60 Hz, 30 W",
         "servicios": "Mesa antivibratoria, baño termostático de circulación externa (precisión ± 0.1 °C)",
+        "precio_aproximado": "$4,450 USD (Rango estimado: $3,800 - $5,200 USD)",
+        "precio_aproximado": "$4,450 USD (Rango estimado: $3,800 - $5,200 USD)",
         "imagen": "viscosimetro_brookfield_dve.jpg",
         "principio": (
             "El viscosímetro rotacional digital Brookfield Modelo DV-E mide la resistencia al flujo y cizallamiento interno de fluidos newtonianos y no newtonianos mediante el método de inmersión rotacional.\n\n"
@@ -243,6 +249,8 @@ EQUIPOS = [
         "ubicacion": "Mesa de microbiología y microscopía analítica bromatológica",
         "alimentacion": "100-240 V ~ 50/60 Hz, 30 W con fuente conmutada de bajo consumo",
         "servicios": "Mesa rígida antivibratoria protegida de radiación solar directa y humedad excesiva (< 70% HR)",
+        "precio_aproximado": "$3,950 USD (Rango estimado: $3,200 - $4,800 USD)",
+        "precio_aproximado": "$3,950 USD (Rango estimado: $3,200 - $4,800 USD)",
         "imagen": "microscopio_trinocular.jpg",
         "principio": (
             "El microscopio óptico trinocular Primo Star de Carl Zeiss utiliza el sistema óptico con corrección a infinito (ICS - Infinity Color-corrected System) para la observación microscópica de muestras biológicas y alimentarias en luz transmitida por campo claro.\n\n"
@@ -311,6 +319,8 @@ EQUIPOS = [
         "ubicacion": "Mesa analítica de nitrógeno y proteína total",
         "alimentacion": "115 / 230 V ~ 50/60 Hz, 1600 W",
         "servicios": "Red de agua de refrigeración (flujo 1.5 - 2.5 L/min), desagüe resistente a químicos alcalinos y garrafa de reserva de NaOH 40%",
+        "precio_aproximado": "$4,200 USD (Rango estimado: $3,600 - $5,100 USD)",
+        "precio_aproximado": "$4,200 USD (Rango estimado: $3,600 - $5,100 USD)",
         "imagen": "destilador_proteina.jpg",
         "principio": (
             "La unidad Fisher Scientific Distillation Unit 100 es un equipo robusto de destilación Kjeldahl rápida por inyección directa de vapor diseñado para el análisis y cuantificación de nitrógeno total y proteína cruda en grandes lotes de muestras agrícolas, pecuarias y bromatológicas.\n\n"
@@ -381,6 +391,8 @@ EQUIPOS = [
         "ubicacion": "Pared húmeda de destilación y lavado químico",
         "alimentacion": "230 V ~ 50/60 Hz, 3000 W (Monofásico con tierra física de alta capacidad)",
         "servicios": "Red de agua potable o prefiltrada (presión 1.5 - 3.5 bar, caudal mínimo 60 L/h) y desagüe continuo",
+        "precio_aproximado": "$1,850 USD (Rango estimado: $1,400 - $2,400 USD)",
+        "precio_aproximado": "$1,850 USD (Rango estimado: $1,400 - $2,400 USD)",
         "imagen": "destilador_agua_continuo_metalico.jpg",
         "principio": (
             "El destilador de agua continuo metálico purifica agua potable de red mediante evaporación térmica y condensación forzada por contracorriente, generando agua destilada de alta pureza analítica (Tipo III / Tipo II según ISO 3696).\n\n"
@@ -449,6 +461,8 @@ EQUIPOS = [
         "ubicacion": "Área húmeda de suministro de agua desmineralizada y reactivos",
         "alimentacion": "No requiere alimentación eléctrica (operación por presión hidrostática de red, 2.0 a 4.5 bar)",
         "servicios": "Acometida hidráulica de agua potable de red y conducto a tanques de almacenamiento analítico",
+        "precio_aproximado": "$1,650 USD (Rango estimado: $1,200 - $2,200 USD)",
+        "precio_aproximado": "$1,650 USD (Rango estimado: $1,200 - $2,200 USD)",
         "imagen": "sistema_tratamiento_desionizacion_agua.jpg",
         "principio": (
             "El sistema de tratamiento y desionización de agua produce agua desmineralizada de alta pureza mediante un proceso secuencial de retención física de partículas, adsorción química sobre carbón activado e intercambio iónico heterogéneo en lecho mixto.\n\n"
@@ -519,6 +533,8 @@ EQUIPOS = [
         "ubicacion": "Mesa de filtración analítica y secado al vacío",
         "alimentacion": "230 V ~ 50/60 Hz, 180 W",
         "servicios": "Depósito autónomo de 10 L de agua limpia; no consume agua corriente continua",
+        "precio_aproximado": "$1,350 USD (Rango estimado: $1,100 - $1,700 USD)",
+        "precio_aproximado": "$1,350 USD (Rango estimado: $1,100 - $1,700 USD)",
         "imagen": "bomba_vacio_recirculacion_agua.jpg",
         "principio": (
             "La bomba de vacío por recirculación de agua genera depresión neumática mediante el efecto hidrodinámico Venturi operando en circuito cerrado ecológico sin desperdicio de agua potable.\n\n"
@@ -618,10 +634,10 @@ def generate_markdown():
     
     # Tabla resumen de equipos
     lines.append("## 2. Índice de Equipos Oficiales Documentados\n")
-    lines.append("| N° | Clase YOLO11 | Nombre Oficial | Fabricante y Modelo | Función Primaria en Bromatología |")
+    lines.append("| N° | Clase YOLO11 | Nombre Oficial | Fabricante y Modelo | Precio Aprox. (USD) |")
     lines.append("|:--:|:---|:---|:---|:---|")
     for eq in EQUIPOS:
-        lines.append(f"| **{eq['num']}** | `{eq['clase_yolo']}` | {eq['nombre_oficial']} | {eq['fabricante']} - {eq['modelo']} | {eq['ubicacion']} |")
+        lines.append(f"| **{eq['num']}** | `{eq['clase_yolo']}` | {eq['nombre_oficial']} | {eq['fabricante']} - {eq['modelo']} | {eq['precio_aproximado']} |")
     lines.append("\n---\n")
     
     # Capítulos por equipo
@@ -633,6 +649,7 @@ def generate_markdown():
         lines.append(f"**Ubicación Física en Laboratorio:** {eq['ubicacion']}  ")
         lines.append(f"**Alimentación Eléctrica:** {eq['alimentacion']}  ")
         lines.append(f"**Requerimientos de Servicios:** {eq['servicios']}  ")
+        lines.append(f"**Precio Comercial Aproximado:** {eq['precio_aproximado']}  ")
         lines.append(f"**Fotografía Oficial:** `images_opt/equipos_seleccionados/{eq['imagen']}`\n")
         lines.append(f"![{eq['nombre_oficial']}](../images_opt/equipos_seleccionados/{eq['imagen']})\n")
         
@@ -761,10 +778,10 @@ def generate_markdown():
     
     # Tabla resumen de equipos
     lines.append("## 2. Índice de Equipos Oficiales Documentados\n")
-    lines.append("| N° | Clase YOLO11 | Nombre Oficial | Fabricante y Modelo | Función Primaria en Bromatología |")
+    lines.append("| N° | Clase YOLO11 | Nombre Oficial | Fabricante y Modelo | Precio Aprox. (USD) |")
     lines.append("|:--:|:---|:---|:---|:---|")
     for eq in EQUIPOS:
-        lines.append(f"| **{eq['num']}** | `{eq['clase_yolo']}` | {eq['nombre_oficial']} | {eq['fabricante']} - {eq['modelo']} | {eq['ubicacion']} |")
+        lines.append(f"| **{eq['num']}** | `{eq['clase_yolo']}` | {eq['nombre_oficial']} | {eq['fabricante']} - {eq['modelo']} | {eq['precio_aproximado']} |")
     lines.append("\n---\n")
     
     # Capítulos por equipo
@@ -776,6 +793,7 @@ def generate_markdown():
         lines.append(f"**Ubicación Física en Laboratorio:** {eq['ubicacion']}  ")
         lines.append(f"**Alimentación Eléctrica:** {eq['alimentacion']}  ")
         lines.append(f"**Requerimientos de Servicios:** {eq['servicios']}  ")
+        lines.append(f"**Precio Comercial Aproximado:** {eq['precio_aproximado']}  ")
         lines.append(f"**Fotografía Oficial:** `images_opt/equipos_seleccionados/{eq['imagen']}`\n")
         lines.append(f"![{eq['nombre_oficial']}](../images_opt/equipos_seleccionados/{eq['imagen']})\n")
         
@@ -1143,14 +1161,15 @@ def generate_word_document():
         h_eq.paragraph_format.space_after = Pt(6)
         
         # Ficha de identificación técnica
-        tbl_id = doc.add_table(rows=6, cols=2)
+        tbl_id = doc.add_table(rows=7, cols=2)
         fichas_data = [
             ("Clase de Detección YOLO11:", eq['clase_yolo']),
             ("Fabricante y Procedencia:", eq['fabricante']),
             ("Modelo y Código de Catálogo:", eq['modelo']),
             ("Ubicación en Laboratorio:", eq['ubicacion']),
             ("Alimentación Eléctrica:", eq['alimentacion']),
-            ("Requerimientos de Servicios:", eq['servicios'])
+            ("Requerimientos de Servicios:", eq['servicios']),
+            ("Precio Comercial Aproximado:", eq['precio_aproximado'])
         ]
         for idx_f, (lbl, val) in enumerate(fichas_data):
             c0 = tbl_id.cell(idx_f, 0)

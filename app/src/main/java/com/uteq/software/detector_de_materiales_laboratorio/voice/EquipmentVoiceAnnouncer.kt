@@ -47,41 +47,36 @@ class EquipmentVoiceAnnouncer(context: Context) {
     fun setMuted(muted: Boolean) {
         isMuted = muted
         prefs.edit().putBoolean(KEY_MUTED, muted).apply()
-        if (muted) tts?.stop()
+        if (muted) stop()
     }
 
     /**
-     * Anuncia cada equipo nuevo de [detections]; ignora los que ya se
-     * anunciaron mientras sigan en escena. Debe recibir la lista ESTABLE
-     * (post [DetectionTracker]), no las detecciones crudas del modelo.
+     * Anuncia las características del equipo únicamente cuando el usuario hace clic en la selección.
+     * Cancela de inmediato cualquier locución previa (QUEUE_FLUSH).
      */
-    fun onDetections(detections: List<DetectionResult>, equipmentOf: (String) -> EquipmentData?) {
-        val currentLabels = detections.mapTo(HashSet()) { it.label }
-
-        if (!isReady || isMuted) {
-            // No se habla nada, pero se sincroniza el set para no volcar de
-            // golpe todos los anuncios pendientes al desmutear.
-            announcedLabels.clear()
-            announcedLabels.addAll(currentLabels)
-            return
+    fun announceSelectedEquipment(displayName: String, equipment: EquipmentData?) {
+        if (!isReady || isMuted) return
+        stop()
+        val description = equipment?.funcionPrincipal?.let { firstSentence(it) }?.let {
+            com.uteq.software.detector_de_materiales_laboratorio.ui.MarkdownText.stripForSpeech(it)
+        }
+        val price = equipment?.precioAproximado
+        val priceSpeech = if (!price.isNullOrBlank()) {
+            com.uteq.software.detector_de_materiales_laboratorio.ui.MarkdownText.formatPriceForSpeech(price)
+        } else {
+            null
         }
 
-        detections.forEach { detection ->
-            if (announcedLabels.add(detection.label)) {
-                speak(detection, equipmentOf(detection.label))
+        val text = buildString {
+            append(displayName)
+            if (!description.isNullOrBlank()) {
+                append(". $description")
+            }
+            if (!priceSpeech.isNullOrBlank()) {
+                append(". $priceSpeech")
             }
         }
-        announcedLabels.retainAll(currentLabels)
-    }
-
-    private fun speak(detection: DetectionResult, equipment: EquipmentData?) {
-        val description = equipment?.funcionPrincipal?.let { firstSentence(it) }
-        val text = if (!description.isNullOrBlank()) {
-            "Detectado: ${detection.displayName}. $description"
-        } else {
-            "Detectado: ${detection.displayName}."
-        }
-        tts?.speak(text, TextToSpeech.QUEUE_ADD, null, detection.label)
+        tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, displayName)
     }
 
     private fun firstSentence(text: String, maxLen: Int = 160): String {

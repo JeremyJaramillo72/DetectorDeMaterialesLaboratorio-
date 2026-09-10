@@ -56,7 +56,8 @@
         "Manual de Instrucciones J.P. Selecta Pro-Nitro A, Código 80164 Rev. D",
         "AOAC Official Method 984.13: Protein (Crude) in Animal Feed",
         "NTE INEN 0516: Harina de pescado. Determinación del contenido de proteína bruta"
-      ]
+      ],
+      "precio_aproximado": "$5,500 USD (Rango estimado: $4,800 - $6,500 USD)"
     },
     {
       "id": "analizador_fibra",
@@ -110,7 +111,8 @@
         "Manual de Operación J.P. Selecta DOSI-FIBER",
         "AOAC Official Method 962.09: Fiber (Crude) in Animal Feed",
         "ISO 6865: Animal feeding stuffs - Determination of crude fibre content"
-      ]
+      ],
+      "precio_aproximado": "$5,800 USD (Rango estimado: $5,200 - $7,000 USD)"
     },
     {
       "id": "placa_calefactora_heidolph",
@@ -159,7 +161,8 @@
       "fuentes_referencias": [
         "Heidolph Magnetic Stirrer MR Series User Manual",
         "Manual de Bioseguridad en Laboratorios Universitarios - UTEQ"
-      ]
+      ],
+      "precio_aproximado": "$1,150 USD (Rango estimado: $950 - $1,400 USD)"
     },
     {
       "id": "phmetro_ohaus",
@@ -209,7 +212,8 @@
         "OHAUS Starter 3100 Bench pH Meter Instruction Manual",
         "NTE INEN 0013: Leche. Determinación del pH y de la acidez titulable",
         "AOAC 981.12: pH of Acidified Foods"
-      ]
+      ],
+      "precio_aproximado": "$800 USD (Rango estimado: $650 - $950 USD)"
     },
     {
       "id": "molino_ciclonico_foss",
@@ -260,7 +264,8 @@
       "fuentes_referencias": [
         "FOSS Cyclotec 1093 Sample Mill Operation Manual",
         "AOAC Official Method 930.15: Preparation of Feed Samples"
-      ]
+      ],
+      "precio_aproximado": "$7,800 USD (Rango estimado: $6,500 - $9,200 USD)"
     },
     {
       "id": "estufa_secado_memmert",
@@ -308,7 +313,8 @@
       "fuentes_referencias": [
         "Memmert Heating Oven UN/UF Operating Manual, D39454",
         "NTE INEN 0518: Alimentos para animales. Determinación de la humedad y materia seca"
-      ]
+      ],
+      "precio_aproximado": "$3,400 USD (Rango estimado: $2,800 - $4,200 USD)"
     },
     {
       "id": "refractometro_atago",
@@ -357,7 +363,8 @@
         "ATAGO DR-A1 Digital Abbe Refractometer Instruction Manual",
         "AOAC Official Method 932.12: Solids (Soluble) in Fruits and Fruit Products",
         "NTE INEN 0380: Aceites y grasas vegetales y animales. Determinación del índice de refracción"
-      ]
+      ],
+      "precio_aproximado": "$4,600 USD (Rango estimado: $3,900 - $5,500 USD)"
     },
     {
       "id": "calorimetro_bomba",
@@ -409,7 +416,8 @@
         "Parr 1341 Plain Jacket Calorimeter Operating Instructions, No. 204M",
         "ISO 9831: Animal feeding stuffs, animal products - Determination of gross calorific value - Bomb calorimeter method",
         "ASTM D5865: Standard Test Method for Gross Calorific Value of Coal and Coke"
-      ]
+      ],
+      "precio_aproximado": "$9,800 USD (Rango estimado: $8,500 - $12,000 USD)"
     },
     {
       "id": "campana_extraccion_gases",
@@ -458,7 +466,8 @@
         "Labconco Protector Premier Laboratory Fume Hoods User Guide",
         "NFPA 45: Standard on Fire Protection for Laboratories Using Chemicals",
         "Manual de Bioseguridad y Gestión de Residuos Químicos - UTEQ"
-      ]
+      ],
+      "precio_aproximado": "$9,500 USD (Rango estimado: $7,500 - $12,500 USD)"
     },
     {
       "id": "cabina_flujo_laminar_uvp",
@@ -507,7 +516,8 @@
       "fuentes_referencias": [
         "Analytik Jena UVP UV PCR Workstation User Manual",
         "NTE INEN 1529-1: Control microbiológico de los alimentos. Preparación de muestras"
-      ]
+      ],
+      "precio_aproximado": "$5,200 USD (Rango estimado: $4,200 - $6,500 USD)"
     },
     {
       "id": "sistema_tratamiento_agua",
@@ -553,7 +563,8 @@
       "fuentes_referencias": [
         "ASTM D1193: Standard Specification for Reagent Water",
         "Guía de Mantenimiento de Equipos de Purificación - UTEQ"
-      ]
+      ],
+      "precio_aproximado": "$1,650 USD (Rango estimado: $1,200 - $2,200 USD)"
     },
     {
       "id": "destilador_agua",
@@ -600,7 +611,8 @@
       "fuentes_referencias": [
         "Manual de Operación de Destiladores de Agua de Acero Inoxidable",
         "Normas Generales de Seguridad en Laboratorios Químicos - UTEQ"
-      ]
+      ],
+      "precio_aproximado": "$1,850 USD (Rango estimado: $1,400 - $2,400 USD)"
     },
     {
       "id": "bomba_vacio_recirculacion",
@@ -647,7 +659,8 @@
       "fuentes_referencias": [
         "Manual de Instrucciones J.P. Selecta 4001611",
         "Técnicas Básicas de Filtración al Vacío en el Laboratorio Químico"
-      ]
+      ],
+      "precio_aproximado": "$1,350 USD (Rango estimado: $1,100 - $1,700 USD)"
     },
     {
       "id": "bomba_vacio_membrana",
@@ -693,7 +706,8 @@
       "fuentes_referencias": [
         "KNF Neuberger Diaphragm Vacuum Pump Technical Manual",
         "Guía de Operación de Bombas de Vacío de Laboratorio - UTEQ"
-      ]
+      ],
+      "precio_aproximado": "$1,250 USD (Rango estimado: $950 - $1,600 USD)"
     },
     {
       "id": "agitador_vortex",
@@ -739,7 +753,8 @@
       "fuentes_referencias": [
         "Boeco Vortex Mixer Operating Manual",
         "Manual de Procedimientos Básicos en el Laboratorio Bromatológico"
-      ]
+      ],
+      "precio_aproximado": "$290 USD (Rango estimado: $220 - $380 USD)"
     },
     {
       "id": "gradilla_tubos_kjeldahl",
@@ -784,7 +799,8 @@
       "fuentes_referencias": [
         "AOAC Official Method 984.13: Protein (Crude) in Animal Feed",
         "Catálogo de Cristalería Científica Borosilicato 3.3"
-      ]
+      ],
+      "precio_aproximado": "$480 USD (Rango estimado: $380 - $650 USD)"
     },
     {
       "id": "gradilla_pipetas",
@@ -828,7 +844,8 @@
       "fuentes_referencias": [
         "ISO 648: Laboratory glassware - Single-volume pipettes",
         "Manual de Buenas Prácticas de Laboratorio - UTEQ"
-      ]
+      ],
+      "precio_aproximado": "$95 USD (Rango estimado: $75 - $140 USD)"
     },
     {
       "id": "piseta_reactivo",
@@ -871,7 +888,8 @@
       "fuentes_referencias": [
         "Sistema Globalmente Armonizado (SGA / GHS) de Clasificación y Etiquetado de Productos Químicos",
         "NTE INEN 2266: Transporte, almacenamiento y manejo de materiales peligrosos"
-      ]
+      ],
+      "precio_aproximado": "$22 USD (Rango estimado: $15 - $30 USD)"
     },
     {
       "id": "cilindro_gas",
@@ -919,7 +937,8 @@
       "fuentes_referencias": [
         "CGA Pamphlet G-4: Oxygen (Compressed Gas Association)",
         "Reglamento de Seguridad y Manejo de Cilindros de Gas Comprimido - UTEQ"
-      ]
+      ],
+      "precio_aproximado": "$620 USD (Rango estimado: $450 - $850 USD)"
     },
     {
       "id": "bidon_agua_destilada",
@@ -960,7 +979,8 @@
       ],
       "fuentes_referencias": [
         "Manual de Buenas Prácticas de Laboratorio y Manejo de Cristalería - UTEQ"
-      ]
+      ],
+      "precio_aproximado": "$60 USD (Rango estimado: $40 - $85 USD)"
     },
     {
       "id": "balanza_ohaus_pioneer",
@@ -1012,7 +1032,8 @@
       "fuentes_referencias": [
         "Manual de Usuario OHAUS Pioneer PX Series",
         "AOAC Official Methods of Analysis, 21st Edition"
-      ]
+      ],
+      "precio_aproximado": "$2,600 USD (Rango estimado: $2,100 - $3,200 USD)"
     },
     {
       "id": "extractor_soxhlet",
@@ -1069,7 +1090,8 @@
         "AOAC Official Method 920.39 - Fat (Crude) in Animal Feed",
         "Manual de Operación VELP SER 148 Solvent Extractor",
         "NTE INEN 0523 - Determinación de grasa en alimentos"
-      ]
+      ],
+      "precio_aproximado": "$8,900 USD (Rango estimado: $6,800 - $11,500 USD)"
     },
     {
       "id": "mufla_electrica",
@@ -1127,7 +1149,8 @@
         "AOAC Official Method 942.05 - Ash of Animal Feed",
         "Manual de Operación Thermo Scientific Thermolyne F48000",
         "NTE INEN 0401 - Determinación de cenizas en cereales y derivados"
-      ]
+      ],
+      "precio_aproximado": "$4,300 USD (Rango estimado: $3,500 - $5,400 USD)"
     },
     {
       "id": "viscosimetro_brookfield",
@@ -1181,7 +1204,8 @@
         "Manual de Operación Brookfield DV-II+ Pro Viscometer",
         "Brookfield Engineering: More Solutions to Sticky Problems",
         "NTE INEN 1009 - Miel de abeja. Requisitos"
-      ]
+      ],
+      "precio_aproximado": "$4,450 USD (Rango estimado: $3,800 - $5,200 USD)"
     },
     {
       "id": "microscopio_trinocular",
@@ -1237,7 +1261,8 @@
         "Manual de Instrucciones ZEISS Primo Star / Primostar 3 - Carl Zeiss Microscopy",
         "AOAC Official Methods of Analysis - Microscopic Examination of Animal Feeds",
         "Guía de Buenas Prácticas de Microscopía Óptica - Laboratorio UTEQ"
-      ]
+      ],
+      "precio_aproximado": "$3,950 USD (Rango estimado: $3,200 - $4,800 USD)"
     },
     {
       "id": "destilador_proteina",
@@ -1291,7 +1316,8 @@
         "Manual de Operación Fisher Scientific Distillation Unit 100",
         "AOAC Official Method 984.13 - Protein (Crude) in Animal Feed",
         "Norma Técnica Ecuatoriana NTE INEN 0516 - Determinación de Nitrógeno Total"
-      ]
+      ],
+      "precio_aproximado": "$4,200 USD (Rango estimado: $3,600 - $5,100 USD)"
     }
   ]
 }

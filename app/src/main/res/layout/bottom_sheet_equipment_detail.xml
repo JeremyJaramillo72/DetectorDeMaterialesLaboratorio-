@@ -58,6 +58,17 @@
             android:textAppearance="@style/TextAppearance.Lab.BodySoft"
             tools:text="J.P. SELECTA · Pro-Nitro A (Cat. 4002430)" />
 
+        <TextView
+            android:id="@+id/tvEquipmentPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/lab_space_1"
+            android:textAppearance="@style/TextAppearance.Lab.BodySoft"
+            android:textColor="@color/accent"
+            android:visibility="gone"
+            tools:text="Precio aprox.: $5,500 USD"
+            tools:visibility="visible" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/lab_rule"

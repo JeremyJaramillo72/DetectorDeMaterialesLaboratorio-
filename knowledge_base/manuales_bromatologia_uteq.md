@@ -22,16 +22,16 @@ A continuación se detallan exhaustivamente los **8 equipos oficiales** que conf
 
 ## 2. Índice de Equipos Oficiales Documentados
 
-| N° | Clase YOLO11 | Nombre Oficial | Fabricante y Modelo | Función Primaria en Bromatología |
+| N° | Clase YOLO11 | Nombre Oficial | Fabricante y Modelo | Precio Aprox. (USD) |
 |:--:|:---|:---|:---|:---|
-| **1** | `Destilador por Arrastre de Vapor tipo Kjeldahl` | Unidad Automática de Destilación por Arrastre de Vapor Pro-Nitro | J.P. SELECTA S.A. (España) - Pro-Nitro A / Pro-Nitro (Cat. 4002430) | Mesa analítica de digestión y destilación Kjeldahl |
-| **2** | `Analizador de Fibra Cruda y Fracciones` | Extractor y Analizador de Fibra DOSI-FIBER | J.P. SELECTA S.A. (España) - DOSI-FIBER (Referencia Cat. 4000623) | Mesa analítica de análisis proximal de alimentos |
-| **3** | `Viscosimetro Brookfield Modelo DV-E` | Viscosímetro Rotacional Digital Brookfield DV-E | AMETEK Brookfield (Middleboro, MA, EE.UU.) - DV-E Viscometer (DVE-LV / DVE-RV) | Mesa de reología y análisis físico de alimentos |
-| **4** | `Microcospio Trinocular` | Microscopio Óptico Trinocular de Laboratorio Primo Star | Carl Zeiss Microscopy GmbH (Jena, Alemania) - Primo Star Trinocular (ICS Optics) | Mesa de microbiología y microscopía analítica bromatológica |
-| **5** | `Destilacion de Nitrogeno y Proteinas` | Unidad de Destilación Kjeldahl para Proteína Bruta Distillation Unit 100 | Fisher Scientific / Labconco Corporation (EE.UU.) - Distillation Unit 100 (Kjeldahl Rapid Distiller) | Mesa analítica de nitrógeno y proteína total |
-| **6** | `Destilador de Agua Continuo Metalico` | Destilador de Agua Metálico Continuo de Fijación Mural | Boeco Germany / J.P. SELECTA S.A. - Destilador Mural Acero Inoxidable 4 L/h (Cat. Boeco WS-400 / Selecta Destil) | Pared húmeda de destilación y lavado químico |
-| **7** | `Sistema de Tratamiento y Desionizacion deAgua` | Sistema de Tratamiento, Filtración y Desionización de Agua Multietapa | Aquapro / Ensamblaje Industrial Especializado - Batería Desionizadora de 3 Etapas con Manómetros Hidráulicos | Área húmeda de suministro de agua desmineralizada y reactivos |
-| **8** | `Bomba de Vacio por Recirculacion de Agua` | Bomba de Vacío por Recirculación de Agua de Doble Toma | J.P. SELECTA S.A. (España) - Bomba Recirculante Ecológica de Vacío (Cat. 4001611) | Mesa de filtración analítica y secado al vacío |
+| **1** | `Destilador por Arrastre de Vapor tipo Kjeldahl` | Unidad Automática de Destilación por Arrastre de Vapor Pro-Nitro | J.P. SELECTA S.A. (España) - Pro-Nitro A / Pro-Nitro (Cat. 4002430) | $5,500 USD (Rango estimado: $4,800 - $6,500 USD) |
+| **2** | `Analizador de Fibra Cruda y Fracciones` | Extractor y Analizador de Fibra DOSI-FIBER | J.P. SELECTA S.A. (España) - DOSI-FIBER (Referencia Cat. 4000623) | $5,800 USD (Rango estimado: $5,200 - $7,000 USD) |
+| **3** | `Viscosimetro Brookfield Modelo DV-E` | Viscosímetro Rotacional Digital Brookfield DV-E | AMETEK Brookfield (Middleboro, MA, EE.UU.) - DV-E Viscometer (DVE-LV / DVE-RV) | $4,450 USD (Rango estimado: $3,800 - $5,200 USD) |
+| **4** | `Microcospio Trinocular` | Microscopio Óptico Trinocular de Laboratorio Primo Star | Carl Zeiss Microscopy GmbH (Jena, Alemania) - Primo Star Trinocular (ICS Optics) | $3,950 USD (Rango estimado: $3,200 - $4,800 USD) |
+| **5** | `Destilacion de Nitrogeno y Proteinas` | Unidad de Destilación Kjeldahl para Proteína Bruta Distillation Unit 100 | Fisher Scientific / Labconco Corporation (EE.UU.) - Distillation Unit 100 (Kjeldahl Rapid Distiller) | $4,200 USD (Rango estimado: $3,600 - $5,100 USD) |
+| **6** | `Destilador de Agua Continuo Metalico` | Destilador de Agua Metálico Continuo de Fijación Mural | Boeco Germany / J.P. SELECTA S.A. - Destilador Mural Acero Inoxidable 4 L/h (Cat. Boeco WS-400 / Selecta Destil) | $1,850 USD (Rango estimado: $1,400 - $2,400 USD) |
+| **7** | `Sistema de Tratamiento y Desionizacion deAgua` | Sistema de Tratamiento, Filtración y Desionización de Agua Multietapa | Aquapro / Ensamblaje Industrial Especializado - Batería Desionizadora de 3 Etapas con Manómetros Hidráulicos | $1,650 USD (Rango estimado: $1,200 - $2,200 USD) |
+| **8** | `Bomba de Vacio por Recirculacion de Agua` | Bomba de Vacío por Recirculación de Agua de Doble Toma | J.P. SELECTA S.A. (España) - Bomba Recirculante Ecológica de Vacío (Cat. 4001611) | $1,350 USD (Rango estimado: $1,100 - $1,700 USD) |
 
 ---
 
@@ -42,6 +42,7 @@ A continuación se detallan exhaustivamente los **8 equipos oficiales** que conf
 **Ubicación Física en Laboratorio:** Mesa analítica de digestión y destilación Kjeldahl  
 **Alimentación Eléctrica:** 230 V ~ 50/60 Hz, 1800 W  
 **Requerimientos de Servicios:** Suministro continuo de agua desionizada para calderín y agua fría de red para refrigerante (1.5 - 2.0 L/min a 15-20 °C)  
+**Precio Comercial Aproximado:** $5,500 USD (Rango estimado: $4,800 - $6,500 USD)  
 **Fotografía Oficial:** `images_opt/equipos_seleccionados/destilacion_arrastre_vapor.jpg`
 
 ![Unidad Automática de Destilación por Arrastre de Vapor Pro-Nitro](../images_opt/equipos_seleccionados/destilacion_arrastre_vapor.jpg)
@@ -169,6 +170,7 @@ Abrir la puerta de seguridad, desenganchar con pinzas de protección térmica el
 **Ubicación Física en Laboratorio:** Mesa analítica de análisis proximal de alimentos  
 **Alimentación Eléctrica:** 230 V ~ 50/60 Hz, 1500 W  
 **Requerimientos de Servicios:** Conexión a bomba de vacío recirculante y circuito de refrigeración de agua (2 L/min)  
+**Precio Comercial Aproximado:** $5,800 USD (Rango estimado: $5,200 - $7,000 USD)  
 **Fotografía Oficial:** `images_opt/equipos_seleccionados/analizador_fibra_cruda_fracciones.jpg`
 
 ![Extractor y Analizador de Fibra DOSI-FIBER](../images_opt/equipos_seleccionados/analizador_fibra_cruda_fracciones.jpg)
@@ -301,6 +303,7 @@ Lavar el residuo del crisol 3 veces con porciones de 25 mL de acetona pura al va
 **Ubicación Física en Laboratorio:** Mesa de reología y análisis físico de alimentos  
 **Alimentación Eléctrica:** 115 / 230 V ~ 50/60 Hz, 30 W  
 **Requerimientos de Servicios:** Mesa antivibratoria, baño termostático de circulación externa (precisión ± 0.1 °C)  
+**Precio Comercial Aproximado:** $4,450 USD (Rango estimado: $3,800 - $5,200 USD)  
 **Fotografía Oficial:** `images_opt/equipos_seleccionados/viscosimetro_brookfield_dve.jpg`
 
 ![Viscosímetro Rotacional Digital Brookfield DV-E](../images_opt/equipos_seleccionados/viscosimetro_brookfield_dve.jpg)
@@ -425,6 +428,7 @@ Detener el motor con MOTOR OFF. Elevar el cabezal fuera del vaso de muestra. Sos
 **Ubicación Física en Laboratorio:** Mesa de microbiología y microscopía analítica bromatológica  
 **Alimentación Eléctrica:** 100-240 V ~ 50/60 Hz, 30 W con fuente conmutada de bajo consumo  
 **Requerimientos de Servicios:** Mesa rígida antivibratoria protegida de radiación solar directa y humedad excesiva (< 70% HR)  
+**Precio Comercial Aproximado:** $3,950 USD (Rango estimado: $3,200 - $4,800 USD)  
 **Fotografía Oficial:** `images_opt/equipos_seleccionados/microscopio_trinocular.jpg`
 
 ![Microscopio Óptico Trinocular de Laboratorio Primo Star](../images_opt/equipos_seleccionados/microscopio_trinocular.jpg)
@@ -549,6 +553,7 @@ Al concluir la sesión, bajar la platina y retirar la preparación. LIMPIAR DE I
 **Ubicación Física en Laboratorio:** Mesa analítica de nitrógeno y proteína total  
 **Alimentación Eléctrica:** 115 / 230 V ~ 50/60 Hz, 1600 W  
 **Requerimientos de Servicios:** Red de agua de refrigeración (flujo 1.5 - 2.5 L/min), desagüe resistente a químicos alcalinos y garrafa de reserva de NaOH 40%  
+**Precio Comercial Aproximado:** $4,200 USD (Rango estimado: $3,600 - $5,100 USD)  
 **Fotografía Oficial:** `images_opt/equipos_seleccionados/destilador_proteina.jpg`
 
 ![Unidad de Destilación Kjeldahl para Proteína Bruta Distillation Unit 100](../images_opt/equipos_seleccionados/destilador_proteina.jpg)
@@ -669,6 +674,7 @@ Con guantes térmicos, desenganchar el tubo caliente y vaciar el líquido alcali
 **Ubicación Física en Laboratorio:** Pared húmeda de destilación y lavado químico  
 **Alimentación Eléctrica:** 230 V ~ 50/60 Hz, 3000 W (Monofásico con tierra física de alta capacidad)  
 **Requerimientos de Servicios:** Red de agua potable o prefiltrada (presión 1.5 - 3.5 bar, caudal mínimo 60 L/h) y desagüe continuo  
+**Precio Comercial Aproximado:** $1,850 USD (Rango estimado: $1,400 - $2,400 USD)  
 **Fotografía Oficial:** `images_opt/equipos_seleccionados/destilador_agua_continuo_metalico.jpg`
 
 ![Destilador de Agua Metálico Continuo de Fijación Mural](../images_opt/equipos_seleccionados/destilador_agua_continuo_metalico.jpg)
@@ -785,6 +791,7 @@ Para detener la producción: desconectar en primer lugar el interruptor eléctri
 **Ubicación Física en Laboratorio:** Área húmeda de suministro de agua desmineralizada y reactivos  
 **Alimentación Eléctrica:** No requiere alimentación eléctrica (operación por presión hidrostática de red, 2.0 a 4.5 bar)  
 **Requerimientos de Servicios:** Acometida hidráulica de agua potable de red y conducto a tanques de almacenamiento analítico  
+**Precio Comercial Aproximado:** $1,650 USD (Rango estimado: $1,200 - $2,200 USD)  
 **Fotografía Oficial:** `images_opt/equipos_seleccionados/sistema_tratamiento_desionizacion_agua.jpg`
 
 ![Sistema de Tratamiento, Filtración y Desionización de Agua Multietapa](../images_opt/equipos_seleccionados/sistema_tratamiento_desionizacion_agua.jpg)
@@ -908,6 +915,7 @@ Cerrar la válvula esférica general de entrada de agua de red. Aliviar la presi
 **Ubicación Física en Laboratorio:** Mesa de filtración analítica y secado al vacío  
 **Alimentación Eléctrica:** 230 V ~ 50/60 Hz, 180 W  
 **Requerimientos de Servicios:** Depósito autónomo de 10 L de agua limpia; no consume agua corriente continua  
+**Precio Comercial Aproximado:** $1,350 USD (Rango estimado: $1,100 - $1,700 USD)  
 **Fotografía Oficial:** `images_opt/equipos_seleccionados/bomba_vacio_recirculacion_agua.jpg`
 
 ![Bomba de Vacío por Recirculación de Agua de Doble Toma](../images_opt/equipos_seleccionados/bomba_vacio_recirculacion_agua.jpg)

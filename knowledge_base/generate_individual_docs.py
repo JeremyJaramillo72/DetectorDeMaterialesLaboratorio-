@@ -255,6 +255,7 @@ def generate_individual_documents():
             ("Ubicación en Bromatología UTEQ", eq['ubicacion']),
             ("Alimentación Eléctrica", eq['alimentacion']),
             ("Requerimientos de Servicios", eq['servicios']),
+            ("Precio Comercial Aproximado (USD)", eq.get('precio_aproximado', 'N/A')),
             ("Función Primaria Analítica", eq['principio'].split('\n\n')[0])
         ]
         

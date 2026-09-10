@@ -114,8 +114,8 @@ class KnowledgeBaseRepository private constructor(private val context: Context) 
 
         if (isOffTopicEquipmentQueryNormalized(q)) {
             return ChatMessage(
-                text = "Solo puedo responder preguntas sobre el **${eq.nombreComun}**.\n\n" +
-                    "Pregúntame por prevención, EPP, procedimiento, riesgos, función o prácticas UTEQ de este equipo.",
+                text = "Actualmente estás en modo sin conexión y solo dispongo de la información técnica local del **${eq.nombreComun}**.\n\n" +
+                    "Para buscar otros temas, reactivos o equipos en internet, activa tu conexión de red.",
                 isBot = true,
                 equipmentId = eq.id
             )
@@ -191,6 +191,17 @@ class KnowledgeBaseRepository private constructor(private val context: Context) 
                 }.trim()
             }
 
+            q.contains("precio") || q.contains("costo") || q.contains("cuesta") ||
+                q.contains("cuanto vale") || q.contains("valor") || q.contains("cotizacion") -> {
+                val precio = eq.precioAproximado
+                if (!precio.isNullOrBlank()) {
+                    val spokenPrice = com.uteq.software.detector_de_materiales_laboratorio.ui.MarkdownText.formatPriceForSpeech(precio)
+                    "El ${eq.nombreComun} (${eq.fabricante} ${eq.modelo}) $spokenPrice según la ficha técnica oficial."
+                } else {
+                    "El precio del ${eq.nombreComun} no está especificado en la ficha técnica oficial."
+                }
+            }
+
             q.contains("para que") || q.contains("que es") || q.contains("funcion") ||
                 q.contains("sirve") || q.contains("uso") || q.contains("principio") -> {
                 // Respuesta completa y directa (sin cortar a mitad de frase)
@@ -198,8 +209,8 @@ class KnowledgeBaseRepository private constructor(private val context: Context) 
             }
 
             else -> {
-                "Solo puedo responder preguntas sobre el **${eq.nombreComun}**.\n\n" +
-                    "Prueba con: prevención, EPP, procedimiento, riesgos, función o prácticas UTEQ."
+                "Sin conexión a internet solo dispongo de los datos locales del **${eq.nombreComun}** (precio, EPP, riesgos, función, procedimiento y prácticas UTEQ).\n\n" +
+                    "Para realizar una búsqueda rápida en internet sobre tu consulta, verifica tu conexión de red."
             }
         }
 
@@ -240,14 +251,14 @@ class KnowledgeBaseRepository private constructor(private val context: Context) 
             "operar", "encender", "funcion", "sirve", "principio", "componente",
             "practica", "uteq", "guia", "norma", "bioseguridad", "muestra", "laboratorio",
             "filtracion", "secado", "reactivo", "vapor", "mantenimiento", "limpiar", "apagar",
-            "como se usa", "como usar", "para que", "que es", "medida", "precauciones"
+            "como se usa", "como usar", "para que", "que es", "medida", "precauciones",
+            "precio", "costo", "cuesta", "cuanto vale", "valor", "cotizacion", "dolar", "dolares"
         )
         if (onTopicKeywords.any { q.contains(it) }) return false
 
         val offTopicPatterns = listOf(
             Regex("""\d+\s*[x×*+\-/]\s*\d+"""),
             Regex("""\bcuanto\s+es\b"""),
-            Regex("""\bcuanto\s+vale\b"""),
             Regex("""\bsuma\b|\bresta\b|\bmultiplic"""),
             Regex("""\bclima\b|\bchiste\b|\bmusica\b|\bfutbol\b|\breceta\b|\btraduc""")
         )
@@ -280,10 +291,10 @@ class KnowledgeBaseRepository private constructor(private val context: Context) 
             }
             is EquipmentQueryResult.NotRegistered -> {
                 return ChatMessage(
-                    text = "El equipo **\"${resolved.askedName}\"** no está registrado en el sistema del Laboratorio de Bromatología UTEQ.\n\n" +
-                        "Equipos disponibles (ejemplos):\n" +
-                        listRegisteredEquipmentPreview() +
-                        "\nSi buscas uno de esos, escribe su nombre exacto o detectalo con la cámara.",
+                    text = "El equipo **\"${resolved.askedName}\"** no figura en el catálogo local de Bromatología UTEQ.\n\n" +
+                        "📡 Para consultar sus características mediante búsqueda en internet, verifica tu conexión de red y clave de IA.\n\n" +
+                        "Equipos disponibles localmente en la UTEQ:\n" +
+                        listRegisteredEquipmentPreview(),
                     isBot = true
                 )
             }
@@ -304,9 +315,9 @@ class KnowledgeBaseRepository private constructor(private val context: Context) 
                 "Equipos registrados en el sistema:\n${listRegisteredEquipmentPreview(limit = 30)}"
 
             else ->
-                "Puedo ayudarte con bioseguridad general o con cualquier equipo registrado del laboratorio.\n\n" +
-                    "Ejemplos: ${listRegisteredEquipmentPreview(limit = 6)}\n\n" +
-                    "Pregunta por nombre (ej. \"función del microscopio trinocular\")."
+                "Estás en modo sin conexión. Conozco las normas de bioseguridad y los equipos registrados en Bromatología UTEQ:\n\n" +
+                    "${listRegisteredEquipmentPreview(limit = 6)}\n\n" +
+                    "Para buscar cualquier otro tema científico o equipo en internet, activa tu conexión a la red."
         }
 
         return ChatMessage(text = text, isBot = true)
@@ -387,6 +398,16 @@ class KnowledgeBaseRepository private constructor(private val context: Context) 
                     append("Prácticas UTEQ de **${eq.nombreComun}**:\n")
                     eq.guiasPracticaUteq.forEach { append("• $it\n") }
                 }.trim()
+            }
+            q.contains("precio") || q.contains("costo") || q.contains("cuesta") ||
+                q.contains("cuanto vale") || q.contains("valor") || q.contains("cotizacion") -> {
+                val precio = eq.precioAproximado
+                if (!precio.isNullOrBlank()) {
+                    val spokenPrice = com.uteq.software.detector_de_materiales_laboratorio.ui.MarkdownText.formatPriceForSpeech(precio)
+                    "El ${eq.nombreComun} (${eq.fabricante} ${eq.modelo}) $spokenPrice según la ficha técnica oficial."
+                } else {
+                    "El precio del ${eq.nombreComun} no está especificado en la ficha técnica oficial."
+                }
             }
             else -> {
                 "**${eq.nombreComun}** (${eq.fabricante} • ${eq.modelo})\n\n" +

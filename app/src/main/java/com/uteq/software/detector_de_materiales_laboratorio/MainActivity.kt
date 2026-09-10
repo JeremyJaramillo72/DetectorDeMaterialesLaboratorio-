@@ -110,15 +110,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupUI() {
-        // Tocar un recuadro sobre la cámara selecciona ese equipo — igual que
-        // tocar su tarjeta en la franja. Ya no abre la ficha directamente: con
-        // varios equipos a la vez, seleccionar y consultar son pasos distintos.
+        // Tocar un recuadro sobre la cámara selecciona ese equipo y activa su locución por voz
         binding.overlayView.onDetectionSelectedListener = { detection ->
-            selectEquipment(detection.label)
+            selectEquipment(detection.label, announceVoice = true)
         }
 
         binding.btnOpenChat.setOnClickListener {
-            // Asistente IA general: sin equipo forzado
+            // Al ir al asistente, se cancela inmediatamente cualquier voz activa
+            voiceAnnouncer.stop()
             startActivity(Intent(this, ChatActivity::class.java))
         }
 
@@ -129,6 +128,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.btnQuickDetails.setOnClickListener {
+            // Cancelar cualquier locución activa al abrir detalles o selector
+            voiceAnnouncer.stop()
             if (latestDetections.size > 1) {
                 showEquipmentSelector(latestDetections)
             } else {
@@ -146,11 +147,19 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /** Cambia el equipo seleccionado y refresca la UI con lo último detectado,
-     *  sin esperar al próximo frame de inferencia (toque instantáneo). */
-    private fun selectEquipment(label: String) {
+    /** Cambia el equipo seleccionado. La voz solo se activa si [announceVoice] es true (clic explícito del usuario). */
+    private fun selectEquipment(label: String, announceVoice: Boolean = false) {
         selectedLabel = label
         refreshSelection(latestDetections)
+
+        if (announceVoice) {
+            val det = latestDetections.find { it.label.equals(label, ignoreCase = true) }
+            val displayName = det?.displayName ?: label
+            val eq = detectionCache.getEquipmentInfo(label)
+                ?: kbRepository.getEquipmentByClass(label)
+                ?: kbRepository.getEquipmentById(label)
+            voiceAnnouncer.announceSelectedEquipment(displayName, eq)
+        }
     }
 
     /** El estado de mute se comunica con color, no con un segundo ícono —
@@ -166,6 +175,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showEquipmentDetails(yoloClass: String) {
+        voiceAnnouncer.stop()
         val eq = detectionCache.getEquipmentInfo(yoloClass)
             ?: kbRepository.getEquipmentByClass(yoloClass)
             ?: kbRepository.getEquipmentById(yoloClass)
@@ -179,6 +189,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showEquipmentSelector(detections: List<DetectionResult>) {
+        voiceAnnouncer.stop()
         if (detections.isEmpty()) return
 
         val entries = detections.map { det ->
@@ -200,7 +211,8 @@ class MainActivity : AppCompatActivity() {
 
         val selectorSheet = EquipmentSelectorBottomSheet.newInstance(entries)
         selectorSheet.onEquipmentSelected = { label ->
-            selectEquipment(label)
+            voiceAnnouncer.stop()
+            selectEquipment(label, announceVoice = false)
             showEquipmentDetails(label)
         }
         selectorSheet.show(supportFragmentManager, "EquipmentSelector")
@@ -349,14 +361,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun refreshSelection(detections: List<DetectionResult>) {
-        voiceAnnouncer.onDetections(detections) { label ->
-            detectionCache.getEquipmentInfo(label)
-                ?: kbRepository.getEquipmentByClass(label)
-                ?: kbRepository.getEquipmentById(label)
-        }
-
         if (detections.isEmpty()) {
             selectedLabel = null
+            voiceAnnouncer.stop()
             showReading(getString(R.string.aim_at_equipment))
             updateEquipmentStrip(detections)
             binding.overlayView.setSelectedLabel(null)
@@ -364,8 +371,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Si lo seleccionado ya no está en escena (o no había selección), se
-        // adopta automáticamente el de mayor confianza — mismo comportamiento
-        // de siempre cuando solo hay un equipo, ahora explícito para varios.
+        // adopta automáticamente el de mayor confianza — pero NUNCA habla de forma automática.
         val selected = detections.find { it.label.equals(selectedLabel, ignoreCase = true) }
             ?: detections.maxByOrNull { it.confidence }!!.also { selectedLabel = it.label }
 
@@ -411,7 +417,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             card.text = detection.displayName
-            card.setOnClickListener { selectEquipment(detection.label) }
+            card.setOnClickListener { selectEquipment(detection.label, announceVoice = true) }
             card.setBackgroundResource(
                 if (isSelected) R.drawable.bg_card_selected else R.drawable.bg_chip_outline
             )
@@ -468,6 +474,12 @@ class MainActivity : AppCompatActivity() {
         if (rotationDegrees == 0) return bitmap
         val matrix = Matrix().apply { postRotate(rotationDegrees.toFloat()) }
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // Cancela de inmediato cualquier locución activa al cambiar de pantalla o pasar a segundo plano
+        voiceAnnouncer.stop()
     }
 
     override fun onStop() {

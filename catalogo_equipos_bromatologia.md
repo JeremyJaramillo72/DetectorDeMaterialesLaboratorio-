@@ -10,16 +10,16 @@
 
 ## 📋 Tabla de Equipos Seleccionados (8 Equipos Oficiales)
 
-| ID | Etiqueta Roboflow (YOLO11) | Fabricante / Nombre Común | Modelo Oficial | Imagen |
-|:--:|:---|:---|:---|:--:|
-| **0** | `Analizador de Fibra Cruda y Fracciones` | J.P. SELECTA | DOSI-FIBER (Cat. 4000623) | ![Foto](images_opt/equipos_seleccionados/analizador_fibra_cruda_fracciones.jpg) |
-| **1** | `Bomba de Vacio por Recirculacion de Agua` | J.P. SELECTA | Bomba Recirculante (Cat. 4001611) | ![Foto](images_opt/equipos_seleccionados/bomba_vacio_recirculacion_agua.jpg) |
-| **2** | `Destilacion de Nitrogeno y Proteinas` | Fisher Scientific | Distillation Unit 100 (Unidad Kjeldahl) | ![Foto](images_opt/equipos_seleccionados/destilador_proteina.jpg) |
-| **3** | `Destilador de Agua Continuo Metalico` | Boeco / J.P. Selecta | Destilador Mural Acero Inox 4 L/h | ![Foto](images_opt/equipos_seleccionados/destilador_agua_continuo_metalico.jpg) |
-| **4** | `Destilador por Arrastre de Vapor tipo Kjeldahl` | J.P. SELECTA | Pro-Nitro (Arrastre de Vapor) | ![Foto](images_opt/equipos_seleccionados/destilacion_arrastre_vapor.jpg) |
-| **5** | `Microcospio Trinocular` | Carl Zeiss | ZEISS Primo Star Trinocular | ![Foto](images_opt/equipos_seleccionados/microscopio_trinocular.jpg) |
-| **6** | `Sistema de Tratamiento y Desionizacion deAgua` | Aquapro / Genérico Industrial | Sistema Multietapa 3 Etapas con Manómetros | ![Foto](images_opt/equipos_seleccionados/sistema_tratamiento_desionizacion_agua.jpg) |
-| **7** | `Viscosimetro Brookfield Modelo DV-E` | AMETEK Brookfield | DV-E Viscometer (DVE) | ![Foto](images_opt/equipos_seleccionados/viscosimetro_brookfield_dve.jpg) |
+| ID | Etiqueta Roboflow (YOLO11) | Fabricante / Nombre Común | Modelo Oficial | Precio Aprox. (USD) | Imagen |
+|:--:|:---|:---|:---|:---|:--:|
+| **0** | `Analizador de Fibra Cruda y Fracciones` | J.P. SELECTA | DOSI-FIBER (Cat. 4000623) | $5,800 USD (Rango estimado: $5,200 - $7,000 USD) | ![Foto](images_opt/equipos_seleccionados/analizador_fibra_cruda_fracciones.jpg) |
+| **1** | `Bomba de Vacio por Recirculacion de Agua` | J.P. SELECTA | Bomba Recirculante (Cat. 4001611) | $1,350 USD (Rango estimado: $1,100 - $1,700 USD) | ![Foto](images_opt/equipos_seleccionados/bomba_vacio_recirculacion_agua.jpg) |
+| **2** | `Destilacion de Nitrogeno y Proteinas` | Fisher Scientific | Distillation Unit 100 (Unidad Kjeldahl) | $4,200 USD (Rango estimado: $3,600 - $5,100 USD) | ![Foto](images_opt/equipos_seleccionados/destilador_proteina.jpg) |
+| **3** | `Destilador de Agua Continuo Metalico` | Boeco / J.P. Selecta | Destilador Mural Acero Inox 4 L/h | $1,850 USD (Rango estimado: $1,400 - $2,400 USD) | ![Foto](images_opt/equipos_seleccionados/destilador_agua_continuo_metalico.jpg) |
+| **4** | `Destilador por Arrastre de Vapor tipo Kjeldahl` | J.P. SELECTA | Pro-Nitro (Arrastre de Vapor) | $5,500 USD (Rango estimado: $4,800 - $6,500 USD) | ![Foto](images_opt/equipos_seleccionados/destilacion_arrastre_vapor.jpg) |
+| **5** | `Microcospio Trinocular` | Carl Zeiss | ZEISS Primo Star Trinocular | $3,950 USD (Rango estimado: $3,200 - $4,800 USD) | ![Foto](images_opt/equipos_seleccionados/microscopio_trinocular.jpg) |
+| **6** | `Sistema de Tratamiento y Desionizacion deAgua` | Aquapro / Genérico Industrial | Sistema Multietapa 3 Etapas con Manómetros | $1,650 USD (Rango estimado: $1,200 - $2,200 USD) | ![Foto](images_opt/equipos_seleccionados/sistema_tratamiento_desionizacion_agua.jpg) |
+| **7** | `Viscosimetro Brookfield Modelo DV-E` | AMETEK Brookfield | DV-E Viscometer (DVE) | $4,450 USD (Rango estimado: $3,800 - $5,200 USD) | ![Foto](images_opt/equipos_seleccionados/viscosimetro_brookfield_dve.jpg) |
 
 ---
 
@@ -34,6 +34,7 @@
 - **Nombre Oficial**: Batería de Filtración, Purificación y Desionización de Agua
 - **Tipo de Equipo**: Sistema de purificación por lecho mixto de resinas de intercambio iónico
 - **Ubicación en Laboratorio**: Área húmeda de suministro de agua destilada y reactivos
+- **Precio Comercial Aproximado**: $1,650 USD (Rango estimado: $1,200 - $2,200 USD)
 
 #### Especificaciones Técnicas
 - **Etapas de Filtración**:
@@ -64,6 +65,7 @@ Purificación de agua potable de red para la alimentación de destiladores conti
 - **Fabricante**: AMETEK Brookfield (EE.UU.)
 - **Modelo**: DV-E (Serie Digital Económica)
 - **Ubicación en Laboratorio**: Mesa de reología y análisis físico de alimentos
+- **Precio Comercial Aproximado**: $4,450 USD (Rango estimado: $3,800 - $5,200 USD)
 
 #### Especificaciones Técnicas
 - **Principio de Medición**: Resistencia al cizallamiento rotacional mediante resorte de torsión calibrado de precisión bimetálica.
@@ -94,6 +96,7 @@ Caracterización reológica y control de calidad de fluidos alimentarios newtoni
 - **Nombre Oficial**: Destilador de Agua Metálico Continuo de Fijación Mural
 - **Fabricante**: Boeco / J.P. SELECTA
 - **Ubicación en Laboratorio**: Pared húmeda de destilación y lavado químico
+- **Precio Comercial Aproximado**: $1,850 USD (Rango estimado: $1,400 - $2,400 USD)
 
 #### Especificaciones Técnicas
 - **Producción Nominal**: 4 Litros / hora de agua destilada continua.
@@ -118,6 +121,7 @@ Abastecimiento ininterrumpido de agua destilada de alta pureza química para tit
 - **Fabricante**: J.P. SELECTA S.A. (España)
 - **Modelo**: DOSI-FIBER (Referencia Cat. 4000623)
 - **Ubicación en Laboratorio**: Mesa analítica de análisis proximal de alimentos
+- **Precio Comercial Aproximado**: $5,800 USD (Rango estimado: $5,200 - $7,000 USD)
 
 #### Especificaciones Técnicas
 - **Capacidad de Muestreo**: 6 posiciones simultáneas e independientes con calefacción individual por posición.
@@ -148,6 +152,7 @@ Abastecimiento ininterrumpido de agua destilada de alta pureza química para tit
 - **Fabricante**: J.P. SELECTA S.A.
 - **Modelo**: Cat. 4001611
 - **Ubicación en Laboratorio**: Mesa de filtración analítica y secado al vacío
+- **Precio Comercial Aproximado**: $1,350 USD (Rango estimado: $1,100 - $1,700 USD)
 
 #### Especificaciones Técnicas
 - **Principio de Operación**: Generación de depresión por efecto Venturi mediante bomba centrífuga interna sumergida en circuito cerrado de agua.

@@ -312,12 +312,11 @@ class ChatActivity : AppCompatActivity() {
     private fun sendInitialWelcomeMessage() {
         val welcomeText = if (scopedToEquipment) {
             val eqName = currentEquipmentName ?: "este equipo"
-            "Listo. Solo respondo sobre **$eqName**.\n\n" +
-                "Pregunta directo (o usa el micrófono): función, EPP, riesgos, procedimiento."
+            "Listo. Estoy enfocado en el **$eqName**, pero también puedo buscar en internet información de reactivos, normas o temas complementarios.\n\n" +
+                "Pregunta directo o usa el botón de voz."
         } else {
-            "Hola. Soy el asistente general del lab UTEQ.\n\n" +
-                "Conozco todos los equipos registrados. Pregunta por nombre (ej. microscopio trinocular) " +
-                "o usa el micrófono. Si el equipo no está en el sistema, te lo diré."
+            "¡Hola! Soy tu asistente del Laboratorio de Bromatología UTEQ.\n\n" +
+                "Conozco los equipos y protocolos de la sede, y puedo buscar rápidamente en internet cualquier duda científica, reactivo o procedimiento que necesites."
         }
         chatAdapter.addMessage(
             ChatMessage(
