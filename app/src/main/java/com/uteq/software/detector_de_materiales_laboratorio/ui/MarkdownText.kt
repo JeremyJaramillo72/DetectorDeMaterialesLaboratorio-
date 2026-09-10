@@ -15,6 +15,20 @@ object MarkdownText {
     private val boldRegex = Regex("\\*\\*(.+?)\\*\\*")
     private val bulletPrefixRegex = Regex("^[•\\-]\\s+")
 
+    /**
+     * Versión hablable del mismo texto: sin `**`, sin viñetas ni saltos de
+     * línea sueltos (Android TTS los lee como pausas raras, no como lista).
+     * Presentación únicamente — el texto que llega es el mismo que ya
+     * formatea [format] para la burbuja de chat.
+     */
+    fun stripForSpeech(raw: String): String {
+        val withoutBold = boldRegex.replace(raw) { it.groupValues[1] }
+        return withoutBold.split("\n")
+            .map { it.replaceFirst(bulletPrefixRegex, "").trim() }
+            .filter { it.isNotEmpty() }
+            .joinToString(". ")
+    }
+
     fun format(raw: String, bulletGapPx: Int = 18): CharSequence {
         val builder = SpannableStringBuilder()
 

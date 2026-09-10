@@ -40,11 +40,22 @@
             app:tint="@color/ink" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/lab_space_1"
+            android:layout_weight="1"
             android:text="@string/chat_title"
             android:textAppearance="@style/TextAppearance.Lab.Subtitle" />
+
+        <ImageButton
+            android:id="@+id/btnVoiceMode"
+            android:layout_width="@dimen/touch_target_min"
+            android:layout_height="@dimen/touch_target_min"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/voice_mode_off_desc"
+            android:padding="12dp"
+            android:src="@drawable/ic_headset"
+            app:tint="@color/ink_soft" />
 
     </LinearLayout>
 
@@ -94,6 +105,23 @@
         android:background="@color/rule"
         app:layout_constraintTop_toBottomOf="@id/layoutSelectedChip" />
 
+    <!-- Estado "procesando": solo mientras se espera la respuesta. No
+         reserva espacio cuando está oculto (no es un valor que cambie a
+         10 veces por segundo como el panel de la cámara; es una transición
+         puntual atada a una acción explícita del usuario). -->
+    <TextView
+        android:id="@+id/tvProcessing"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/lab_gutter"
+        android:paddingTop="@dimen/lab_space_2"
+        android:paddingEnd="@dimen/lab_gutter"
+        android:text="@string/voice_processing"
+        android:textAppearance="@style/TextAppearance.Lab.Label"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/ruleContext"
+        tools:visibility="visible" />
+
     <!-- Sugerencias rápidas: contorno compacto, sin ícono, sin relleno de color. -->
     <HorizontalScrollView
         android:id="@+id/scrollChips"
@@ -106,7 +134,7 @@
         android:paddingBottom="@dimen/lab_space_3"
         android:requiresFadingEdge="horizontal"
         android:scrollbars="none"
-        app:layout_constraintTop_toBottomOf="@id/ruleContext">
+        app:layout_constraintTop_toBottomOf="@id/tvProcessing">
 
         <LinearLayout
             android:layout_width="wrap_content"

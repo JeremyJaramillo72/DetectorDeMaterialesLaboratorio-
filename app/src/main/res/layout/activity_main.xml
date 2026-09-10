@@ -18,25 +18,47 @@
     android:background="@color/paper"
     tools:context=".MainActivity">
 
-    <!-- Franja de identificación. Una sola línea, sin adornos. -->
-    <TextView
-        android:id="@+id/tvBrand"
+    <!-- Franja de identificación. Una sola línea, sin adornos, más el
+         silenciador de anuncios de voz — siempre presente, mismo lugar,
+         para que el estado de mute nunca sea una sorpresa. -->
+    <LinearLayout
+        android:id="@+id/rowBrand"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
         android:paddingStart="@dimen/lab_gutter"
-        android:paddingTop="36dp"
-        android:paddingEnd="@dimen/lab_gutter"
-        android:paddingBottom="@dimen/lab_space_3"
-        android:text="@string/brand_line"
-        android:textAppearance="@style/TextAppearance.Lab.Label"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:paddingTop="28dp"
+        android:paddingEnd="@dimen/lab_space_2"
+        android:paddingBottom="@dimen/lab_space_2"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tvBrand"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/brand_line"
+            android:textAppearance="@style/TextAppearance.Lab.Label" />
+
+        <ImageButton
+            android:id="@+id/btnVoiceMute"
+            android:layout_width="@dimen/touch_target_min"
+            android:layout_height="@dimen/touch_target_min"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/voice_mute_on_desc"
+            android:padding="12dp"
+            android:src="@drawable/ic_volume"
+            app:tint="@color/ink_soft" />
+
+    </LinearLayout>
 
     <View
         android:id="@+id/ruleTop"
         android:layout_width="match_parent"
         android:layout_height="@dimen/lab_rule"
         android:background="@color/rule"
-        app:layout_constraintTop_toBottomOf="@id/tvBrand" />
+        app:layout_constraintTop_toBottomOf="@id/rowBrand" />
 
     <!-- Visor: a sangre, sin esquinas redondeadas ni borde. -->
     <FrameLayout

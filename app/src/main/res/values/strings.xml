@@ -26,4 +26,12 @@
     <string name="context_general">Modo general · todos los equipos registrados</string>
     <string name="chat_hint_scoped">Escribe tu consulta sobre este equipo…</string>
     <string name="chat_hint_general">Escribe tu consulta…</string>
+
+    <!-- Voz -->
+    <string name="voice_mute_on_desc">Silenciar anuncios de voz</string>
+    <string name="voice_mute_off_desc">Activar anuncios de voz</string>
+    <string name="voice_mode_on_desc">Desactivar modo voz</string>
+    <string name="voice_mode_off_desc">Activar modo voz</string>
+    <string name="voice_processing">Pensando…</string>
+    <string name="voice_recognition_failed">No entendí, ¿puedes repetir?</string>
 </resources>

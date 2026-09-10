@@ -29,6 +29,7 @@ import com.uteq.software.detector_de_materiales_laboratorio.ml.EquipmentDetectio
 import com.uteq.software.detector_de_materiales_laboratorio.ml.YoloDetector
 import com.uteq.software.detector_de_materiales_laboratorio.model.DetectionResult
 import com.uteq.software.detector_de_materiales_laboratorio.ui.EquipmentBottomSheetDialog
+import com.uteq.software.detector_de_materiales_laboratorio.voice.EquipmentVoiceAnnouncer
 import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -42,6 +43,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var yoloDetector: YoloDetector
     private lateinit var kbRepository: KnowledgeBaseRepository
     private lateinit var detectionCache: EquipmentDetectionCache
+    private lateinit var voiceAnnouncer: EquipmentVoiceAnnouncer
     private val detectionTracker = DetectionTracker(
         holdMs = 600L,
         switchVotesNeeded = 3,
@@ -86,6 +88,7 @@ class MainActivity : AppCompatActivity() {
         yoloDetector = YoloDetector(this).also { it.detectionCache = detectionCache }
         detectionTracker.detectionCache = detectionCache
         kbRepository = KnowledgeBaseRepository.getInstance(this)
+        voiceAnnouncer = EquipmentVoiceAnnouncer(this)
         warmEquipmentInfoCache()
 
         setupUI()
@@ -118,6 +121,12 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, ChatActivity::class.java))
         }
 
+        updateVoiceMuteIcon()
+        binding.btnVoiceMute.setOnClickListener {
+            voiceAnnouncer.setMuted(!voiceAnnouncer.isMuted)
+            updateVoiceMuteIcon()
+        }
+
         binding.btnQuickDetails.setOnClickListener {
             val label = selectedLabel
             if (label != null) {
@@ -137,6 +146,18 @@ class MainActivity : AppCompatActivity() {
     private fun selectEquipment(label: String) {
         selectedLabel = label
         refreshSelection(latestDetections)
+    }
+
+    /** El estado de mute se comunica con color, no con un segundo ícono —
+     *  mismo lenguaje que "seleccionado/no seleccionado" en la franja. */
+    private fun updateVoiceMuteIcon() {
+        val muted = voiceAnnouncer.isMuted
+        binding.btnVoiceMute.contentDescription = getString(
+            if (muted) R.string.voice_mute_off_desc else R.string.voice_mute_on_desc
+        )
+        binding.btnVoiceMute.setColorFilter(
+            ContextCompat.getColor(this, if (muted) R.color.ink_faint else R.color.ink_soft)
+        )
     }
 
     private fun showEquipmentDetails(yoloClass: String) {
@@ -295,6 +316,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun refreshSelection(detections: List<DetectionResult>) {
+        voiceAnnouncer.onDetections(detections) { label ->
+            detectionCache.getEquipmentInfo(label)
+                ?: kbRepository.getEquipmentByClass(label)
+                ?: kbRepository.getEquipmentById(label)
+        }
+
         if (detections.isEmpty()) {
             selectedLabel = null
             showReading(getString(R.string.aim_at_equipment))
@@ -406,6 +433,9 @@ class MainActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         imageAnalyzer?.clearAnalyzer()
+        // Al salir de esta pantalla (p. ej. abrir el Asistente) se corta
+        // cualquier anuncio a medias — no debe hablar de fondo en otra pantalla.
+        voiceAnnouncer.stop()
     }
 
     override fun onStart() {
@@ -421,6 +451,7 @@ class MainActivity : AppCompatActivity() {
         imageAnalyzer?.clearAnalyzer()
         imageAnalyzer = null
         detectionTracker.clear()
+        voiceAnnouncer.shutdown()
         super.onDestroy()
         cameraExecutor.shutdown()
         yoloDetector.close()
