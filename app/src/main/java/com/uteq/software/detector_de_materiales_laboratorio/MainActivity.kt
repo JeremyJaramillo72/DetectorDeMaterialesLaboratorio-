@@ -29,6 +29,7 @@ import com.uteq.software.detector_de_materiales_laboratorio.ml.EquipmentDetectio
 import com.uteq.software.detector_de_materiales_laboratorio.ml.YoloDetector
 import com.uteq.software.detector_de_materiales_laboratorio.model.DetectionResult
 import com.uteq.software.detector_de_materiales_laboratorio.ui.EquipmentBottomSheetDialog
+import com.uteq.software.detector_de_materiales_laboratorio.ui.EquipmentSelectorBottomSheet
 import com.uteq.software.detector_de_materiales_laboratorio.voice.EquipmentVoiceAnnouncer
 import java.util.Locale
 import java.util.concurrent.ExecutorService
@@ -128,15 +129,19 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.btnQuickDetails.setOnClickListener {
-            val label = selectedLabel
-            if (label != null) {
-                showEquipmentDetails(label)
+            if (latestDetections.size > 1) {
+                showEquipmentSelector(latestDetections)
             } else {
-                Toast.makeText(
-                    this,
-                    getString(R.string.aim_at_equipment),
-                    Toast.LENGTH_SHORT
-                ).show()
+                val label = selectedLabel
+                if (label != null) {
+                    showEquipmentDetails(label)
+                } else {
+                    Toast.makeText(
+                        this,
+                        getString(R.string.aim_at_equipment),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
     }
@@ -171,6 +176,34 @@ class MainActivity : AppCompatActivity() {
         } else {
             Toast.makeText(this, "Equipo detectado: $yoloClass", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun showEquipmentSelector(detections: List<DetectionResult>) {
+        if (detections.isEmpty()) return
+
+        val entries = detections.map { det ->
+            val eq = detectionCache.getEquipmentInfo(det.label)
+                ?: kbRepository.getEquipmentByClass(det.label)
+                ?: kbRepository.getEquipmentById(det.label)
+            val subtitle = if (eq != null && eq.fabricante.isNotBlank()) {
+                if (eq.modelo.isNotBlank()) "${eq.fabricante} · ${eq.modelo}" else eq.fabricante
+            } else {
+                ""
+            }
+            EquipmentSelectorBottomSheet.SelectorEntry(
+                label = det.label,
+                displayName = det.displayName,
+                subtitle = subtitle,
+                confidence = det.confidence
+            )
+        }
+
+        val selectorSheet = EquipmentSelectorBottomSheet.newInstance(entries)
+        selectorSheet.onEquipmentSelected = { label ->
+            selectEquipment(label)
+            showEquipmentDetails(label)
+        }
+        selectorSheet.show(supportFragmentManager, "EquipmentSelector")
     }
 
     private fun allPermissionsGranted() = ContextCompat.checkSelfPermission(
@@ -401,8 +434,15 @@ class MainActivity : AppCompatActivity() {
         isAlert: Boolean = false
     ) {
         val hasEquipment = confidence != null
+        val count = latestDetections.size
 
         binding.btnQuickDetails.isEnabled = hasEquipment
+        binding.btnQuickDetails.text = if (count > 1) {
+            getString(R.string.action_sheet_count, count)
+        } else {
+            getString(R.string.action_sheet)
+        }
+
         binding.labelEquipment.text = getString(
             if (hasEquipment) R.string.field_equipment else R.string.field_status
         )

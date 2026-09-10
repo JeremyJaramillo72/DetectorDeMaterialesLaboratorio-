@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Selector emergente de múltiples equipos detectados.
+  Mismo lenguaje visual "Registro de laboratorio".
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/paper"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/lab_space_3"
+    android:paddingBottom="@dimen/lab_space_6">
+
+    <View
+        android:layout_width="32dp"
+        android:layout_height="3dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/lab_space_4"
+        android:background="@drawable/drag_handle" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/lab_gutter"
+        android:layout_marginEnd="@dimen/lab_gutter"
+        android:layout_marginBottom="@dimen/lab_space_1"
+        android:text="@string/multi_detected_title"
+        android:textAppearance="@style/TextAppearance.Lab.Label" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/lab_gutter"
+        android:layout_marginEnd="@dimen/lab_gutter"
+        android:layout_marginBottom="@dimen/lab_space_3"
+        android:text="@string/multi_detected_hint"
+        android:textAppearance="@style/TextAppearance.Lab.BodySoft" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/lab_rule"
+        android:background="@color/rule" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvEquipmentList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:nestedScrollingEnabled="false"
+        tools:itemCount="3"
+        tools:listitem="@layout/item_equipment_selector" />
+
+</LinearLayout>

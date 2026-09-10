@@ -9,7 +9,11 @@
     <string name="confidence_placeholder">—</string>
     <string name="aim_at_equipment">Apunta la cámara a un equipo del laboratorio.</string>
     <string name="action_sheet">Ficha técnica</string>
+    <string name="action_sheet_count">Ficha técnica · %d</string>
     <string name="action_assistant">Asistente</string>
+    <string name="multi_detected_title">Equipos detectados</string>
+    <string name="multi_detected_badge">%d equipos</string>
+    <string name="multi_detected_hint">Toca un equipo para ver su ficha técnica</string>
     <string name="model_missing">No se encontró el modelo de detección en la app.</string>
 
     <!-- Ficha técnica -->
